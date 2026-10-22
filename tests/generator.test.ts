@@ -106,4 +106,12 @@ describe("Typst Generator Tests", () => {
       expect(typstCode).toContain('#set text(');
     }
   });
+
+  it("synchronizes accent colors and contrasting text in Typst output", () => {
+    const doc = createInitialDocument("a4_document", "Color Sync Doc");
+    doc.settings.accentColor = "#e11d48"; // Bauhaus red
+
+    const typstCode = generateTypstDocument(doc);
+    expect(typstCode).toContain('#line(length: 100%, stroke: 1.5pt + rgb("#e11d48"))');
+  });
 });

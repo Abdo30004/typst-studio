@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { UI_THEMES, getUITheme } from "@/lib/theme/themes";
 import { THEME_PALETTES, getPalette, applyPaletteToDocument } from "@/lib/theme/palettes";
-import { DocumentState, CardBlock, ColumnsBlock } from "@/types/document";
+import { DocumentState, CardBlock, ColumnsBlock, MetricCardBlock, ProfileCardBlock, CalloutCardBlock, DividerBlock } from "@/types/document";
 
 describe("UI Themes Specification", () => {
   it("should define all 5 core UI workspace themes", () => {
@@ -91,6 +91,30 @@ describe("Document Design Palettes", () => {
           strokeColor: "#222222",
         } as CardBlock,
         {
+          id: "metric-1",
+          type: "card_metric",
+          label: "ARR",
+          value: "$1.2M",
+        } as MetricCardBlock,
+        {
+          id: "profile-1",
+          type: "card_profile",
+          name: "Alex",
+          role: "Lead Architect",
+          bio: "Rust expert",
+        } as ProfileCardBlock,
+        {
+          id: "callout-1",
+          type: "card_callout",
+          variant: "note",
+          title: "Note",
+          message: "Note text",
+        } as CalloutCardBlock,
+        {
+          id: "divider-1",
+          type: "divider",
+        } as DividerBlock,
+        {
           id: "cols-1",
           type: "columns",
           columnsCount: 2,
@@ -121,14 +145,33 @@ describe("Document Design Palettes", () => {
 
     // Verify accent color updated
     expect(updatedDoc.settings.accentColor).toBe(bauhausPal.defaults.accent);
+    expect(updatedDoc.settings.paletteId).toBe(bauhausPal.id);
 
     // Verify standalone card updated
     const card = updatedDoc.blocks[0] as CardBlock;
     expect(card.fillColor).toBe(bauhausPal.defaults.cardFill);
     expect(card.strokeColor).toBe(bauhausPal.defaults.cardStroke);
 
+    // Verify metric card updated
+    const metric = updatedDoc.blocks[1] as MetricCardBlock;
+    expect(metric.fillColor).toBe(bauhausPal.defaults.cardFill);
+    expect(metric.strokeColor).toBe(bauhausPal.defaults.cardStroke);
+
+    // Verify profile card updated
+    const profile = updatedDoc.blocks[2] as ProfileCardBlock;
+    expect(profile.fillColor).toBe(bauhausPal.defaults.cardFill);
+    expect(profile.roleColor).toBe(bauhausPal.defaults.accent);
+
+    // Verify callout card updated
+    const callout = updatedDoc.blocks[3] as CalloutCardBlock;
+    expect(callout.borderColor).toBe(bauhausPal.defaults.accent);
+
+    // Verify divider updated
+    const divider = updatedDoc.blocks[4] as DividerBlock;
+    expect(divider.color).toBe(bauhausPal.defaults.dividerColor);
+
     // Verify nested card inside columns updated
-    const cols = updatedDoc.blocks[1] as ColumnsBlock;
+    const cols = updatedDoc.blocks[5] as ColumnsBlock;
     const nestedCard = cols.columns[0].blocks[0] as CardBlock;
     expect(nestedCard.fillColor).toBe(bauhausPal.defaults.cardFill);
     expect(nestedCard.strokeColor).toBe(bauhausPal.defaults.cardStroke);

@@ -1,4 +1,12 @@
-import { DocumentBlock, DocumentState, CardBlock, DividerBlock } from "@/types/document";
+import {
+  DocumentBlock,
+  DocumentState,
+  CardBlock,
+  DividerBlock,
+  CalloutCardBlock,
+  MetricCardBlock,
+  ProfileCardBlock,
+} from "@/types/document";
 import { ThemePalette, PaletteId } from "./types";
 
 export const THEME_PALETTES: ThemePalette[] = [
@@ -170,64 +178,86 @@ export function getPalette(id: PaletteId | string): ThemePalette {
 }
 
 /**
+ * Harmonize a block's colors to a ThemePalette
+ */
+function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBlock {
+  switch (block.type) {
+    case "card": {
+      const c = block as CardBlock;
+      return {
+        ...c,
+        fillColor: palette.defaults.cardFill,
+        strokeColor: palette.defaults.cardStroke,
+        badgeBg: palette.defaults.badgeBg,
+        badgeText: palette.defaults.badgeText,
+      };
+    }
+    case "card_callout": {
+      const callout = block as CalloutCardBlock;
+      if (callout.variant === "note") {
+        return {
+          ...callout,
+          borderColor: palette.defaults.accent,
+          textColor: palette.defaults.accent,
+          bgColor: palette.defaults.cardFill === "#ffffff" ? "#eff6ff" : palette.defaults.cardFill,
+        };
+      }
+      return callout;
+    }
+    case "card_metric": {
+      const m = block as MetricCardBlock;
+      return {
+        ...m,
+        fillColor: palette.defaults.cardFill === "#ffffff" ? "#f8fafc" : palette.defaults.cardFill,
+        strokeColor: palette.defaults.cardStroke,
+      };
+    }
+    case "card_profile": {
+      const p = block as ProfileCardBlock;
+      return {
+        ...p,
+        fillColor: palette.defaults.cardFill,
+        strokeColor: palette.defaults.cardStroke,
+        roleColor: palette.defaults.accent,
+      };
+    }
+    case "divider": {
+      const d = block as DividerBlock;
+      return {
+        ...d,
+        color: palette.defaults.dividerColor,
+      };
+    }
+    case "columns": {
+      return {
+        ...block,
+        columns: block.columns.map((col) => ({
+          ...col,
+          blocks: col.blocks.map((innerB) => harmonizeBlock(innerB, palette)),
+        })),
+      };
+    }
+    default:
+      return block;
+  }
+}
+
+/**
  * Apply the colors of a ThemePalette across an existing document.
- * Modifies cards, callouts, dividers, and document settings seamlessly.
+ * Modifies cards, callouts, metrics, profiles, dividers, and document settings seamlessly.
  */
 export function applyPaletteToDocument(
   palette: ThemePalette,
   documentState: DocumentState
 ): DocumentState {
-  const updatedBlocks = documentState.blocks.map((block): DocumentBlock => {
-    switch (block.type) {
-      case "card": {
-        const c = block as CardBlock;
-        return {
-          ...c,
-          fillColor: palette.defaults.cardFill,
-          strokeColor: palette.defaults.cardStroke,
-        };
-      }
-      case "divider": {
-        const d = block as DividerBlock;
-        return {
-          ...d,
-          color: palette.defaults.dividerColor,
-        };
-      }
-      case "columns": {
-        return {
-          ...block,
-          columns: block.columns.map((col) => ({
-            ...col,
-            blocks: col.blocks.map((innerB) => {
-              if (innerB.type === "card") {
-                return {
-                  ...innerB,
-                  fillColor: palette.defaults.cardFill,
-                  strokeColor: palette.defaults.cardStroke,
-                };
-              }
-              if (innerB.type === "divider") {
-                return {
-                  ...innerB,
-                  color: palette.defaults.dividerColor,
-                };
-              }
-              return innerB;
-            }),
-          })),
-        };
-      }
-      default:
-        return block;
-    }
-  });
+  const updatedBlocks = documentState.blocks.map((block) => harmonizeBlock(block, palette));
 
   return {
     ...documentState,
     settings: {
       ...documentState.settings,
       accentColor: palette.defaults.accent,
+      paletteId: palette.id,
     },
     blocks: updatedBlocks,
     updatedAt: new Date().toISOString(),

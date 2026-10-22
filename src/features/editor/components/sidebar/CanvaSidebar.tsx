@@ -31,6 +31,7 @@ import {
   Sun,
 } from "lucide-react";
 import { useTheme } from "@/lib/theme";
+import { applyPaletteToDocument } from "@/lib/theme/palettes";
 
 interface Props {
   documentState: DocumentState;
@@ -634,7 +635,13 @@ export function CanvaSidebar({
                       return (
                         <div
                           key={pal.id}
-                          onClick={() => setActivePaletteId(pal.id)}
+                          onClick={() => {
+                            setActivePaletteId(pal.id);
+                            if (onApplyPaletteToDoc) {
+                              const updated = applyPaletteToDocument(pal, documentState);
+                              onApplyPaletteToDoc(updated);
+                            }
+                          }}
                           className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
                             isSelected
                               ? "bg-zinc-900 border-zinc-600 shadow-xs"

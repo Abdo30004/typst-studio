@@ -16,6 +16,7 @@ export interface DocumentSettings {
   };
   font: string;
   accentColor: string;
+  paletteId?: string;
   showPageNumbers: boolean;
 }
 
@@ -56,6 +57,8 @@ export interface CardBlock extends BaseBlock {
   title?: string;
   content: string;
   badge?: string;
+  badgeBg?: string;
+  badgeText?: string;
   fillColor?: string;
   strokeColor?: string;
   strokeWidth?: number;
@@ -69,6 +72,9 @@ export interface CalloutCardBlock extends BaseBlock {
   variant: "note" | "tip" | "warning" | "caution";
   title: string;
   message: string;
+  borderColor?: string;
+  bgColor?: string;
+  textColor?: string;
 }
 
 export interface MetricCardBlock extends BaseBlock {
@@ -77,6 +83,8 @@ export interface MetricCardBlock extends BaseBlock {
   value: string;
   change?: string;
   changeType?: "positive" | "negative" | "neutral";
+  fillColor?: string;
+  strokeColor?: string;
 }
 
 export interface ProfileCardBlock extends BaseBlock {
@@ -86,6 +94,9 @@ export interface ProfileCardBlock extends BaseBlock {
   bio: string;
   avatarUrl?: string;
   contact?: string;
+  fillColor?: string;
+  strokeColor?: string;
+  roleColor?: string;
 }
 
 export interface ColumnItem {

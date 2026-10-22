@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/lib/theme";
 import { UIThemeId, PaletteId } from "@/lib/theme/types";
+import { applyPaletteToDocument } from "@/lib/theme/palettes";
 import { DocumentState } from "@/types/document";
 import { Palette, Check, Sparkles, Moon, Sun, Monitor, Wand2, X } from "lucide-react";
 
@@ -192,7 +193,13 @@ export function ThemeQuickSwitcher({
                   return (
                     <div
                       key={pal.id}
-                      onClick={() => setActivePaletteId(pal.id)}
+                      onClick={() => {
+                        setActivePaletteId(pal.id);
+                        if (documentState && onApplyPaletteToDoc) {
+                          const updated = applyPaletteToDocument(pal, documentState);
+                          onApplyPaletteToDoc(updated);
+                        }
+                      }}
                       className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
                         isSelected
                           ? "bg-zinc-900 border-zinc-600 shadow-xs"

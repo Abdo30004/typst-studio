@@ -172,120 +172,154 @@ body {
 }
 
 /* =========================================================================
+   Document Paper Strict Isolation Barrier
+   The document paper represents physical printed media compiled by native Typst.
+   Studio interface themes (dark/light/sepia) must NEVER bleed into or mutate
+   elements inside .document-paper-sheet.
+   ========================================================================= */
+
+.document-paper-sheet,
+[data-theme] .document-paper-sheet {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  color-scheme: light !important;
+}
+
+/* Ensure code snippet blocks inside paper retain pristine monospace dark styling */
+.document-paper-sheet .bg-\[\#09090b\],
+[data-theme] .document-paper-sheet .bg-\[\#09090b\] {
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+.document-paper-sheet .bg-zinc-900,
+[data-theme] .document-paper-sheet .bg-zinc-900,
+.document-paper-sheet .bg-zinc-900\/60,
+[data-theme] .document-paper-sheet .bg-zinc-900\/60 {
+  background-color: #18181b !important;
+}
+.document-paper-sheet .border-zinc-800,
+[data-theme] .document-paper-sheet .border-zinc-800,
+.document-paper-sheet .border-zinc-850,
+[data-theme] .document-paper-sheet .border-zinc-850 {
+  border-color: #27272a !important;
+}
+
+/* =========================================================================
    Theme Cascading Overrides for Studio Elements
+   Scoped strictly away from .document-paper-sheet
    ========================================================================= */
 
 /* Editorial Light Overrides */
-[data-theme="editorial-light"] .bg-zinc-950,
-[data-theme="editorial-light"] .bg-zinc-950\/95,
-[data-theme="editorial-light"] .bg-zinc-950\/98,
-[data-theme="editorial-light"] .bg-slate-950,
-[data-theme="editorial-light"] .bg-\[\#09090b\] {
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/95,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/98,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-\[\#09090b\] {
   background-color: var(--theme-panel) !important;
 }
 
-[data-theme="editorial-light"] .bg-zinc-900,
-[data-theme="editorial-light"] .bg-zinc-900\/40,
-[data-theme="editorial-light"] .bg-zinc-900\/50,
-[data-theme="editorial-light"] .bg-zinc-900\/80,
-[data-theme="editorial-light"] .bg-slate-900,
-[data-theme="editorial-light"] .bg-slate-950\/40,
-[data-theme="editorial-light"] .bg-slate-950\/60 {
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/40,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/50,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/80,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-900,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950\/40,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950\/60 {
   background-color: var(--theme-surface) !important;
 }
 
-[data-theme="editorial-light"] .text-zinc-100,
-[data-theme="editorial-light"] .text-zinc-200,
-[data-theme="editorial-light"] .text-zinc-300,
-[data-theme="editorial-light"] .text-slate-100,
-[data-theme="editorial-light"] .text-slate-200 {
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-100,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-200,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-300,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-slate-100,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-slate-200 {
   color: var(--theme-text-primary) !important;
 }
 
-[data-theme="editorial-light"] .text-zinc-400,
-[data-theme="editorial-light"] .text-zinc-500,
-[data-theme="editorial-light"] .text-slate-400,
-[data-theme="editorial-light"] .text-slate-500 {
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-400,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-500,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-slate-400,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).text-slate-500 {
   color: var(--theme-text-secondary) !important;
 }
 
-[data-theme="editorial-light"] .border-zinc-900,
-[data-theme="editorial-light"] .border-zinc-850,
-[data-theme="editorial-light"] .border-zinc-800,
-[data-theme="editorial-light"] .border-slate-800,
-[data-theme="editorial-light"] .border-slate-700 {
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-900,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-850,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-800,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).border-slate-800,
+[data-theme="editorial-light"] :not(.document-paper-sheet, .document-paper-sheet *).border-slate-700 {
   border-color: var(--theme-border) !important;
 }
 
 /* Tokyo Midnight Overrides */
-[data-theme="tokyo-midnight"] .bg-zinc-950,
-[data-theme="tokyo-midnight"] .bg-zinc-950\/95,
-[data-theme="tokyo-midnight"] .bg-zinc-950\/98,
-[data-theme="tokyo-midnight"] .bg-slate-950,
-[data-theme="tokyo-midnight"] .bg-\[\#09090b\] {
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/95,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/98,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-\[\#09090b\] {
   background-color: var(--theme-bg) !important;
 }
 
-[data-theme="tokyo-midnight"] .bg-zinc-900,
-[data-theme="tokyo-midnight"] .bg-zinc-900\/40,
-[data-theme="tokyo-midnight"] .bg-zinc-900\/80 {
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/40,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/80 {
   background-color: var(--theme-surface) !important;
 }
 
-[data-theme="tokyo-midnight"] .border-zinc-900,
-[data-theme="tokyo-midnight"] .border-zinc-850,
-[data-theme="tokyo-midnight"] .border-zinc-800 {
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-900,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-850,
+[data-theme="tokyo-midnight"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-800 {
   border-color: var(--theme-border) !important;
 }
 
 /* Nordic Steel Overrides */
-[data-theme="nordic-steel"] .bg-zinc-950,
-[data-theme="nordic-steel"] .bg-zinc-950\/95,
-[data-theme="nordic-steel"] .bg-zinc-950\/98,
-[data-theme="nordic-steel"] .bg-slate-950,
-[data-theme="nordic-steel"] .bg-\[\#09090b\] {
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/95,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/98,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-\[\#09090b\] {
   background-color: var(--theme-bg) !important;
 }
 
-[data-theme="nordic-steel"] .bg-zinc-900,
-[data-theme="nordic-steel"] .bg-zinc-900\/40,
-[data-theme="nordic-steel"] .bg-zinc-900\/80 {
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/40,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/80 {
   background-color: var(--theme-surface) !important;
 }
 
-[data-theme="nordic-steel"] .border-zinc-900,
-[data-theme="nordic-steel"] .border-zinc-850,
-[data-theme="nordic-steel"] .border-zinc-800 {
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-900,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-850,
+[data-theme="nordic-steel"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-800 {
   border-color: var(--theme-border) !important;
 }
 
 /* Solarized Sepia Overrides */
-[data-theme="solarized-sepia"] .bg-zinc-950,
-[data-theme="solarized-sepia"] .bg-zinc-950\/95,
-[data-theme="solarized-sepia"] .bg-zinc-950\/98,
-[data-theme="solarized-sepia"] .bg-slate-950,
-[data-theme="solarized-sepia"] .bg-\[\#09090b\] {
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/95,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-950\/98,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-slate-950,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-\[\#09090b\] {
   background-color: var(--theme-bg) !important;
 }
 
-[data-theme="solarized-sepia"] .bg-zinc-900,
-[data-theme="solarized-sepia"] .bg-zinc-900\/40,
-[data-theme="solarized-sepia"] .bg-zinc-900\/80 {
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/40,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).bg-zinc-900\/80 {
   background-color: var(--theme-surface) !important;
 }
 
-[data-theme="solarized-sepia"] .text-zinc-100,
-[data-theme="solarized-sepia"] .text-zinc-200 {
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-100,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-200 {
   color: var(--theme-text-primary) !important;
 }
 
-[data-theme="solarized-sepia"] .text-zinc-400,
-[data-theme="solarized-sepia"] .text-zinc-500 {
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-400,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).text-zinc-500 {
   color: var(--theme-text-secondary) !important;
 }
 
-[data-theme="solarized-sepia"] .border-zinc-900,
-[data-theme="solarized-sepia"] .border-zinc-850,
-[data-theme="solarized-sepia"] .border-zinc-800 {
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-900,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-850,
+[data-theme="solarized-sepia"] :not(.document-paper-sheet, .document-paper-sheet *).border-zinc-800 {
   border-color: var(--theme-border) !important;
 }

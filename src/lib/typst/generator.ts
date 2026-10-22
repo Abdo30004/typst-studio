@@ -1,6 +1,7 @@
 import {
   DocumentBlock,
   DocumentState,
+  DocumentSettings,
   HeadingBlock,
   TextBlock,
   CardBlock,
@@ -13,6 +14,7 @@ import {
   CodeBlock,
   DividerBlock,
 } from "@/types/document";
+import { isColorDark, getContrastingText, CALLOUT_THEMES } from "./document-theme";
 
 export function escapeTypst(str: string): string {
   if (!str) return "";
@@ -59,7 +61,9 @@ function formatMarkdownToTypst(text: string): string {
   return processedLines.join("\n");
 }
 
-export function renderBlockToTypst(block: DocumentBlock): string {
+export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSettings): string {
+  const docAccent = settings?.accentColor || "#0f172a";
+
   switch (block.type) {
     case "heading": {
       const h = block as HeadingBlock;
@@ -73,7 +77,8 @@ export function renderBlockToTypst(block: DocumentBlock): string {
         ? `\n#v(2pt)\n#text(size: 0.85em, fill: rgb("#64748b"))[${escapeTypst(h.subtitle)}]`
         : "";
 
-      const headingCode = `${"=".repeat(h.level)} ${escapeTypst(h.text)}${subtitleMarkup}`;
+      const underline = h.level === 1 ? `\n#v(3pt)\n#line(length: 100%, stroke: 1.5pt + rgb("${docAccent}"))` : "";
+      const headingCode = `${"=".repeat(h.level)} ${escapeTypst(h.text)}${subtitleMarkup}${underline}`;
       return alignPrefix ? `${alignPrefix}[\n${headingCode}\n]` : headingCode;
     }
 
@@ -98,13 +103,18 @@ export function renderBlockToTypst(block: DocumentBlock): string {
       const radius = c.radius ?? 6;
       const inset = c.padding ?? 12;
 
+      const titleColor = getContrastingText(fill);
+      const bodyColor = isColorDark(fill) ? "#e2e8f0" : "#334155";
+      const badgeBg = c.badgeBg || (isColorDark(fill) ? "#ffffff" : docAccent);
+      const badgeText = c.badgeText || (isColorDark(fill) ? "#0f172a" : "#ffffff");
+
       const badgeMarkup = c.badge
-        ? `#box(fill: rgb("#e2e8f0"), radius: 3pt, inset: (x: 5pt, y: 3pt))[#text(size: 0.75em, weight: "bold", fill: rgb("#475569"))[${escapeTypst(c.badge)}]] \\ \n#v(2pt)\n`
+        ? `#box(fill: rgb("${badgeBg}"), radius: 3pt, inset: (x: 5pt, y: 3pt))[#text(size: 0.75em, weight: "bold", fill: rgb("${badgeText}"))[${escapeTypst(c.badge)}]] \\ \n#v(2pt)\n`
         : "";
       const titleMarkup = c.title
-        ? `#text(weight: "bold", size: 1.1em, fill: rgb("#0f172a"))[${escapeTypst(c.title)}] \\ \n#v(4pt)\n`
+        ? `#text(weight: "bold", size: 1.1em, fill: rgb("${titleColor}"))[${escapeTypst(c.title)}] \\ \n#v(4pt)\n`
         : "";
-      const bodyMarkup = formatMarkdownToTypst(c.content);
+      const bodyMarkup = `#text(fill: rgb("${bodyColor}"))[${formatMarkdownToTypst(c.content)}]`;
 
       return `#rect(
   fill: rgb("${fill}"),
@@ -120,21 +130,19 @@ export function renderBlockToTypst(block: DocumentBlock): string {
 
     case "card_callout": {
       const callout = block as CalloutCardBlock;
-      const colors = {
-        note: { bg: "#eff6ff", border: "#3b82f6", text: "#1d4ed8" },
-        tip: { bg: "#f0fdf4", border: "#10b981", text: "#047857" },
-        warning: { bg: "#fffbeb", border: "#f59e0b", text: "#b45309" },
-        caution: { bg: "#fef2f2", border: "#ef4444", text: "#b91c1c" },
-      }[callout.variant] || { bg: "#f8fafc", border: "#64748b", text: "#334155" };
+      const base = CALLOUT_THEMES[callout.variant] || CALLOUT_THEMES.note;
+      const bg = callout.bgColor || base.bg;
+      const border = callout.borderColor || (callout.variant === "note" ? docAccent : base.border);
+      const text = callout.textColor || (callout.variant === "note" ? docAccent : base.text);
 
       return `#block(
-  fill: rgb("${colors.bg}"),
-  stroke: (left: 4pt + rgb("${colors.border}")),
+  fill: rgb("${bg}"),
+  stroke: (left: 4pt + rgb("${border}")),
   radius: (right: 4pt),
   inset: (x: 12pt, y: 10pt),
   width: 100%,
   [
-    #text(weight: "bold", fill: rgb("${colors.text}"))[${escapeTypst(callout.title)}] \\
+    #text(weight: "bold", fill: rgb("${text}"))[${escapeTypst(callout.title)}] \\
     #v(2pt)
     #text(fill: rgb("#1e293b"))[${formatMarkdownToTypst(callout.message)}]
   ]
@@ -143,6 +151,9 @@ export function renderBlockToTypst(block: DocumentBlock): string {
 
     case "card_metric": {
       const m = block as MetricCardBlock;
+      const fill = m.fillColor || "#f8fafc";
+      const stroke = m.strokeColor || "#e2e8f0";
+      const valueColor = docAccent;
       const badgeColor =
         m.changeType === "positive"
           ? "#16a34a"
@@ -155,34 +166,37 @@ export function renderBlockToTypst(block: DocumentBlock): string {
         : "";
 
       return `#rect(
-  fill: rgb("#f8fafc"),
-  stroke: 1pt + rgb("#e2e8f0"),
+  fill: rgb("${fill}"),
+  stroke: 1pt + rgb("${stroke}"),
   radius: 6pt,
   inset: 12pt,
   width: 100%,
   [
     #text(size: 0.85em, weight: "medium", fill: rgb("#64748b"))[${escapeTypst(m.label)}] \\
     #v(3pt)
-    #text(size: 1.8em, weight: "bold", fill: rgb("#0f172a"))[${escapeTypst(m.value)}]${changeMarkup}
+    #text(size: 1.8em, weight: "bold", fill: rgb("${valueColor}"))[${escapeTypst(m.value)}]${changeMarkup}
   ]
 )`;
     }
 
     case "card_profile": {
       const p = block as ProfileCardBlock;
+      const fill = p.fillColor || "#ffffff";
+      const stroke = p.strokeColor || "#e2e8f0";
+      const roleColor = p.roleColor || docAccent;
       const contactMarkup = p.contact
         ? `\n    #v(4pt)\n    #text(size: 0.8em, fill: rgb("#64748b"))[${escapeTypst(p.contact)}]`
         : "";
 
       return `#rect(
-  fill: rgb("#ffffff"),
-  stroke: 1pt + rgb("#e2e8f0"),
+  fill: rgb("${fill}"),
+  stroke: 1pt + rgb("${stroke}"),
   radius: 8pt,
   inset: 14pt,
   width: 100%,
   [
     #text(size: 1.25em, weight: "bold", fill: rgb("#0f172a"))[${escapeTypst(p.name)}] \\
-    #text(size: 0.9em, weight: "medium", fill: rgb("#2563eb"))[${escapeTypst(p.role)}] \\
+    #text(size: 0.9em, weight: "medium", fill: rgb("${roleColor}"))[${escapeTypst(p.role)}] \\
     #v(4pt)
     #text(fill: rgb("#334155"))[${formatMarkdownToTypst(p.bio)}]${contactMarkup}
   ]
@@ -195,7 +209,7 @@ export function renderBlockToTypst(block: DocumentBlock): string {
       const gutter = cols.gutter || 12;
 
       const renderedColumns = cols.columns.map((col) => {
-        const inner = col.blocks.map(renderBlockToTypst).join("\n\n");
+        const inner = col.blocks.map((b) => renderBlockToTypst(b, settings)).join("\n\n");
         return `[\n${inner || " "}\n]`;
       });
 
@@ -265,7 +279,7 @@ export function renderBlockToTypst(block: DocumentBlock): string {
       const div = block as DividerBlock;
       const spacing = div.spacing || 12;
       const thickness = div.thickness || 0.5;
-      const color = div.color || "#e2e8f0";
+      const color = div.color || docAccent || "#e2e8f0";
       return `#v(${spacing}pt)\n#line(length: 100%, stroke: ${thickness}pt + rgb("${color}"))\n#v(${spacing}pt)`;
     }
 
@@ -308,7 +322,7 @@ export function generateTypstDocument(doc: DocumentState): string {
 `;
 
   const renderedBlocks = blocks
-    .map(renderBlockToTypst)
+    .map((b) => renderBlockToTypst(b, settings))
     .filter(Boolean)
     .join("\n\n");
 

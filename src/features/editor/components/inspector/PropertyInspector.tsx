@@ -956,6 +956,31 @@ export function PropertyInspector({
               </select>
             </div>
 
+            {/* Document Accent Color */}
+            <div>
+              <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">
+                Document Accent Color
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={documentState.settings.accentColor || "#0f172a"}
+                  onChange={(e) => onUpdateDocumentSettings({ accentColor: e.target.value })}
+                  className="w-8 h-8 rounded border border-zinc-700 bg-zinc-900 cursor-pointer p-0.5"
+                />
+                <input
+                  type="text"
+                  value={documentState.settings.accentColor || "#0f172a"}
+                  onChange={(e) => onUpdateDocumentSettings({ accentColor: e.target.value })}
+                  placeholder="#0f172a"
+                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 font-mono outline-none uppercase"
+                />
+              </div>
+              <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
+                Styles H1 underlines, KPI metrics, callouts & divider lines
+              </span>
+            </div>
+
             <div className="space-y-1.5">
               <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block">
                 Page Margins

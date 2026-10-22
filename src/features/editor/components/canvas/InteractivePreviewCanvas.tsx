@@ -19,6 +19,7 @@ import {
 import { FloatingToolbar } from "../toolbar/FloatingToolbar";
 import { AutoResizeTextarea } from "@/components/ui/AutoResizeTextarea";
 import { useTheme } from "@/lib/theme";
+import { isColorDark, getContrastingText, CALLOUT_THEMES } from "@/lib/typst/document-theme";
 import {
   ZoomIn,
   ZoomOut,
@@ -322,11 +323,11 @@ export function InteractivePreviewCanvas({
         const alignClass =
           h.align === "center" ? "text-center" : h.align === "right" ? "text-right" : "text-left";
         const levelStyle = {
-          1: "text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 border-b border-zinc-200 pb-2",
-          2: "text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 border-b border-zinc-100 pb-1.5",
-          3: "text-lg sm:text-xl font-bold text-zinc-900",
-          4: "text-base font-semibold text-zinc-800",
-        }[h.level || 1] || "text-2xl font-bold text-zinc-950";
+          1: "text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0f172a] pb-1",
+          2: "text-xl sm:text-2xl font-bold tracking-tight text-[#0f172a] pb-1",
+          3: "text-lg sm:text-xl font-bold text-[#0f172a]",
+          4: "text-base font-semibold text-[#1e293b]",
+        }[h.level || 1] || "text-2xl font-bold text-[#0f172a]";
 
         contentNode = (
           <div className={`${alignClass} space-y-1.5`} onClick={() => onSelectBlock(h.id)}>
@@ -340,13 +341,19 @@ export function InteractivePreviewCanvas({
                   : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
               }`}
             />
+            {h.level === 1 && (
+              <div
+                className="h-[2px] w-full rounded-full"
+                style={{ backgroundColor: documentState.settings.accentColor || "#0f172a" }}
+              />
+            )}
 
             {(h.subtitle !== undefined || isSelected) && (
               <AutoResizeTextarea
                 value={h.subtitle || ""}
                 onValueChange={(val) => onUpdateBlock(h.id, { subtitle: val })}
                 placeholder="+ Add subtitle..."
-                className={`text-xs sm:text-sm text-zinc-500 font-normal leading-relaxed ${
+                className={`text-xs sm:text-sm text-[#64748b] font-normal leading-relaxed ${
                   isSelected
                     ? "bg-zinc-100/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
                     : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
@@ -367,7 +374,7 @@ export function InteractivePreviewCanvas({
               value={t.content}
               onValueChange={(val) => onUpdateBlock(t.id, { content: val })}
               placeholder="Start writing text or descriptions..."
-              className={`text-xs sm:text-sm leading-relaxed text-zinc-700 font-normal ${
+              className={`text-xs sm:text-sm leading-relaxed text-[#334155] font-normal ${
                 isSelected
                   ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
                   : "hover:bg-zinc-100/50 rounded p-1.5"
@@ -381,12 +388,19 @@ export function InteractivePreviewCanvas({
       // 3. Custom Card Block
       case "card": {
         const c = b as CardBlock;
+        const fill = c.fillColor || "#ffffff";
+        const stroke = c.strokeColor || "#e2e8f0";
+        const titleColor = getContrastingText(fill);
+        const bodyColor = isColorDark(fill) ? "#e2e8f0" : "#334155";
+        const badgeBg = c.badgeBg || (isColorDark(fill) ? "#ffffff" : (documentState.settings.accentColor || "#0f172a"));
+        const badgeText = c.badgeText || (isColorDark(fill) ? "#0f172a" : "#ffffff");
+
         contentNode = (
           <div
             onClick={() => onSelectBlock(c.id)}
             style={{
-              backgroundColor: c.fillColor || "#ffffff",
-              borderColor: c.strokeColor || "#e4e4e7",
+              backgroundColor: fill,
+              borderColor: stroke,
               borderWidth: `${c.strokeWidth ?? 1}px`,
               borderRadius: `${c.radius ?? 8}px`,
               padding: `${c.padding ?? 14}px`,
@@ -401,11 +415,11 @@ export function InteractivePreviewCanvas({
                   value={c.badge || ""}
                   onChange={(e) => onUpdateBlock(c.id, { badge: e.target.value })}
                   placeholder="+ Add Badge"
-                  className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                    isSelected
-                      ? "bg-zinc-950 border-zinc-950 text-zinc-100 ring-1 ring-zinc-800 outline-none"
-                      : "bg-zinc-100 border-zinc-200 text-zinc-600 hover:border-zinc-300"
-                  }`}
+                  style={{
+                    backgroundColor: badgeBg,
+                    color: badgeText,
+                  }}
+                  className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border border-black/10 outline-none shadow-xs"
                 />
               </div>
             )}
@@ -415,10 +429,11 @@ export function InteractivePreviewCanvas({
               value={c.title || ""}
               onValueChange={(val) => onUpdateBlock(c.id, { title: val })}
               placeholder="+ Card Title..."
-              className={`font-bold text-sm sm:text-base text-zinc-950 leading-snug ${
+              style={{ color: titleColor }}
+              className={`font-bold text-sm sm:text-base leading-snug ${
                 isSelected
-                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
-                  : "hover:bg-zinc-100/40 rounded px-1.5 py-0.5"
+                  ? "bg-black/5 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                  : "hover:bg-black/5 rounded px-1.5 py-0.5"
               }`}
             />
 
@@ -427,10 +442,11 @@ export function InteractivePreviewCanvas({
               value={c.content || ""}
               onValueChange={(val) => onUpdateBlock(c.id, { content: val })}
               placeholder="Card description text..."
-              className={`text-xs sm:text-sm text-zinc-700 leading-relaxed font-normal ${
+              style={{ color: bodyColor }}
+              className={`text-xs sm:text-sm leading-relaxed font-normal ${
                 isSelected
-                  ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
-                  : "hover:bg-zinc-100/40 rounded p-1.5"
+                  ? "bg-black/5 rounded p-1.5 ring-1 ring-zinc-400"
+                  : "hover:bg-black/5 rounded p-1.5"
               }`}
             />
           </div>
@@ -441,17 +457,20 @@ export function InteractivePreviewCanvas({
       // 4. Callout Banner
       case "card_callout": {
         const callout = b as CalloutCardBlock;
-        const variantStyle = {
-          note: "border-l-zinc-950 bg-zinc-100/90 text-zinc-950 border border-zinc-200/60",
-          tip: "border-l-zinc-700 bg-zinc-50/90 text-zinc-950 border border-zinc-200/80",
-          warning: "border-l-amber-600 bg-amber-50/60 text-amber-950 border border-amber-200/60",
-          caution: "border-l-rose-600 bg-rose-50/60 text-rose-950 border border-rose-200/60",
-        }[callout.variant || "note"];
+        const base = CALLOUT_THEMES[callout.variant] || CALLOUT_THEMES.note;
+        const bg = callout.bgColor || base.bg;
+        const border = callout.borderColor || (callout.variant === "note" ? (documentState.settings.accentColor || base.border) : base.border);
+        const titleColor = callout.textColor || (callout.variant === "note" ? (documentState.settings.accentColor || base.text) : base.text);
 
         contentNode = (
           <div
             onClick={() => onSelectBlock(callout.id)}
-            className={`border-l-4 rounded-r-md p-3 sm:p-4 text-xs space-y-2 transition-all ${variantStyle}`}
+            style={{
+              backgroundColor: bg,
+              borderLeftColor: border,
+              borderLeftWidth: "4px",
+            }}
+            className="rounded-r-md p-3 sm:p-4 text-xs space-y-2 border border-black/5 shadow-xs transition-all"
           >
             {/* Variant Selector pills when selected */}
             {isSelected && (
@@ -483,7 +502,8 @@ export function InteractivePreviewCanvas({
               value={callout.title}
               onValueChange={(val) => onUpdateBlock(callout.id, { title: val })}
               placeholder="Callout title..."
-              className={`font-bold text-xs sm:text-sm text-zinc-950 ${
+              style={{ color: titleColor }}
+              className={`font-bold text-xs sm:text-sm ${
                 isSelected
                   ? "bg-white/90 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                   : "hover:bg-white/50 rounded px-1.5 py-0.5"
@@ -495,7 +515,8 @@ export function InteractivePreviewCanvas({
               value={callout.message}
               onValueChange={(val) => onUpdateBlock(callout.id, { message: val })}
               placeholder="Callout note details and instructions..."
-              className={`text-xs sm:text-sm leading-relaxed text-zinc-800 font-normal ${
+              style={{ color: base.body }}
+              className={`text-xs sm:text-sm leading-relaxed font-normal ${
                 isSelected
                   ? "bg-white/90 rounded p-1.5 ring-1 ring-zinc-400"
                   : "hover:bg-white/50 rounded p-1.5"
@@ -509,17 +530,32 @@ export function InteractivePreviewCanvas({
       // 5. KPI Metric Card
       case "card_metric": {
         const m = b as MetricCardBlock;
+        const fill = m.fillColor || "#f8fafc";
+        const stroke = m.strokeColor || "#e2e8f0";
+        const valueColor = documentState.settings.accentColor || "#0f172a";
+        const badgeColor =
+          m.changeType === "positive"
+            ? "#16a34a"
+            : m.changeType === "negative"
+            ? "#dc2626"
+            : "#64748b";
+
         contentNode = (
           <div
             onClick={() => onSelectBlock(m.id)}
-            className="p-3.5 bg-zinc-50/90 border border-zinc-200 rounded-md space-y-2 shadow-xs"
+            style={{
+              backgroundColor: fill,
+              borderColor: stroke,
+            }}
+            className="p-3.5 border rounded-md space-y-2 shadow-xs transition-all"
           >
             {/* KPI Label */}
             <AutoResizeTextarea
               value={m.label}
               onValueChange={(val) => onUpdateBlock(m.id, { label: val })}
               placeholder="KPI LABEL..."
-              className={`text-[11px] font-mono font-medium uppercase tracking-wider text-zinc-500 ${
+              style={{ color: "#64748b" }}
+              className={`text-[11px] font-mono font-medium uppercase tracking-wider ${
                 isSelected
                   ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                   : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
@@ -531,7 +567,8 @@ export function InteractivePreviewCanvas({
               value={m.value}
               onValueChange={(val) => onUpdateBlock(m.id, { value: val })}
               placeholder="$0.00"
-              className={`text-2xl sm:text-3xl font-mono font-bold tracking-tight text-zinc-950 ${
+              style={{ color: valueColor }}
+              className={`text-2xl sm:text-3xl font-mono font-bold tracking-tight ${
                 isSelected
                   ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                   : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
@@ -539,18 +576,13 @@ export function InteractivePreviewCanvas({
             />
 
             {/* Change Trend & Change Type */}
-            <div className="flex items-center gap-2 pt-1 border-t border-zinc-200/70">
+            <div className="flex items-center gap-2 pt-1 border-t border-black/5">
               <AutoResizeTextarea
                 value={m.change || ""}
                 onValueChange={(val) => onUpdateBlock(m.id, { change: val })}
                 placeholder="+0.0% vs last month"
+                style={{ color: badgeColor }}
                 className={`text-xs font-mono font-medium ${
-                  m.changeType === "positive"
-                    ? "text-emerald-700"
-                    : m.changeType === "negative"
-                    ? "text-rose-700"
-                    : "text-zinc-600"
-                } ${
                   isSelected
                     ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                     : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
@@ -612,10 +644,18 @@ export function InteractivePreviewCanvas({
       // 6. Author Profile Card
       case "card_profile": {
         const p = b as ProfileCardBlock;
+        const fill = p.fillColor || "#ffffff";
+        const stroke = p.strokeColor || "#e2e8f0";
+        const roleColor = p.roleColor || documentState.settings.accentColor || "#0f172a";
+
         contentNode = (
           <div
             onClick={() => onSelectBlock(p.id)}
-            className="p-4 bg-white border border-zinc-200 rounded-md space-y-2 shadow-xs transition-all"
+            style={{
+              backgroundColor: fill,
+              borderColor: stroke,
+            }}
+            className="p-4 border rounded-md space-y-2 shadow-xs transition-all"
           >
             <div className="flex items-start gap-3">
               {/* Profile Avatar */}
@@ -634,7 +674,8 @@ export function InteractivePreviewCanvas({
                   value={p.name}
                   onValueChange={(val) => onUpdateBlock(p.id, { name: val })}
                   placeholder="Author Full Name..."
-                  className={`font-bold text-base text-zinc-950 ${
+                  style={{ color: "#0f172a" }}
+                  className={`font-bold text-base ${
                     isSelected
                       ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                       : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
@@ -646,7 +687,8 @@ export function InteractivePreviewCanvas({
                   value={p.role}
                   onValueChange={(val) => onUpdateBlock(p.id, { role: val })}
                   placeholder="Job Title / Role..."
-                  className={`text-xs font-mono font-medium text-zinc-600 ${
+                  style={{ color: roleColor }}
+                  className={`text-xs font-mono font-medium ${
                     isSelected
                       ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                       : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
@@ -660,7 +702,8 @@ export function InteractivePreviewCanvas({
               value={p.bio}
               onValueChange={(val) => onUpdateBlock(p.id, { bio: val })}
               placeholder="Biography or professional summary description..."
-              className={`text-xs sm:text-sm text-zinc-600 leading-relaxed ${
+              style={{ color: "#334155" }}
+              className={`text-xs sm:text-sm leading-relaxed ${
                 isSelected
                   ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
                   : "hover:bg-zinc-100/50 rounded p-1.5"
@@ -672,7 +715,8 @@ export function InteractivePreviewCanvas({
               value={p.contact || ""}
               onValueChange={(val) => onUpdateBlock(p.id, { contact: val })}
               placeholder="alex@example.com • github.com/username • +1 (555) 019-2831"
-              className={`text-[11px] text-zinc-400 font-mono ${
+              style={{ color: "#64748b" }}
+              className={`text-[11px] font-mono ${
                 isSelected
                   ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
                   : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
@@ -826,17 +870,17 @@ export function InteractivePreviewCanvas({
             )}
 
             {/* Editable Spreadsheet View */}
-            <div className="overflow-x-auto border border-zinc-200 rounded-sm">
+            <div className="overflow-x-auto border border-[#cbd5e1] rounded-sm">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-zinc-100 border-b border-zinc-200">
+                  <tr className="bg-[#f1f5f9] border-b border-[#cbd5e1]">
                     {tbl.headers.map((h, i) => (
-                      <th key={i} className="p-1 border-r border-zinc-200 font-mono text-[11px] font-semibold text-zinc-900">
+                      <th key={i} className="p-1 border-r border-[#cbd5e1] font-mono text-[11px] font-semibold text-[#0f172a]">
                         <input
                           type="text"
                           value={h}
                           onChange={(e) => updateHeader(i, e.target.value)}
-                          className="w-full bg-transparent font-mono font-semibold text-zinc-900 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
+                          className="w-full bg-transparent font-mono font-semibold text-[#0f172a] px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
                         />
                       </th>
                     ))}
@@ -846,17 +890,17 @@ export function InteractivePreviewCanvas({
                   {tbl.rows.map((row, rIdx) => (
                     <tr
                       key={rIdx}
-                      className={`border-b border-zinc-200 ${
-                        tbl.isZebra && rIdx % 2 === 1 ? "bg-zinc-50/70" : "bg-white"
+                      className={`border-b border-[#cbd5e1] ${
+                        tbl.isZebra && rIdx % 2 === 1 ? "bg-[#f8fafc]" : "bg-white"
                       }`}
                     >
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-1 border-r border-zinc-200">
+                        <td key={cIdx} className="p-1 border-r border-[#cbd5e1]">
                           <input
                             type="text"
                             value={cell}
                             onChange={(e) => updateCell(rIdx, cIdx, e.target.value)}
-                            className="w-full bg-transparent text-zinc-700 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
+                            className="w-full bg-transparent text-[#334155] px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
                           />
                         </td>
                       ))}
@@ -911,11 +955,12 @@ export function InteractivePreviewCanvas({
       // 11. Divider Block
       case "divider": {
         const div = b as DividerBlock;
+        const color = div.color || documentState.settings.accentColor || "#e2e8f0";
         contentNode = (
           <div onClick={() => onSelectBlock(div.id)} className="py-2.5">
             <hr
               style={{
-                borderColor: div.color || "#e4e4e7",
+                borderColor: color,
                 borderTopWidth: `${div.thickness || 1}px`,
                 borderStyle: div.style || "solid",
               }}
@@ -1079,7 +1124,7 @@ export function InteractivePreviewCanvas({
               paddingRight: settings.margins.right,
               fontFamily: `${settings.font}, sans-serif`,
             }}
-            className="bg-white text-zinc-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] rounded-sm border border-zinc-200/90 flex flex-col justify-between relative cursor-default transition-all"
+            className="document-paper-sheet bg-white text-zinc-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] rounded-sm border border-zinc-200/90 flex flex-col justify-between relative cursor-default transition-all"
           >
             <div className="space-y-4">
               {blocks.map(renderEditableBlock)}
