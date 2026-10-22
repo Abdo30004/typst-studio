@@ -57,13 +57,25 @@ export class UploadService {
     // 3. Supported Image Formats
     const allowedImageExts = [".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"];
     if (allowedImageExts.includes(ext)) {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads");
-      await fs.mkdir(uploadsDir, { recursive: true });
+      const publicUploads = path.join(process.cwd(), "public", "uploads");
+      const rootUploads = path.join(process.cwd(), "uploads");
+      await fs.mkdir(publicUploads, { recursive: true });
+      await fs.mkdir(rootUploads, { recursive: true }).catch(() => {});
 
       const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
-      const filePath = path.join(uploadsDir, uniqueName);
+      const filePath = path.join(publicUploads, uniqueName);
 
       await fs.writeFile(filePath, buffer);
+
+      // Also mirror to root uploads folder if distinct
+      try {
+        const rootFilePath = path.join(rootUploads, uniqueName);
+        if (rootFilePath !== filePath) {
+          await fs.writeFile(rootFilePath, buffer);
+        }
+      } catch {
+        // Non-critical mirror
+      }
 
       return {
         type: "image",

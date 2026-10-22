@@ -34,6 +34,9 @@ import {
   Table as TableIcon,
   Code2,
   ImageIcon,
+  Upload,
+  AlertCircle,
+  Loader2,
 } from "lucide-react";
 
 interface Props {
@@ -48,6 +51,213 @@ interface Props {
   onContextMenu: (e: React.MouseEvent, blockId: string) => void;
   onInsertBlockBelow: (targetBlockId: string) => void;
   onOpenInspector: () => void;
+}
+
+interface InteractiveImageBlockProps {
+  img: ImageBlock;
+  isSelected: boolean;
+  onSelect: () => void;
+  onUpdate: (updated: Partial<ImageBlock>) => void;
+}
+
+function InteractiveImageBlock({
+  img,
+  isSelected,
+  onSelect,
+  onUpdate,
+}: InteractiveImageBlockProps) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+  const [hasError, setHasError] = React.useState(false);
+  const [isDragging, setIsDragging] = React.useState(false);
+
+  // Reset error when URL changes
+  React.useEffect(() => {
+    setHasError(false);
+  }, [img.url]);
+
+  const handleUploadFile = async (file: File) => {
+    setIsUploading(true);
+    setHasError(false);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      if (data.url) {
+        onUpdate({
+          url: data.url,
+          caption: img.caption || data.name,
+        });
+      }
+    } catch (err) {
+      console.error("Canvas image upload error:", err);
+      setHasError(true);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleUploadFile(file);
+    }
+  };
+
+  return (
+    <div
+      onClick={onSelect}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file && file.type.startsWith("image/")) {
+          handleUploadFile(file);
+        }
+      }}
+      className={`space-y-2 text-center transition-all ${
+        isDragging ? "ring-2 ring-blue-500 rounded-md bg-blue-50/20" : ""
+      }`}
+    >
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      {isUploading ? (
+        <div className="h-40 border border-dashed border-zinc-400 rounded-md flex flex-col items-center justify-center text-xs text-zinc-600 gap-2 bg-zinc-50/80 font-mono">
+          <Loader2 className="w-6 h-6 animate-spin text-zinc-800" />
+          <span>Uploading and processing image...</span>
+        </div>
+      ) : hasError ? (
+        <div className="p-4 rounded-md border border-amber-300 bg-amber-50/90 text-amber-950 text-xs flex flex-col items-center gap-2">
+          <div className="flex items-center gap-1.5 font-bold">
+            <AlertCircle className="w-4 h-4 text-amber-600" />
+            <span>Image could not be loaded</span>
+          </div>
+          <p className="text-[11px] text-amber-800 font-mono truncate max-w-sm">
+            URL: {img.url}
+          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                fileInputRef.current?.click();
+              }}
+              className="px-3 py-1 bg-zinc-950 text-white rounded text-xs font-mono hover:bg-black transition-colors"
+            >
+              Upload Replacement Image
+            </button>
+          </div>
+        </div>
+      ) : img.url ? (
+        <div className="relative group/canvas-img inline-block max-w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={img.url}
+            alt={img.alt || "preview"}
+            onError={() => setHasError(true)}
+            className="rounded-sm object-contain border border-zinc-200 shadow-xs max-h-72 mx-auto"
+            style={{ width: img.width || "80%" }}
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
+            className="absolute top-2 right-2 bg-zinc-950/90 text-white text-[11px] font-mono px-2 py-1 rounded shadow-md opacity-0 group-hover/canvas-img:opacity-100 transition-opacity hover:bg-black"
+          >
+            Replace Image
+          </button>
+        </div>
+      ) : (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect();
+            fileInputRef.current?.click();
+          }}
+          className="h-36 border-2 border-dashed border-zinc-300 hover:border-zinc-500 rounded-md flex flex-col items-center justify-center text-xs text-zinc-500 gap-1.5 bg-zinc-50/60 hover:bg-zinc-100/60 cursor-pointer transition-colors font-mono"
+        >
+          <ImageIcon className="w-6 h-6 text-zinc-400" />
+          <span className="font-semibold text-zinc-700">Click to upload image</span>
+          <span className="text-[10px] text-zinc-400">or drag and drop PNG, JPG, SVG</span>
+        </div>
+      )}
+
+      {/* Quick URL & size presets when selected */}
+      {isSelected && (
+        <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-zinc-100 rounded-md border border-zinc-200 text-xs">
+          <input
+            type="text"
+            value={img.url}
+            onChange={(e) => onUpdate({ url: e.target.value })}
+            placeholder="Paste Image URL (https://... or /uploads/...)"
+            className="bg-white border border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-800 w-56 outline-none focus:ring-1 focus:ring-zinc-950"
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
+            disabled={isUploading}
+            className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-950 text-white hover:bg-zinc-800 text-[10px] font-mono font-bold transition-colors"
+            title="Upload image from computer"
+          >
+            <Upload className="w-3 h-3" />
+            <span>Upload File</span>
+          </button>
+          <div className="flex items-center gap-1 font-mono">
+            {(["50%", "75%", "100%"] as const).map((w) => (
+              <button
+                key={w}
+                onClick={() => onUpdate({ width: w })}
+                className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                  img.width === w
+                    ? "bg-zinc-950 text-white"
+                    : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50"
+                }`}
+              >
+                {w}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Image Caption */}
+      <AutoResizeTextarea
+        value={img.caption || ""}
+        onValueChange={(val) => onUpdate({ caption: val })}
+        placeholder="+ Add image caption..."
+        className={`text-[11px] italic font-mono text-zinc-500 text-center ${
+          isSelected
+            ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+            : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
+        }`}
+      />
+    </div>
+  );
 }
 
 export function InteractivePreviewCanvas({
@@ -500,64 +710,12 @@ export function InteractivePreviewCanvas({
       case "image": {
         const img = b as ImageBlock;
         contentNode = (
-          <div onClick={() => onSelectBlock(img.id)} className="space-y-2 text-center">
-            {img.url ? (
-              <div className="relative inline-block max-w-full">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt={img.alt || "preview"}
-                  className="rounded-sm object-contain border border-zinc-200 shadow-xs max-h-72 mx-auto"
-                  style={{ width: img.width || "80%" }}
-                />
-              </div>
-            ) : (
-              <div className="h-32 border border-dashed border-zinc-300 rounded-sm flex flex-col items-center justify-center text-xs text-zinc-400 gap-1 bg-zinc-50/50 font-mono">
-                <ImageIcon className="w-5 h-5 text-zinc-400" />
-                <span>Empty Image Block</span>
-              </div>
-            )}
-
-            {/* Quick URL & size presets when selected */}
-            {isSelected && (
-              <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-zinc-100 rounded-md border border-zinc-200 text-xs">
-                <input
-                  type="text"
-                  value={img.url}
-                  onChange={(e) => onUpdateBlock(img.id, { url: e.target.value })}
-                  placeholder="Paste Image URL (https://... or /uploads/...)"
-                  className="bg-white border border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-800 w-56 outline-none focus:ring-1 focus:ring-zinc-950"
-                />
-                <div className="flex items-center gap-1 font-mono">
-                  {(["50%", "75%", "100%"] as const).map((w) => (
-                    <button
-                      key={w}
-                      onClick={() => onUpdateBlock(img.id, { width: w })}
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                        img.width === w
-                          ? "bg-zinc-950 text-white"
-                          : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50"
-                      }`}
-                    >
-                      {w}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Image Caption */}
-            <AutoResizeTextarea
-              value={img.caption || ""}
-              onValueChange={(val) => onUpdateBlock(img.id, { caption: val })}
-              placeholder="+ Add image caption..."
-              className={`text-[11px] italic font-mono text-zinc-500 text-center ${
-                isSelected
-                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
-                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
-              }`}
-            />
-          </div>
+          <InteractiveImageBlock
+            img={img}
+            isSelected={isSelected}
+            onSelect={() => onSelectBlock(img.id)}
+            onUpdate={(updated) => onUpdateBlock(img.id, updated)}
+          />
         );
         break;
       }
@@ -846,11 +1004,18 @@ export function InteractivePreviewCanvas({
   return (
     <div
       onClick={() => onSelectBlock(null)}
-      style={{ backgroundColor: currentUITheme.colors.deskBg }}
+      style={{ backgroundColor: "var(--theme-desk, " + currentUITheme.colors.deskBg + ")" }}
       className="flex-1 flex flex-col h-full overflow-hidden select-none transition-colors duration-200"
     >
       {/* Top Controls Bar */}
-      <div className="h-11 border-b border-zinc-850 px-4 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/80 backdrop-blur shrink-0">
+      <div
+        className="h-11 border-b px-4 flex items-center justify-between text-xs backdrop-blur shrink-0 transition-colors duration-150"
+        style={{
+          backgroundColor: "var(--theme-panel)",
+          borderColor: "var(--theme-border)",
+          color: "var(--theme-text-primary)",
+        }}
+      >
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 text-zinc-200 px-2.5 py-1 rounded-full text-xs font-mono font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

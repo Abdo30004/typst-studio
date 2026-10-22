@@ -25,6 +25,8 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Upload,
+  Loader2,
 } from "lucide-react";
 
 interface Props {
@@ -43,15 +45,57 @@ export function PropertyInspector({
   onDeselect,
 }: Props) {
   const { activePalette, activePaletteId, setActivePaletteId, allPalettes } = useTheme();
+  const inspectorImageFileRef = React.useRef<HTMLInputElement>(null);
+  const [isInspectorUploading, setIsInspectorUploading] = React.useState(false);
 
   const selectedBlock = selectedBlockId
     ? findBlockById(documentState.blocks, selectedBlockId)
     : null;
 
+  const handleInspectorImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedBlock) return;
+    setIsInspectorUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      if (data.url) {
+        onUpdateBlock(selectedBlock.id, {
+          url: data.url,
+          caption: (selectedBlock as ImageBlock).caption || data.name,
+        });
+      }
+    } catch (err) {
+      console.error("Inspector image upload error:", err);
+    } finally {
+      setIsInspectorUploading(false);
+    }
+  };
+
   return (
-    <aside className="w-80 border-l border-zinc-850 bg-zinc-950/95 backdrop-blur flex flex-col h-full overflow-hidden select-none text-xs z-20 shrink-0">
+    <aside
+      className="w-80 border-l flex flex-col h-full overflow-hidden select-none text-xs z-20 shrink-0 transition-colors duration-150"
+      style={{
+        backgroundColor: "var(--theme-panel)",
+        borderColor: "var(--theme-border)",
+        color: "var(--theme-text-primary)",
+      }}
+    >
       {/* Top Header */}
-      <div className="p-3.5 border-b border-zinc-850 flex items-center justify-between shrink-0 bg-zinc-900/40">
+      <div
+        className="p-3.5 border-b flex items-center justify-between shrink-0"
+        style={{
+          borderColor: "var(--theme-border)",
+          backgroundColor: "var(--theme-surface)",
+        }}
+      >
         <div className="flex items-center gap-2">
           {selectedBlock ? (
             <>
@@ -677,6 +721,32 @@ export function PropertyInspector({
               <div className="space-y-3.5">
                 <div>
                   <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">
+                    Image File
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => inspectorImageFileRef.current?.click()}
+                    disabled={isInspectorUploading}
+                    className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-200 transition-colors"
+                  >
+                    {isInspectorUploading ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-400" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5 text-zinc-400" />
+                    )}
+                    <span>{isInspectorUploading ? "Uploading..." : "Upload from Computer"}</span>
+                  </button>
+                  <input
+                    ref={inspectorImageFileRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleInspectorImageUpload}
+                    className="hidden"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">
                     Image URL
                   </label>
                   <input
@@ -689,6 +759,24 @@ export function PropertyInspector({
                     className="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-500 rounded-lg px-2.5 py-1.5 text-xs text-zinc-100 outline-none"
                   />
                 </div>
+
+                {/* Thumbnail Preview */}
+                {(selectedBlock as ImageBlock).url && (
+                  <div className="p-2 border border-zinc-800 rounded-lg bg-zinc-900/40 flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={(selectedBlock as ImageBlock).url}
+                      alt="thumbnail"
+                      className="w-12 h-12 object-contain rounded border border-zinc-800 bg-zinc-950 shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-mono text-zinc-300 truncate">
+                        {(selectedBlock as ImageBlock).url}
+                      </p>
+                      <span className="text-[9px] font-mono text-zinc-500">Live preview active</span>
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">

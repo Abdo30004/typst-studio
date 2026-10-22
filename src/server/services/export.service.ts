@@ -36,8 +36,8 @@ export class ExportService {
       throw new Error("Missing typstCode or documentState for PDF compilation");
     }
 
-    // Remap image URLs from /uploads/... to /public/uploads/... so Typst resolves them from projectRoot
-    typstCode = typstCode.replace(/#image\("\/uploads\//g, '#image("/public/uploads/');
+    // Remap image URLs from /uploads/... or uploads/... to /public/uploads/... so Typst resolves them from projectRoot
+    typstCode = typstCode.replace(/#image\("(?:\/public)?\/?uploads\//g, '#image("/public/uploads/');
 
     const projectRoot = process.cwd();
     const exportDir = path.join(
@@ -47,6 +47,48 @@ export class ExportService {
     );
 
     await fs.mkdir(exportDir, { recursive: true });
+
+    // Download any external http/https images so Typst can bundle them locally from disk
+    const remoteImageRegex = /#image\("(https?:\/\/[^"]+)"/g;
+    const remoteMatches = [...typstCode.matchAll(remoteImageRegex)];
+    for (const match of remoteMatches) {
+      const remoteUrl = match[1];
+      try {
+        const response = await fetch(remoteUrl, { signal: AbortSignal.timeout(8000) });
+        if (response.ok) {
+          const imgBuffer = Buffer.from(await response.arrayBuffer());
+          const urlObj = new URL(remoteUrl);
+          const rawExt = path.extname(urlObj.pathname).toLowerCase();
+          const ext = [".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"].includes(rawExt) ? rawExt : ".png";
+          const localName = `remote-${Date.now()}-${Math.random().toString(36).substring(2, 7)}${ext}`;
+          const localPath = path.join(exportDir, localName);
+          await fs.writeFile(localPath, imgBuffer);
+          typstCode = typstCode.replaceAll(match[0], `#image("${localPath.replace(/\\/g, "/")}"`);
+        }
+      } catch (e) {
+        console.warn(`Failed to prefetch remote image ${remoteUrl}:`, e);
+      }
+    }
+
+    // Ensure any referenced /public/uploads/ files exist in projectRoot/public/uploads
+    const localUploadRegex = /#image\("\/public\/uploads\/([^"]+)"/g;
+    const localMatches = [...typstCode.matchAll(localUploadRegex)];
+    for (const lm of localMatches) {
+      const filename = lm[1];
+      const targetPath = path.join(projectRoot, "public", "uploads", filename);
+      const altPath = path.join(projectRoot, "uploads", filename);
+      try {
+        await fs.access(targetPath);
+      } catch {
+        try {
+          await fs.access(altPath);
+          await fs.mkdir(path.dirname(targetPath), { recursive: true });
+          await fs.copyFile(altPath, targetPath);
+        } catch {
+          // File does not exist in alt either
+        }
+      }
+    }
 
     const typstFile = path.join(exportDir, "document.typ");
     const pdfFile = path.join(exportDir, "document.pdf");

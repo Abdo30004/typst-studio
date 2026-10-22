@@ -237,9 +237,19 @@ export function LivePreviewWasm({ documentState }: Props) {
   };
 
   return (
-    <div className="flex-1 bg-[#09090b] flex flex-col h-full overflow-hidden">
+    <div
+      className="flex-1 flex flex-col h-full overflow-hidden transition-colors duration-150"
+      style={{ backgroundColor: "var(--theme-desk)" }}
+    >
       {/* Top Controls Bar */}
-      <div className="h-10 border-b border-zinc-850 px-4 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/80 select-none">
+      <div
+        className="h-10 border-b px-4 flex items-center justify-between text-xs select-none transition-colors duration-150"
+        style={{
+          backgroundColor: "var(--theme-panel)",
+          borderColor: "var(--theme-border)",
+          color: "var(--theme-text-primary)",
+        }}
+      >
         <div className="flex items-center gap-2 font-mono">
           <FileCheck className="w-3.5 h-3.5 text-zinc-300" />
           <span className="font-semibold text-zinc-200">Live Typst Preview</span>
@@ -275,7 +285,10 @@ export function LivePreviewWasm({ documentState }: Props) {
       </div>
 
       {/* Scaled Preview Canvas Wrapper */}
-      <div className="flex-1 overflow-auto p-8 flex justify-center items-start bg-[#09090b]">
+      <div
+        className="flex-1 overflow-auto p-8 flex justify-center items-start transition-colors duration-150"
+        style={{ backgroundColor: "var(--theme-desk)" }}
+      >
         <div
           style={{
             transform: `scale(${zoom / 100})`,
