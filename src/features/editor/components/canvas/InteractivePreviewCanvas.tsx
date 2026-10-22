@@ -110,11 +110,11 @@ export function InteractivePreviewCanvas({
         const alignClass =
           h.align === "center" ? "text-center" : h.align === "right" ? "text-right" : "text-left";
         const levelStyle = {
-          1: "text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 border-b border-slate-200 pb-2",
-          2: "text-xl sm:text-2xl font-bold tracking-tight text-slate-850 border-b border-slate-100 pb-1.5",
-          3: "text-lg sm:text-xl font-bold text-slate-800",
-          4: "text-base font-semibold text-slate-700",
-        }[h.level || 1] || "text-2xl font-bold text-slate-900";
+          1: "text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 border-b border-zinc-200 pb-2",
+          2: "text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 border-b border-zinc-100 pb-1.5",
+          3: "text-lg sm:text-xl font-bold text-zinc-900",
+          4: "text-base font-semibold text-zinc-800",
+        }[h.level || 1] || "text-2xl font-bold text-zinc-950";
 
         contentNode = (
           <div className={`${alignClass} space-y-1.5`} onClick={() => onSelectBlock(h.id)}>
@@ -124,8 +124,8 @@ export function InteractivePreviewCanvas({
               placeholder="Click to type heading..."
               className={`${levelStyle} leading-tight ${
                 isSelected
-                  ? "bg-blue-50/50 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-100/60 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
               }`}
             />
 
@@ -134,10 +134,10 @@ export function InteractivePreviewCanvas({
                 value={h.subtitle || ""}
                 onValueChange={(val) => onUpdateBlock(h.id, { subtitle: val })}
                 placeholder="+ Add subtitle..."
-                className={`text-xs sm:text-sm text-slate-500 font-normal leading-relaxed ${
+                className={`text-xs sm:text-sm text-zinc-500 font-normal leading-relaxed ${
                   isSelected
-                    ? "bg-blue-50/40 rounded px-1.5 py-0.5 ring-1 ring-blue-300"
-                    : "hover:bg-slate-100/60 rounded px-1.5 py-0.5"
+                    ? "bg-zinc-100/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                    : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
                 }`}
               />
             )}
@@ -155,10 +155,10 @@ export function InteractivePreviewCanvas({
               value={t.content}
               onValueChange={(val) => onUpdateBlock(t.id, { content: val })}
               placeholder="Start writing text or descriptions..."
-              className={`text-xs sm:text-sm leading-relaxed text-slate-700 font-normal ${
+              className={`text-xs sm:text-sm leading-relaxed text-zinc-700 font-normal ${
                 isSelected
-                  ? "bg-blue-50/50 rounded p-1.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-100/60 rounded p-1.5"
+                  ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-100/50 rounded p-1.5"
               }`}
             />
           </div>
@@ -174,7 +174,7 @@ export function InteractivePreviewCanvas({
             onClick={() => onSelectBlock(c.id)}
             style={{
               backgroundColor: c.fillColor || "#ffffff",
-              borderColor: c.strokeColor || "#e2e8f0",
+              borderColor: c.strokeColor || "#e4e4e7",
               borderWidth: `${c.strokeWidth ?? 1}px`,
               borderRadius: `${c.radius ?? 8}px`,
               padding: `${c.padding ?? 14}px`,
@@ -189,10 +189,10 @@ export function InteractivePreviewCanvas({
                   value={c.badge || ""}
                   onChange={(e) => onUpdateBlock(c.id, { badge: e.target.value })}
                   placeholder="+ Add Badge"
-                  className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                  className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${
                     isSelected
-                      ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-300 outline-none"
-                      : "bg-slate-100 border-slate-300 text-slate-600 hover:border-slate-400"
+                      ? "bg-zinc-950 border-zinc-950 text-zinc-100 ring-1 ring-zinc-800 outline-none"
+                      : "bg-zinc-100 border-zinc-200 text-zinc-600 hover:border-zinc-300"
                   }`}
                 />
               </div>
@@ -203,10 +203,10 @@ export function InteractivePreviewCanvas({
               value={c.title || ""}
               onValueChange={(val) => onUpdateBlock(c.id, { title: val })}
               placeholder="+ Card Title..."
-              className={`font-bold text-sm sm:text-base text-slate-900 leading-snug ${
+              className={`font-bold text-sm sm:text-base text-zinc-950 leading-snug ${
                 isSelected
-                  ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-100/40 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-100/40 rounded px-1.5 py-0.5"
               }`}
             />
 
@@ -215,10 +215,10 @@ export function InteractivePreviewCanvas({
               value={c.content || ""}
               onValueChange={(val) => onUpdateBlock(c.id, { content: val })}
               placeholder="Card description text..."
-              className={`text-xs sm:text-sm text-slate-700 leading-relaxed font-normal ${
+              className={`text-xs sm:text-sm text-zinc-700 leading-relaxed font-normal ${
                 isSelected
-                  ? "bg-blue-50/50 rounded p-1.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-100/40 rounded p-1.5"
+                  ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-100/40 rounded p-1.5"
               }`}
             />
           </div>
@@ -230,21 +230,21 @@ export function InteractivePreviewCanvas({
       case "card_callout": {
         const callout = b as CalloutCardBlock;
         const variantStyle = {
-          note: "border-l-blue-500 bg-blue-50/80 text-blue-950",
-          tip: "border-l-emerald-500 bg-emerald-50/80 text-emerald-950",
-          warning: "border-l-amber-500 bg-amber-50/80 text-amber-950",
-          caution: "border-l-rose-500 bg-rose-50/80 text-rose-950",
+          note: "border-l-zinc-950 bg-zinc-100/90 text-zinc-950 border border-zinc-200/60",
+          tip: "border-l-zinc-700 bg-zinc-50/90 text-zinc-950 border border-zinc-200/80",
+          warning: "border-l-amber-600 bg-amber-50/60 text-amber-950 border border-amber-200/60",
+          caution: "border-l-rose-600 bg-rose-50/60 text-rose-950 border border-rose-200/60",
         }[callout.variant || "note"];
 
         contentNode = (
           <div
             onClick={() => onSelectBlock(callout.id)}
-            className={`border-l-4 rounded-r-lg p-3 sm:p-4 text-xs space-y-2 transition-all ${variantStyle}`}
+            className={`border-l-4 rounded-r-md p-3 sm:p-4 text-xs space-y-2 transition-all ${variantStyle}`}
           >
             {/* Variant Selector pills when selected */}
             {isSelected && (
               <div className="flex items-center gap-1.5 pb-1 border-b border-black/10">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mr-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mr-1">
                   Type:
                 </span>
                 {(["note", "tip", "warning", "caution"] as const).map((v) => (
@@ -254,10 +254,10 @@ export function InteractivePreviewCanvas({
                       e.stopPropagation();
                       onUpdateBlock(callout.id, { variant: v });
                     }}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold capitalize transition-all ${
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider transition-all ${
                       callout.variant === v
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white/70 hover:bg-white text-slate-700 border border-slate-300"
+                        ? "bg-zinc-950 text-white shadow-xs font-semibold"
+                        : "bg-white/80 hover:bg-white text-zinc-700 border border-zinc-300"
                     }`}
                   >
                     {v}
@@ -271,9 +271,9 @@ export function InteractivePreviewCanvas({
               value={callout.title}
               onValueChange={(val) => onUpdateBlock(callout.id, { title: val })}
               placeholder="Callout title..."
-              className={`font-bold text-xs sm:text-sm text-slate-900 ${
+              className={`font-bold text-xs sm:text-sm text-zinc-950 ${
                 isSelected
-                  ? "bg-white/80 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
+                  ? "bg-white/90 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
                   : "hover:bg-white/50 rounded px-1.5 py-0.5"
               }`}
             />
@@ -283,9 +283,9 @@ export function InteractivePreviewCanvas({
               value={callout.message}
               onValueChange={(val) => onUpdateBlock(callout.id, { message: val })}
               placeholder="Callout note details and instructions..."
-              className={`text-xs sm:text-sm leading-relaxed text-slate-800 font-normal ${
+              className={`text-xs sm:text-sm leading-relaxed text-zinc-800 font-normal ${
                 isSelected
-                  ? "bg-white/80 rounded p-1.5 ring-1 ring-blue-400"
+                  ? "bg-white/90 rounded p-1.5 ring-1 ring-zinc-400"
                   : "hover:bg-white/50 rounded p-1.5"
               }`}
             />
@@ -300,17 +300,17 @@ export function InteractivePreviewCanvas({
         contentNode = (
           <div
             onClick={() => onSelectBlock(m.id)}
-            className="p-3.5 bg-slate-50/90 border border-slate-200/90 rounded-lg space-y-2 shadow-xs"
+            className="p-3.5 bg-zinc-50/90 border border-zinc-200 rounded-md space-y-2 shadow-xs"
           >
             {/* KPI Label */}
             <AutoResizeTextarea
               value={m.label}
               onValueChange={(val) => onUpdateBlock(m.id, { label: val })}
               placeholder="KPI LABEL..."
-              className={`text-[11px] font-bold uppercase tracking-wider text-slate-500 ${
+              className={`text-[11px] font-mono font-medium uppercase tracking-wider text-zinc-500 ${
                 isSelected
-                  ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-200/40 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
               }`}
             />
 
@@ -319,29 +319,29 @@ export function InteractivePreviewCanvas({
               value={m.value}
               onValueChange={(val) => onUpdateBlock(m.id, { value: val })}
               placeholder="$0.00"
-              className={`text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 ${
+              className={`text-2xl sm:text-3xl font-mono font-bold tracking-tight text-zinc-950 ${
                 isSelected
-                  ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-200/40 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
               }`}
             />
 
             {/* Change Trend & Change Type */}
-            <div className="flex items-center gap-2 pt-1 border-t border-slate-200/70">
+            <div className="flex items-center gap-2 pt-1 border-t border-zinc-200/70">
               <AutoResizeTextarea
                 value={m.change || ""}
                 onValueChange={(val) => onUpdateBlock(m.id, { change: val })}
                 placeholder="+0.0% vs last month"
-                className={`text-xs font-semibold ${
+                className={`text-xs font-mono font-medium ${
                   m.changeType === "positive"
-                    ? "text-emerald-600"
+                    ? "text-emerald-700"
                     : m.changeType === "negative"
-                    ? "text-rose-600"
-                    : "text-slate-600"
+                    ? "text-rose-700"
+                    : "text-zinc-600"
                 } ${
                   isSelected
-                    ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                    : "hover:bg-slate-200/40 rounded px-1.5 py-0.5"
+                    ? "bg-zinc-200/70 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                    : "hover:bg-zinc-200/40 rounded px-1.5 py-0.5"
                 }`}
               />
 
@@ -353,10 +353,10 @@ export function InteractivePreviewCanvas({
                       onUpdateBlock(m.id, { changeType: "positive" });
                     }}
                     title="Positive Trend"
-                    className={`p-1 rounded text-xs ${
+                    className={`p-1 rounded text-xs transition-colors ${
                       m.changeType === "positive"
-                        ? "bg-emerald-600 text-white"
-                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                        ? "bg-zinc-950 text-white"
+                        : "bg-zinc-200 text-zinc-600 hover:bg-zinc-300"
                     }`}
                   >
                     <TrendingUp className="w-3 h-3" />
@@ -367,10 +367,10 @@ export function InteractivePreviewCanvas({
                       onUpdateBlock(m.id, { changeType: "negative" });
                     }}
                     title="Negative Trend"
-                    className={`p-1 rounded text-xs ${
+                    className={`p-1 rounded text-xs transition-colors ${
                       m.changeType === "negative"
-                        ? "bg-rose-600 text-white"
-                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                        ? "bg-zinc-950 text-white"
+                        : "bg-zinc-200 text-zinc-600 hover:bg-zinc-300"
                     }`}
                   >
                     <TrendingDown className="w-3 h-3" />
@@ -381,10 +381,10 @@ export function InteractivePreviewCanvas({
                       onUpdateBlock(m.id, { changeType: "neutral" });
                     }}
                     title="Neutral"
-                    className={`p-1 rounded text-xs ${
+                    className={`p-1 rounded text-xs transition-colors ${
                       m.changeType === "neutral"
-                        ? "bg-slate-700 text-white"
-                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                        ? "bg-zinc-950 text-white"
+                        : "bg-zinc-200 text-zinc-600 hover:bg-zinc-300"
                     }`}
                   >
                     <Minus className="w-3 h-3" />
@@ -403,11 +403,11 @@ export function InteractivePreviewCanvas({
         contentNode = (
           <div
             onClick={() => onSelectBlock(p.id)}
-            className="p-4 bg-white border border-slate-200 rounded-lg space-y-2 shadow-xs transition-all"
+            className="p-4 bg-white border border-zinc-200 rounded-md space-y-2 shadow-xs transition-all"
           >
             <div className="flex items-start gap-3">
               {/* Profile Avatar */}
-              <div className="w-11 h-11 rounded-full bg-blue-100 border border-blue-300 flex items-center justify-center font-bold text-blue-700 shrink-0 text-sm overflow-hidden">
+              <div className="w-11 h-11 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center font-mono font-bold text-zinc-100 shrink-0 text-sm overflow-hidden">
                 {p.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={p.avatarUrl} alt={p.name} className="w-full h-full object-cover" />
@@ -422,10 +422,10 @@ export function InteractivePreviewCanvas({
                   value={p.name}
                   onValueChange={(val) => onUpdateBlock(p.id, { name: val })}
                   placeholder="Author Full Name..."
-                  className={`font-bold text-base text-slate-900 ${
+                  className={`font-bold text-base text-zinc-950 ${
                     isSelected
-                      ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                      : "hover:bg-slate-100/60 rounded px-1.5 py-0.5"
+                      ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                      : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
                   }`}
                 />
 
@@ -434,10 +434,10 @@ export function InteractivePreviewCanvas({
                   value={p.role}
                   onValueChange={(val) => onUpdateBlock(p.id, { role: val })}
                   placeholder="Job Title / Role..."
-                  className={`text-xs font-semibold text-blue-600 ${
+                  className={`text-xs font-mono font-medium text-zinc-600 ${
                     isSelected
-                      ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-400"
-                      : "hover:bg-slate-100/60 rounded px-1.5 py-0.5"
+                      ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-400"
+                      : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
                   }`}
                 />
               </div>
@@ -448,10 +448,10 @@ export function InteractivePreviewCanvas({
               value={p.bio}
               onValueChange={(val) => onUpdateBlock(p.id, { bio: val })}
               placeholder="Biography or professional summary description..."
-              className={`text-xs sm:text-sm text-slate-600 leading-relaxed ${
+              className={`text-xs sm:text-sm text-zinc-600 leading-relaxed ${
                 isSelected
-                  ? "bg-blue-50/50 rounded p-1.5 ring-1 ring-blue-400"
-                  : "hover:bg-slate-100/60 rounded p-1.5"
+                  ? "bg-zinc-100/80 rounded p-1.5 ring-1 ring-zinc-400"
+                  : "hover:bg-zinc-100/50 rounded p-1.5"
               }`}
             />
 
@@ -460,10 +460,10 @@ export function InteractivePreviewCanvas({
               value={p.contact || ""}
               onValueChange={(val) => onUpdateBlock(p.id, { contact: val })}
               placeholder="alex@example.com • github.com/username • +1 (555) 019-2831"
-              className={`text-[11px] text-slate-400 font-mono ${
+              className={`text-[11px] text-zinc-400 font-mono ${
                 isSelected
-                  ? "bg-blue-50/50 rounded px-1.5 py-0.5 ring-1 ring-blue-300"
-                  : "hover:bg-slate-100/60 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
               }`}
             />
           </div>
@@ -480,10 +480,10 @@ export function InteractivePreviewCanvas({
             {cols.columns.map((col, idx) => (
               <div
                 key={idx}
-                className="space-y-3 min-h-[50px] p-2 rounded border border-dashed border-slate-200/80 bg-slate-50/30"
+                className="space-y-3 min-h-[50px] p-2 rounded-sm border border-dashed border-zinc-200/90 bg-zinc-50/40"
               >
                 {col.blocks.length === 0 ? (
-                  <div className="text-[11px] text-slate-400 text-center py-4">Empty column</div>
+                  <div className="text-[11px] text-zinc-400 font-mono text-center py-4">Empty column</div>
                 ) : (
                   col.blocks.map((innerB) => renderEditableBlock(innerB))
                 )}
@@ -505,36 +505,36 @@ export function InteractivePreviewCanvas({
                 <img
                   src={img.url}
                   alt={img.alt || "preview"}
-                  className="rounded object-contain border border-slate-200 shadow-xs max-h-72 mx-auto"
+                  className="rounded-sm object-contain border border-zinc-200 shadow-xs max-h-72 mx-auto"
                   style={{ width: img.width || "80%" }}
                 />
               </div>
             ) : (
-              <div className="h-32 border border-dashed border-slate-300 rounded flex flex-col items-center justify-center text-xs text-slate-400 gap-1 bg-slate-50/50">
-                <ImageIcon className="w-5 h-5 text-slate-400" />
+              <div className="h-32 border border-dashed border-zinc-300 rounded-sm flex flex-col items-center justify-center text-xs text-zinc-400 gap-1 bg-zinc-50/50 font-mono">
+                <ImageIcon className="w-5 h-5 text-zinc-400" />
                 <span>Empty Image Block</span>
               </div>
             )}
 
             {/* Quick URL & size presets when selected */}
             {isSelected && (
-              <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-slate-100/80 rounded border border-slate-200 text-xs">
+              <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-zinc-100 rounded-md border border-zinc-200 text-xs">
                 <input
                   type="text"
                   value={img.url}
                   onChange={(e) => onUpdateBlock(img.id, { url: e.target.value })}
                   placeholder="Paste Image URL (https://... or /uploads/...)"
-                  className="bg-white border border-slate-300 rounded px-2 py-0.5 text-xs text-slate-800 w-56 outline-none focus:ring-1 focus:ring-blue-400"
+                  className="bg-white border border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-800 w-56 outline-none focus:ring-1 focus:ring-zinc-950"
                 />
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 font-mono">
                   {(["50%", "75%", "100%"] as const).map((w) => (
                     <button
                       key={w}
                       onClick={() => onUpdateBlock(img.id, { width: w })}
                       className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                         img.width === w
-                          ? "bg-blue-600 text-white"
-                          : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50"
+                          ? "bg-zinc-950 text-white"
+                          : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50"
                       }`}
                     >
                       {w}
@@ -549,10 +549,10 @@ export function InteractivePreviewCanvas({
               value={img.caption || ""}
               onValueChange={(val) => onUpdateBlock(img.id, { caption: val })}
               placeholder="+ Add image caption..."
-              className={`text-[11px] italic text-slate-500 text-center ${
+              className={`text-[11px] italic font-mono text-zinc-500 text-center ${
                 isSelected
-                  ? "bg-blue-50/50 rounded px-1.5 py-0.5 ring-1 ring-blue-300"
-                  : "hover:bg-slate-100/50 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
               }`}
             />
           </div>
@@ -607,27 +607,27 @@ export function InteractivePreviewCanvas({
               value={tbl.caption || ""}
               onValueChange={(val) => onUpdateBlock(tbl.id, { caption: val })}
               placeholder="Table: Description / Title..."
-              className={`text-center text-xs font-semibold text-slate-700 ${
+              className={`text-center text-xs font-semibold text-zinc-800 ${
                 isSelected
-                  ? "bg-blue-50/60 rounded px-1.5 py-0.5 ring-1 ring-blue-300"
-                  : "hover:bg-slate-100/50 rounded px-1.5 py-0.5"
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
               }`}
             />
 
             {/* Quick Table Manipulation Controls when selected */}
             {isSelected && (
-              <div className="flex items-center justify-between bg-slate-100/90 border border-slate-300 rounded px-2.5 py-1 text-[11px] text-slate-700">
-                <span className="font-bold flex items-center gap-1 text-slate-800">
-                  <TableIcon className="w-3.5 h-3.5 text-blue-600" />
+              <div className="flex items-center justify-between bg-zinc-100 border border-zinc-300 rounded px-2.5 py-1 text-[11px] text-zinc-700">
+                <span className="font-mono font-medium flex items-center gap-1.5 text-zinc-900">
+                  <TableIcon className="w-3.5 h-3.5 text-zinc-700" />
                   Table Grid ({tbl.rows.length} rows × {tbl.headers.length} cols)
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 font-mono">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       addRow();
                     }}
-                    className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold transition-colors"
+                    className="px-2 py-0.5 bg-zinc-950 hover:bg-black text-white rounded font-medium transition-colors"
                   >
                     + Row
                   </button>
@@ -637,17 +637,17 @@ export function InteractivePreviewCanvas({
                       removeRow();
                     }}
                     disabled={tbl.rows.length <= 1}
-                    className="px-2 py-0.5 bg-slate-200 hover:bg-slate-300 disabled:opacity-40 text-slate-800 rounded font-bold transition-colors"
+                    className="px-2 py-0.5 bg-zinc-200 hover:bg-zinc-300 disabled:opacity-40 text-zinc-800 rounded font-medium transition-colors"
                   >
                     - Row
                   </button>
-                  <span className="text-slate-400">|</span>
+                  <span className="text-zinc-400">|</span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       addColumn();
                     }}
-                    className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold transition-colors"
+                    className="px-2 py-0.5 bg-zinc-950 hover:bg-black text-white rounded font-medium transition-colors"
                   >
                     + Col
                   </button>
@@ -657,7 +657,7 @@ export function InteractivePreviewCanvas({
                       removeColumn();
                     }}
                     disabled={tbl.headers.length <= 1}
-                    className="px-2 py-0.5 bg-slate-200 hover:bg-slate-300 disabled:opacity-40 text-slate-800 rounded font-bold transition-colors"
+                    className="px-2 py-0.5 bg-zinc-200 hover:bg-zinc-300 disabled:opacity-40 text-zinc-800 rounded font-medium transition-colors"
                   >
                     - Col
                   </button>
@@ -666,17 +666,17 @@ export function InteractivePreviewCanvas({
             )}
 
             {/* Editable Spreadsheet View */}
-            <div className="overflow-x-auto border border-slate-200 rounded">
+            <div className="overflow-x-auto border border-zinc-200 rounded-sm">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-100 border-b border-slate-200">
+                  <tr className="bg-zinc-100 border-b border-zinc-200">
                     {tbl.headers.map((h, i) => (
-                      <th key={i} className="p-1 border-r border-slate-200 font-bold text-slate-800">
+                      <th key={i} className="p-1 border-r border-zinc-200 font-mono text-[11px] font-semibold text-zinc-900">
                         <input
                           type="text"
                           value={h}
                           onChange={(e) => updateHeader(i, e.target.value)}
-                          className="w-full bg-transparent font-bold text-slate-800 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-blue-400 rounded"
+                          className="w-full bg-transparent font-mono font-semibold text-zinc-900 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
                         />
                       </th>
                     ))}
@@ -686,17 +686,17 @@ export function InteractivePreviewCanvas({
                   {tbl.rows.map((row, rIdx) => (
                     <tr
                       key={rIdx}
-                      className={`border-b border-slate-200 ${
-                        tbl.isZebra && rIdx % 2 === 1 ? "bg-slate-50/60" : "bg-white"
+                      className={`border-b border-zinc-200 ${
+                        tbl.isZebra && rIdx % 2 === 1 ? "bg-zinc-50/70" : "bg-white"
                       }`}
                     >
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-1 border-r border-slate-200">
+                        <td key={cIdx} className="p-1 border-r border-zinc-200">
                           <input
                             type="text"
                             value={cell}
                             onChange={(e) => updateCell(rIdx, cIdx, e.target.value)}
-                            className="w-full bg-transparent text-slate-700 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-blue-400 rounded"
+                            className="w-full bg-transparent text-zinc-700 px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
                           />
                         </td>
                       ))}
@@ -716,23 +716,23 @@ export function InteractivePreviewCanvas({
         contentNode = (
           <div
             onClick={() => onSelectBlock(code.id)}
-            className="rounded-lg border border-slate-800 bg-slate-950 text-slate-100 p-3 font-mono text-xs overflow-hidden shadow-md space-y-2"
+            className="rounded border border-zinc-850 bg-[#09090b] text-zinc-100 p-3 font-mono text-xs overflow-hidden shadow-xs space-y-2"
           >
             {/* Monospace header bar */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-1.5 text-[11px] text-slate-400">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-1.5 text-[11px] text-zinc-400">
               <input
                 type="text"
                 value={code.filename || ""}
                 onChange={(e) => onUpdateBlock(code.id, { filename: e.target.value })}
                 placeholder="filename.typ"
-                className="bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-blue-400 font-semibold outline-none focus:border-blue-500 w-40"
+                className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-0.5 text-zinc-200 font-mono text-xs outline-none focus:border-zinc-500 w-40"
               />
               <input
                 type="text"
                 value={code.language || "typst"}
                 onChange={(e) => onUpdateBlock(code.id, { language: e.target.value })}
                 placeholder="typst"
-                className="bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-slate-300 text-right uppercase text-[10px] outline-none focus:border-blue-500 w-20"
+                className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-0.5 text-zinc-400 font-mono text-[10px] uppercase outline-none focus:border-zinc-500 w-20 text-right"
               />
             </div>
 
@@ -741,7 +741,7 @@ export function InteractivePreviewCanvas({
               value={code.code}
               onValueChange={(val) => onUpdateBlock(code.id, { code: val })}
               placeholder="// Write code here..."
-              className="text-emerald-400 font-mono text-xs leading-relaxed bg-slate-900/60 rounded p-2 border border-slate-800/80 outline-none focus:border-blue-500"
+              className="text-zinc-200 font-mono text-xs leading-relaxed bg-zinc-900/60 rounded p-2 border border-zinc-800/80 outline-none focus:border-zinc-500"
             />
           </div>
         );
@@ -755,21 +755,21 @@ export function InteractivePreviewCanvas({
           <div onClick={() => onSelectBlock(div.id)} className="py-2.5">
             <hr
               style={{
-                borderColor: div.color || "#cbd5e1",
+                borderColor: div.color || "#e4e4e7",
                 borderTopWidth: `${div.thickness || 1}px`,
                 borderStyle: div.style || "solid",
               }}
             />
             {isSelected && (
-              <div className="flex items-center justify-center gap-1.5 pt-1.5 text-[10px]">
+              <div className="flex items-center justify-center gap-1.5 pt-1.5 text-[10px] font-mono">
                 {(["solid", "dashed", "dotted"] as const).map((s) => (
                   <button
                     key={s}
                     onClick={() => onUpdateBlock(div.id, { style: s })}
                     className={`px-2 py-0.5 rounded capitalize ${
                       (div.style || "solid") === s
-                        ? "bg-blue-600 text-white font-bold"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        ? "bg-zinc-950 text-white font-bold"
+                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
                     }`}
                   >
                     {s}
@@ -795,10 +795,10 @@ export function InteractivePreviewCanvas({
           e.stopPropagation();
           onContextMenu(e, b.id);
         }}
-        className={`group/paper-block relative rounded-md transition-all cursor-pointer ${
+        className={`group/paper-block relative rounded-sm transition-all cursor-pointer ${
           isSelected
-            ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-white shadow-md z-20"
-            : "hover:outline hover:outline-1 hover:outline-blue-400/60 hover:outline-dashed"
+            ? "ring-1 ring-zinc-950 ring-offset-1 ring-offset-white shadow-xs z-20"
+            : "hover:outline hover:outline-1 hover:outline-zinc-300 hover:outline-dashed"
         } p-1`}
       >
         {/* Floating toolbar when selected */}
@@ -816,7 +816,7 @@ export function InteractivePreviewCanvas({
 
         {/* Canva element tag on hover */}
         <div className="absolute -top-3 left-1 opacity-0 group-hover/paper-block:opacity-100 transition-opacity z-10 pointer-events-none">
-          <span className="text-[9px] font-bold bg-blue-600 text-white px-1.5 py-0.5 rounded shadow font-sans">
+          <span className="text-[9px] font-mono uppercase tracking-wider bg-zinc-950 text-zinc-200 border border-zinc-800 px-1.5 py-0.5 rounded shadow-xs">
             {blockTypeLabel}
           </span>
         </div>
@@ -825,13 +825,13 @@ export function InteractivePreviewCanvas({
 
         {/* Quick insertion divider on hover below block */}
         <div className="relative group/divider-hover py-1 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-          <div className="w-full border-t border-dashed border-blue-400/50" />
+          <div className="w-full border-t border-dashed border-zinc-300" />
           <button
             onClick={(e) => {
               e.stopPropagation();
               onInsertBlockBelow(b.id);
             }}
-            className="absolute bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1 shadow-md hover:scale-110 transition-transform"
+            className="absolute bg-zinc-950 hover:bg-black text-white border border-zinc-700 rounded-full p-1 shadow-sm hover:scale-105 transition-transform"
             title="Add Block Here"
           >
             <Plus className="w-3 h-3" />
@@ -844,16 +844,17 @@ export function InteractivePreviewCanvas({
   return (
     <div
       onClick={() => onSelectBlock(null)}
-      className="flex-1 bg-slate-950 flex flex-col h-full overflow-hidden select-none"
+      className="flex-1 bg-[#09090b] flex flex-col h-full overflow-hidden select-none"
     >
       {/* Top Controls Bar */}
-      <div className="h-11 border-b border-slate-800/80 px-4 flex items-center justify-between text-xs text-slate-400 bg-slate-900/70 backdrop-blur shrink-0">
+      <div className="h-11 border-b border-zinc-850 px-4 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/80 backdrop-blur shrink-0">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/50 text-emerald-400 px-2.5 py-1 rounded-full text-xs font-semibold">
-            <FileCheck className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 text-zinc-200 px-2.5 py-1 rounded-full text-xs font-mono font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <FileCheck className="w-3.5 h-3.5 text-zinc-400" />
             <span>Interactive Sheet Canvas</span>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono hidden sm:inline">
+          <span className="text-[11px] text-zinc-500 font-mono hidden sm:inline">
             Directly edit titles, metrics, descriptions, profiles & tables on sheet
           </span>
         </div>
@@ -862,24 +863,24 @@ export function InteractivePreviewCanvas({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setZoom((z) => Math.max(50, z - 10))}
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
             title="Zoom Out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <span className="font-mono text-xs w-11 text-center font-medium text-slate-300">
+          <span className="font-mono text-xs w-11 text-center font-medium text-zinc-300">
             {zoom}%
           </span>
           <button
             onClick={() => setZoom((z) => Math.min(150, z + 10))}
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
             title="Zoom In"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setZoom(100)}
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
             title="Reset Zoom to 100%"
           >
             <Maximize2 className="w-3.5 h-3.5" />
@@ -888,7 +889,7 @@ export function InteractivePreviewCanvas({
       </div>
 
       {/* Canva Workspace Scroll Area */}
-      <div className="flex-1 overflow-auto p-6 sm:p-10 flex justify-center items-start bg-slate-950/90 relative">
+      <div className="flex-1 overflow-auto p-6 sm:p-10 flex justify-center items-start bg-[#09090b] relative">
         <div
           style={{
             transform: `scale(${zoom / 100})`,
@@ -907,14 +908,14 @@ export function InteractivePreviewCanvas({
               paddingRight: settings.margins.right,
               fontFamily: `${settings.font}, sans-serif`,
             }}
-            className="bg-white text-slate-900 shadow-2xl rounded-sm border border-slate-300/80 flex flex-col justify-between relative cursor-default transition-all"
+            className="bg-white text-zinc-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] rounded-sm border border-zinc-200/90 flex flex-col justify-between relative cursor-default transition-all"
           >
             <div className="space-y-4">
               {blocks.map(renderEditableBlock)}
             </div>
 
             {settings.showPageNumbers && (
-              <div className="text-center text-[10px] text-slate-400 pt-8 font-mono border-t border-slate-100 mt-6">
+              <div className="text-center text-[10px] text-zinc-400 pt-8 font-mono border-t border-zinc-100 mt-6">
                 Page 1 of 1
               </div>
             )}

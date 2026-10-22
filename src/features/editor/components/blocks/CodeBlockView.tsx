@@ -11,23 +11,23 @@ interface Props {
 
 export function CodeBlockView({ block, onChange }: Props) {
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-950 overflow-hidden space-y-1">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-xs">
+    <div className="rounded-lg border border-zinc-850 bg-[#09090b] overflow-hidden space-y-1">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900 border-b border-zinc-800 text-xs">
         <div className="flex items-center gap-2">
-          <Code2 className="w-3.5 h-3.5 text-blue-400" />
+          <Code2 className="w-3.5 h-3.5 text-zinc-400" />
           <input
             type="text"
             value={block.filename || ""}
             onChange={(e) => onChange({ filename: e.target.value })}
             placeholder="filename.ext (optional)..."
-            className="bg-transparent border-0 outline-none p-0 text-slate-300 font-mono text-xs placeholder:text-slate-600 focus:ring-0"
+            className="bg-transparent border-0 outline-none p-0 text-zinc-300 font-mono text-xs placeholder:text-zinc-600 focus:ring-0"
           />
         </div>
 
         <select
           value={block.language || "text"}
           onChange={(e) => onChange({ language: e.target.value })}
-          className="bg-slate-950 border border-slate-800 text-slate-400 rounded px-1.5 py-0.5 text-[11px] font-mono outline-none"
+          className="bg-zinc-950 border border-zinc-800 text-zinc-400 rounded px-1.5 py-0.5 text-[11px] font-mono outline-none"
         >
           <option value="rust">Rust</option>
           <option value="typescript">TypeScript</option>
@@ -46,7 +46,7 @@ export function CodeBlockView({ block, onChange }: Props) {
         onChange={(e) => onChange({ code: e.target.value })}
         placeholder="// Write or paste code snippet here..."
         rows={Math.max(3, (block.code || "").split("\n").length)}
-        className="w-full resize-y bg-transparent p-3 font-mono text-xs text-slate-200 outline-none placeholder:text-slate-600 focus:ring-0 leading-relaxed"
+        className="w-full resize-y bg-transparent p-3 font-mono text-xs text-zinc-200 outline-none placeholder:text-zinc-600 focus:ring-0 leading-relaxed"
       />
     </div>
   );

@@ -16,7 +16,7 @@ export function TextBlockView({ block, onChange }: Props) {
         onChange={(e) => onChange({ content: e.target.value })}
         placeholder="Type markdown, text, lists, or math equations ($x^2$)..."
         rows={Math.max(2, (block.content || "").split("\n").length)}
-        className="w-full resize-y bg-transparent border-0 outline-none p-0 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:ring-0 font-normal"
+        className="w-full resize-y bg-transparent border-0 outline-none p-0 text-sm leading-relaxed text-zinc-200 placeholder:text-zinc-600 focus:ring-0 font-normal"
       />
     </div>
   );

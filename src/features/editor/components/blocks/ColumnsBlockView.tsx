@@ -68,11 +68,11 @@ export function ColumnsBlockView({
   };
 
   return (
-    <div className="space-y-2 border border-dashed border-slate-800 p-3 rounded-lg bg-slate-950/40">
-      <div className="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800/60 pb-2">
-        <span className="font-semibold text-slate-300">Multi-Column Layout</span>
+    <div className="space-y-2 border border-dashed border-zinc-800 p-3 rounded-lg bg-zinc-950/40">
+      <div className="flex items-center justify-between text-xs text-zinc-400 border-b border-zinc-800 pb-2 font-mono">
+        <span className="font-semibold text-zinc-200">Multi-Column Layout</span>
         <div className="flex items-center gap-2">
-          <span className="text-[11px]">Columns:</span>
+          <span className="text-[11px] text-zinc-500 uppercase">Columns:</span>
           <button
             onClick={() => {
               if (columnsCount !== 2) {
@@ -85,8 +85,8 @@ export function ColumnsBlockView({
                 });
               }
             }}
-            className={`px-2 py-0.5 rounded text-xs ${
-              columnsCount === 2 ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-400"
+            className={`px-2 py-0.5 rounded text-xs transition-colors ${
+              columnsCount === 2 ? "bg-white text-zinc-950 font-bold shadow-xs" : "bg-zinc-900 border border-zinc-800 text-zinc-400"
             }`}
           >
             2 Columns
@@ -104,8 +104,8 @@ export function ColumnsBlockView({
                 });
               }
             }}
-            className={`px-2 py-0.5 rounded text-xs ${
-              columnsCount === 3 ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-400"
+            className={`px-2 py-0.5 rounded text-xs transition-colors ${
+              columnsCount === 3 ? "bg-white text-zinc-950 font-bold shadow-xs" : "bg-zinc-900 border border-zinc-800 text-zinc-400"
             }`}
           >
             3 Columns
@@ -123,7 +123,7 @@ export function ColumnsBlockView({
           return (
             <div
               key={colIdx}
-              className="border border-slate-800/80 rounded-md p-2 bg-slate-900/40 min-h-[100px] flex flex-col justify-between space-y-2"
+              className="border border-zinc-850 rounded-md p-2 bg-zinc-950/60 min-h-[100px] flex flex-col justify-between space-y-2"
             >
               <div className="space-y-2">
                 {colData.blocks.map((innerBlock) => (
@@ -141,7 +141,7 @@ export function ColumnsBlockView({
 
               <button
                 onClick={() => handleAddBlockToColumn(colIdx)}
-                className="w-full py-1.5 border border-dashed border-slate-700/60 rounded text-xs text-slate-400 hover:text-slate-200 hover:border-slate-500 flex items-center justify-center gap-1 transition-colors"
+                className="w-full py-1.5 border border-dashed border-zinc-700/80 rounded text-xs text-zinc-400 hover:text-white hover:border-zinc-500 flex items-center justify-center gap-1 transition-colors font-mono"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Block
               </button>

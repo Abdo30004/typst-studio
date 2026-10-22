@@ -36,7 +36,7 @@ export function CalloutBlockView({ block, onChange }: Props) {
   const IconComp = variantConfig.icon;
 
   return (
-    <div className={`p-3.5 rounded-r-md border-l-4 ${variantConfig.bg} border-slate-800 space-y-2`}>
+    <div className={`p-3.5 rounded-r-md border-l-4 ${variantConfig.bg} border-zinc-800 space-y-2`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <IconComp className="w-4 h-4 shrink-0" />
@@ -45,14 +45,14 @@ export function CalloutBlockView({ block, onChange }: Props) {
             value={block.title}
             onChange={(e) => onChange({ title: e.target.value })}
             placeholder="Callout Title..."
-            className="bg-transparent border-0 outline-none p-0 text-sm font-semibold text-slate-100 placeholder:text-slate-500 focus:ring-0"
+            className="bg-transparent border-0 outline-none p-0 text-sm font-semibold text-zinc-100 placeholder:text-zinc-500 focus:ring-0"
           />
         </div>
 
         <select
           value={block.variant}
           onChange={(e) => onChange({ variant: e.target.value as any })}
-          className="text-xs bg-slate-900 border border-slate-700 text-slate-300 rounded px-2 py-0.5 outline-none"
+          className="text-xs bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono rounded px-2 py-0.5 outline-none"
         >
           <option value="note">Note</option>
           <option value="tip">Tip</option>
@@ -66,7 +66,7 @@ export function CalloutBlockView({ block, onChange }: Props) {
         onChange={(e) => onChange({ message: e.target.value })}
         placeholder="Enter callout explanation or details..."
         rows={2}
-        className="w-full resize-y bg-transparent border-0 outline-none p-0 text-xs leading-relaxed text-slate-200 placeholder:text-slate-500 focus:ring-0"
+        className="w-full resize-y bg-transparent border-0 outline-none p-0 text-xs leading-relaxed text-zinc-200 placeholder:text-zinc-500 focus:ring-0"
       />
     </div>
   );

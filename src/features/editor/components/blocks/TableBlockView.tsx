@@ -73,23 +73,23 @@ export function TableBlockView({ block, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+    <div className="space-y-3 font-mono">
+      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
         <div className="flex items-center gap-2">
-          <TableIcon className="w-4 h-4 text-blue-400" />
+          <TableIcon className="w-4 h-4 text-zinc-400" />
           <input
             type="text"
             value={block.caption || ""}
             onChange={(e) => onChange({ caption: e.target.value })}
             placeholder="Table Caption..."
-            className="bg-transparent border-0 outline-none p-0 text-xs font-semibold text-slate-300 placeholder:text-slate-600 focus:ring-0"
+            className="bg-transparent border-0 outline-none p-0 text-xs font-semibold text-zinc-300 placeholder:text-zinc-600 focus:ring-0"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700 transition-colors"
+            className="flex items-center gap-1 text-[11px] bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-2 py-1 rounded border border-zinc-800 transition-colors"
           >
             <Upload className="w-3 h-3" /> Upload CSV
           </button>
@@ -102,30 +102,30 @@ export function TableBlockView({ block, onChange }: Props) {
           />
           <button
             onClick={addColumn}
-            className="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700"
+            className="text-[11px] bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-2 py-1 rounded border border-zinc-800"
           >
             + Column
           </button>
           <button
             onClick={addRow}
-            className="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700"
+            className="text-[11px] bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-2 py-1 rounded border border-zinc-800"
           >
             + Row
           </button>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded border border-slate-800">
-        <table className="w-full text-left text-xs text-slate-300 border-collapse">
+      <div className="overflow-x-auto rounded border border-zinc-800">
+        <table className="w-full text-left text-xs text-zinc-300 border-collapse">
           <thead>
-            <tr className="bg-slate-800/80 border-b border-slate-700">
+            <tr className="bg-zinc-900 border-b border-zinc-800">
               {headers.map((h, colIdx) => (
-                <th key={colIdx} className="p-2 border-r border-slate-700/60 last:border-r-0">
+                <th key={colIdx} className="p-2 border-r border-zinc-800 last:border-r-0">
                   <input
                     type="text"
                     value={h}
                     onChange={(e) => handleHeaderChange(colIdx, e.target.value)}
-                    className="w-full bg-transparent font-semibold border-0 outline-none p-0 text-slate-200 focus:ring-0"
+                    className="w-full bg-transparent font-semibold border-0 outline-none p-0 text-zinc-200 focus:ring-0"
                   />
                 </th>
               ))}
@@ -134,22 +134,22 @@ export function TableBlockView({ block, onChange }: Props) {
           </thead>
           <tbody>
             {rows.map((row, rIdx) => (
-              <tr key={rIdx} className="border-b border-slate-800/80 hover:bg-slate-900/50">
+              <tr key={rIdx} className="border-b border-zinc-850 hover:bg-zinc-900/50">
                 {headers.map((_, colIdx) => (
-                  <td key={colIdx} className="p-2 border-r border-slate-800/60 last:border-r-0">
+                  <td key={colIdx} className="p-2 border-r border-zinc-850 last:border-r-0">
                     <input
                       type="text"
                       value={row[colIdx] || ""}
                       onChange={(e) => handleCellChange(rIdx, colIdx, e.target.value)}
                       placeholder="..."
-                      className="w-full bg-transparent border-0 outline-none p-0 text-slate-300 focus:ring-0"
+                      className="w-full bg-transparent border-0 outline-none p-0 text-zinc-300 focus:ring-0"
                     />
                   </td>
                 ))}
                 <td className="p-1 text-center">
                   <button
                     onClick={() => deleteRow(rIdx)}
-                    className="text-slate-500 hover:text-red-400 p-1"
+                    className="text-zinc-500 hover:text-rose-400 p-1 transition-colors"
                     title="Delete row"
                   >
                     <Trash2 className="w-3 h-3" />

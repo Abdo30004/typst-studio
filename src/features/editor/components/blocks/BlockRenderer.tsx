@@ -73,19 +73,19 @@ export function BlockRenderer({
       onClick={onSelect}
       className={`group/block relative rounded-lg border transition-all ${
         isSelected
-          ? "border-blue-500/80 bg-slate-900/90 ring-1 ring-blue-500/30"
-          : "border-slate-800/80 bg-slate-900/40 hover:border-slate-700/80"
+          ? "border-zinc-500 bg-zinc-900/90 ring-1 ring-zinc-500/30"
+          : "border-zinc-850 bg-zinc-950/60 hover:border-zinc-700"
       } p-3.5`}
     >
       {/* Top right quick actions */}
-      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity z-10 bg-slate-900/90 backdrop-blur px-1.5 py-0.5 rounded border border-slate-700/70 shadow-sm">
+      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity z-10 bg-zinc-900/90 backdrop-blur px-1.5 py-0.5 rounded border border-zinc-750 shadow-sm">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onSelect?.();
           }}
           title="Block Settings"
-          className="p-1 text-slate-400 hover:text-blue-400 transition-colors"
+          className="p-1 text-zinc-400 hover:text-white transition-colors"
         >
           <Settings2 className="w-3.5 h-3.5" />
         </button>
@@ -96,14 +96,14 @@ export function BlockRenderer({
             onDelete();
           }}
           title="Delete Block"
-          className="p-1 text-slate-400 hover:text-red-400 transition-colors"
+          className="p-1 text-zinc-400 hover:text-rose-400 transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
 
         <div
           {...dragHandleProps}
-          className="p-1 cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-200"
+          className="p-1 cursor-grab active:cursor-grabbing text-zinc-400 hover:text-zinc-200"
           title="Drag to reorder"
         >
           <GripVertical className="w-3.5 h-3.5" />

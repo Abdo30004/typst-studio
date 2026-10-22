@@ -11,8 +11,8 @@ interface Props {
 
 export function ProfileBlockView({ block, onChange }: Props) {
   return (
-    <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-lg flex items-start gap-4">
-      <div className="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 text-slate-400">
+    <div className="p-4 bg-zinc-950/90 border border-zinc-800 rounded-lg flex items-start gap-4">
+      <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-zinc-300">
         <User className="w-6 h-6" />
       </div>
 
@@ -22,7 +22,7 @@ export function ProfileBlockView({ block, onChange }: Props) {
           value={block.name}
           onChange={(e) => onChange({ name: e.target.value })}
           placeholder="Full Name..."
-          className="w-full bg-transparent border-0 outline-none p-0 text-base font-bold text-slate-100 placeholder:text-slate-600 focus:ring-0"
+          className="w-full bg-transparent border-0 outline-none p-0 text-base font-bold text-zinc-100 placeholder:text-zinc-600 focus:ring-0"
         />
 
         <input
@@ -30,7 +30,7 @@ export function ProfileBlockView({ block, onChange }: Props) {
           value={block.role}
           onChange={(e) => onChange({ role: e.target.value })}
           placeholder="Role / Title (e.g. Lead Engineer)..."
-          className="w-full bg-transparent border-0 outline-none p-0 text-xs font-semibold text-blue-400 placeholder:text-slate-600 focus:ring-0"
+          className="w-full bg-transparent border-0 outline-none p-0 text-xs font-mono font-medium text-zinc-400 placeholder:text-zinc-600 focus:ring-0"
         />
 
         <textarea
@@ -38,7 +38,7 @@ export function ProfileBlockView({ block, onChange }: Props) {
           onChange={(e) => onChange({ bio: e.target.value })}
           placeholder="Brief professional bio or summary..."
           rows={2}
-          className="w-full resize-y bg-transparent border-0 outline-none p-0 text-xs text-slate-300 placeholder:text-slate-600 focus:ring-0 pt-1"
+          className="w-full resize-y bg-transparent border-0 outline-none p-0 text-xs text-zinc-300 placeholder:text-zinc-600 focus:ring-0 pt-1"
         />
 
         <input
@@ -46,7 +46,7 @@ export function ProfileBlockView({ block, onChange }: Props) {
           value={block.contact || ""}
           onChange={(e) => onChange({ contact: e.target.value })}
           placeholder="Contact / Links (e.g. email@example.com • github.com/user)"
-          className="w-full bg-transparent border-0 outline-none p-0 text-[11px] text-slate-400 placeholder:text-slate-600 focus:ring-0 pt-1"
+          className="w-full bg-transparent border-0 outline-none p-0 text-[11px] font-mono text-zinc-400 placeholder:text-zinc-600 focus:ring-0 pt-1"
         />
       </div>
     </div>

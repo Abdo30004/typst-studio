@@ -63,7 +63,7 @@ export function Canvas({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center bg-slate-900/50">
+    <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center bg-[#09090b]">
       <div className="w-full max-w-3xl space-y-3 pb-24">
         <DndContext
           sensors={sensors}
@@ -88,13 +88,13 @@ export function Canvas({
         </DndContext>
 
         {blocks.length === 0 && (
-          <div className="py-16 text-center border-2 border-dashed border-slate-800 rounded-xl p-8 space-y-3">
-            <p className="text-slate-400 text-sm">
+          <div className="py-16 text-center border-2 border-dashed border-zinc-800 rounded-xl p-8 space-y-3">
+            <p className="text-zinc-400 text-sm font-mono">
               Your canvas is currently empty.
             </p>
             <button
               onClick={onAddDefaultBlock}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-medium inline-flex items-center gap-1.5 shadow"
+              className="px-4 py-2 bg-white hover:bg-zinc-200 text-zinc-950 rounded-md text-xs font-semibold inline-flex items-center gap-1.5 shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" /> Add First Block
             </button>

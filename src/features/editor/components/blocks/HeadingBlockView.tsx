@@ -25,8 +25,8 @@ export function HeadingBlockView({ block, onChange }: Props) {
 
   return (
     <div className="space-y-2 group/h">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-1 mb-1">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center justify-between gap-2 border-b border-zinc-800 pb-1 mb-1">
+        <div className="flex items-center gap-1 font-mono">
           {([1, 2, 3, 4] as const).map((lvl) => (
             <button
               key={lvl}
@@ -36,8 +36,8 @@ export function HeadingBlockView({ block, onChange }: Props) {
               }}
               className={`px-1.5 py-0.5 rounded text-[11px] font-semibold transition-colors ${
                 block.level === lvl
-                  ? "bg-blue-600 text-white"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                  ? "bg-white text-zinc-950 shadow-xs"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
               }`}
             >
               H{lvl}
@@ -51,8 +51,8 @@ export function HeadingBlockView({ block, onChange }: Props) {
               e.stopPropagation();
               onChange({ align: "left" });
             }}
-            className={`p-1 rounded text-xs ${
-              block.align === "left" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"
+            className={`p-1 rounded text-xs transition-colors ${
+              block.align === "left" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white"
             }`}
           >
             <AlignLeft className="w-3.5 h-3.5" />
@@ -62,8 +62,8 @@ export function HeadingBlockView({ block, onChange }: Props) {
               e.stopPropagation();
               onChange({ align: "center" });
             }}
-            className={`p-1 rounded text-xs ${
-              block.align === "center" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"
+            className={`p-1 rounded text-xs transition-colors ${
+              block.align === "center" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white"
             }`}
           >
             <AlignCenter className="w-3.5 h-3.5" />
@@ -73,8 +73,8 @@ export function HeadingBlockView({ block, onChange }: Props) {
               e.stopPropagation();
               onChange({ align: "right" });
             }}
-            className={`p-1 rounded text-xs ${
-              block.align === "right" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"
+            className={`p-1 rounded text-xs transition-colors ${
+              block.align === "right" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white"
             }`}
           >
             <AlignRight className="w-3.5 h-3.5" />
@@ -87,7 +87,7 @@ export function HeadingBlockView({ block, onChange }: Props) {
         value={block.text}
         onChange={(e) => onChange({ text: e.target.value })}
         placeholder="Enter heading text..."
-        className={`w-full bg-transparent border-0 outline-none p-0 focus:ring-0 ${headingStyles} ${textAlignClass} placeholder:text-slate-600`}
+        className={`w-full bg-transparent border-0 outline-none p-0 focus:ring-0 ${headingStyles} ${textAlignClass} placeholder:text-zinc-600`}
       />
 
       <input
@@ -95,7 +95,7 @@ export function HeadingBlockView({ block, onChange }: Props) {
         value={block.subtitle || ""}
         onChange={(e) => onChange({ subtitle: e.target.value })}
         placeholder="Add subtitle (optional)..."
-        className={`w-full bg-transparent border-0 outline-none p-0 text-sm text-slate-400 ${textAlignClass} placeholder:text-slate-600 focus:text-slate-300`}
+        className={`w-full bg-transparent border-0 outline-none p-0 text-sm text-zinc-400 ${textAlignClass} placeholder:text-zinc-600 focus:text-zinc-200`}
       />
     </div>
   );

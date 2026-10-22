@@ -23,13 +23,13 @@ export function MetricBlockView({ block, onChange }: Props) {
   }[block.changeType || "neutral"];
 
   return (
-    <div className="p-3.5 bg-slate-900/90 border border-slate-800 rounded-lg space-y-2">
+    <div className="p-3.5 bg-zinc-950/90 border border-zinc-800 rounded-lg space-y-2">
       <input
         type="text"
         value={block.label}
         onChange={(e) => onChange({ label: e.target.value })}
         placeholder="Metric Label (e.g. Total Revenue)"
-        className="w-full bg-transparent border-0 outline-none p-0 text-xs font-medium text-slate-400 placeholder:text-slate-600 focus:ring-0"
+        className="w-full bg-transparent border-0 outline-none p-0 text-xs font-mono font-medium text-zinc-400 placeholder:text-zinc-600 focus:ring-0 uppercase tracking-wider"
       />
 
       <input
@@ -37,10 +37,10 @@ export function MetricBlockView({ block, onChange }: Props) {
         value={block.value}
         onChange={(e) => onChange({ value: e.target.value })}
         placeholder="Value (e.g. $1.2M or 99.9%)"
-        className="w-full bg-transparent border-0 outline-none p-0 text-2xl font-bold text-slate-100 placeholder:text-slate-600 focus:ring-0 tracking-tight"
+        className="w-full bg-transparent border-0 outline-none p-0 text-2xl font-mono font-bold text-zinc-100 placeholder:text-zinc-600 focus:ring-0 tracking-tight"
       />
 
-      <div className="flex items-center gap-2 pt-1">
+      <div className="flex items-center gap-2 pt-1 font-mono">
         <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border ${trendColor}`}>
           <TrendIcon className="w-3 h-3" />
           <input
@@ -55,7 +55,7 @@ export function MetricBlockView({ block, onChange }: Props) {
         <select
           value={block.changeType || "neutral"}
           onChange={(e) => onChange({ changeType: e.target.value as any })}
-          className="text-[11px] bg-slate-950 border border-slate-800 text-slate-400 rounded px-1.5 py-0.5 outline-none"
+          className="text-[11px] bg-zinc-900 border border-zinc-800 text-zinc-400 rounded px-1.5 py-0.5 outline-none font-mono"
         >
           <option value="positive">Positive</option>
           <option value="negative">Negative</option>

@@ -11,7 +11,7 @@ interface Props {
 export function DividerBlockView({ block }: Props) {
   return (
     <div className="py-2 flex items-center justify-center">
-      <div className="w-full border-t border-slate-700/60" />
+      <div className="w-full border-t border-zinc-800" />
     </div>
   );
 }

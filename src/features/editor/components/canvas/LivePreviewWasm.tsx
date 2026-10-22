@@ -237,13 +237,13 @@ export function LivePreviewWasm({ documentState }: Props) {
   };
 
   return (
-    <div className="flex-1 bg-slate-950 flex flex-col h-full overflow-hidden">
+    <div className="flex-1 bg-[#09090b] flex flex-col h-full overflow-hidden">
       {/* Top Controls Bar */}
-      <div className="h-10 border-b border-slate-800 px-4 flex items-center justify-between text-xs text-slate-400 bg-slate-900/60 select-none">
-        <div className="flex items-center gap-2">
-          <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="font-semibold text-slate-300">Live Typst Preview</span>
-          <span className="text-[11px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">
+      <div className="h-10 border-b border-zinc-850 px-4 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/80 select-none">
+        <div className="flex items-center gap-2 font-mono">
+          <FileCheck className="w-3.5 h-3.5 text-zinc-300" />
+          <span className="font-semibold text-zinc-200">Live Typst Preview</span>
+          <span className="text-[11px] bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded">
             {paper.toUpperCase()} ({settings.orientation})
           </span>
         </div>
@@ -251,22 +251,22 @@ export function LivePreviewWasm({ documentState }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setZoom((z) => Math.max(50, z - 10))}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+            className="p-1 rounded hover:bg-zinc-850 text-zinc-400 hover:text-white"
             title="Zoom Out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <span className="font-mono text-[11px] w-10 text-center">{zoom}%</span>
+          <span className="font-mono text-[11px] w-10 text-center text-zinc-300">{zoom}%</span>
           <button
             onClick={() => setZoom((z) => Math.min(150, z + 10))}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+            className="p-1 rounded hover:bg-zinc-850 text-zinc-400 hover:text-white"
             title="Zoom In"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setZoom(100)}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+            className="p-1 rounded hover:bg-zinc-850 text-zinc-400 hover:text-white"
             title="Reset Zoom"
           >
             <Maximize2 className="w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ export function LivePreviewWasm({ documentState }: Props) {
       </div>
 
       {/* Scaled Preview Canvas Wrapper */}
-      <div className="flex-1 overflow-auto p-8 flex justify-center items-start bg-slate-950/80">
+      <div className="flex-1 overflow-auto p-8 flex justify-center items-start bg-[#09090b]">
         <div
           style={{
             transform: `scale(${zoom / 100})`,
