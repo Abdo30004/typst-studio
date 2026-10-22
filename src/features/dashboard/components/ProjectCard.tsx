@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ProjectSummary } from "@/types";
-import { Copy, Trash2, Calendar, ExternalLink } from "lucide-react";
+import { Copy, Trash2, ArrowUpRight, Clock } from "lucide-react";
 
 interface Props {
   project: ProjectSummary;
@@ -12,28 +12,39 @@ interface Props {
 }
 
 export function ProjectCard({ project, onOpen, onDuplicate, onDelete }: Props) {
+  const formattedDate = new Date(project.updatedAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const formattedTime = new Date(project.updatedAt).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
     <div
       onClick={() => onOpen(project.id)}
-      className="group rounded-2xl border border-slate-800/90 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700/80 p-5 cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5 flex flex-col justify-between space-y-4"
+      className="group rounded-xl border border-zinc-800/80 bg-zinc-900/30 hover:bg-zinc-900/80 hover:border-zinc-500 p-5 cursor-pointer transition-all hover:shadow-xl flex flex-col justify-between space-y-4"
     >
-      <div className="space-y-2">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase font-mono px-2.5 py-0.5 rounded-full bg-blue-950/60 text-blue-400 border border-blue-800/40 font-semibold">
+          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700/80 font-medium tracking-wider">
             {project.preset.replace("_", " ")}
           </span>
 
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={(e) => onDuplicate(project, e)}
-              className="text-slate-400 hover:text-blue-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+              className="text-zinc-400 hover:text-white p-1.5 rounded hover:bg-zinc-800 transition-colors"
               title="Duplicate document"
             >
               <Copy className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={(e) => onDelete(project.id, e)}
-              className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+              className="text-zinc-400 hover:text-rose-400 p-1.5 rounded hover:bg-zinc-800 transition-colors"
               title="Delete document"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -41,25 +52,22 @@ export function ProjectCard({ project, onOpen, onDuplicate, onDelete }: Props) {
           </div>
         </div>
 
-        <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors truncate">
-          {project.title}
-        </h3>
-
-        <div className="flex items-center gap-1 text-[11px] text-slate-500">
-          <Calendar className="w-3 h-3" />
-          <span>
-            Updated {new Date(project.updatedAt).toLocaleDateString()} at{" "}
-            {new Date(project.updatedAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
+        <div>
+          <h3 className="text-sm font-semibold text-zinc-100 group-hover:text-white transition-colors truncate tracking-tight">
+            {project.title}
+          </h3>
+          <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 mt-2">
+            <Clock className="w-3 h-3" />
+            <span>
+              {formattedDate} • {formattedTime}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 group-hover:text-slate-200">
-        <span className="text-xs font-semibold">Open in Studio</span>
-        <ExternalLink className="w-3.5 h-3.5 text-blue-400 group-hover:translate-x-0.5 transition-transform" />
+      <div className="pt-3 border-t border-zinc-800/60 flex items-center justify-between text-xs font-mono text-zinc-500 group-hover:text-zinc-200 transition-colors">
+        <span>Open Atelier</span>
+        <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
       </div>
     </div>
   );

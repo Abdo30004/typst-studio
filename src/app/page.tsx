@@ -9,10 +9,9 @@ import { TemplateGallery, ProjectCard } from "@/features/dashboard";
 import {
   FileText,
   Plus,
-  Layers,
   Loader2,
   Search,
-  Grid,
+  LayoutGrid,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -42,7 +41,7 @@ export default function DashboardPage() {
 
   const handleCreateFromPreset = async (preset: DocumentPreset, defaultTitle?: string) => {
     setIsCreating(true);
-    showToast("Creating new document...", "info");
+    showToast("Initializing document canvas...", "info");
     try {
       const res = await fetch("/api/projects", {
         method: "POST",
@@ -58,7 +57,7 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error("Create project error:", err);
-      showToast("Failed to create document", "error");
+      showToast("Failed to initialize document", "error");
       setIsCreating(false);
     }
   };
@@ -70,7 +69,7 @@ export default function DashboardPage() {
     try {
       await fetch(`/api/projects/${id}`, { method: "DELETE" });
       setProjects((prev) => prev.filter((p) => p.id !== id));
-      showToast("Document deleted", "info");
+      showToast("Document removed", "info");
     } catch (err) {
       console.error("Delete error:", err);
       showToast("Failed to delete document", "error");
@@ -79,7 +78,7 @@ export default function DashboardPage() {
 
   const handleDuplicateProject = async (proj: ProjectSummary, e: React.MouseEvent) => {
     e.stopPropagation();
-    showToast("Duplicating document...", "info");
+    showToast("Duplicating specimen...", "info");
     try {
       const res = await fetch(`/api/projects/${proj.id}`);
       const fullProj = await res.json();
@@ -111,10 +110,10 @@ export default function DashboardPage() {
       }
 
       await fetchProjects();
-      showToast("Document duplicated", "success");
+      showToast("Specimen duplicated", "success");
     } catch (err) {
       console.error("Duplicate error:", err);
-      showToast("Failed to duplicate document", "error");
+      showToast("Failed to duplicate specimen", "error");
     }
   };
 
@@ -129,87 +128,88 @@ export default function DashboardPage() {
   }, [projects, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none">
       <ToastContainer />
 
-      {/* Top Banner Navigation */}
-      <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-20 px-6 sm:px-10 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25 text-white font-bold">
-            <Layers className="w-5 h-5" />
+      {/* Monochromatic Atelier Header */}
+      <header className="border-b border-zinc-900 bg-zinc-950/90 backdrop-blur sticky top-0 z-20 px-6 sm:px-12 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-9 h-9 rounded bg-white text-black font-mono font-black text-sm flex items-center justify-center tracking-tighter shadow-sm">
+            TY
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-slate-100 tracking-tight">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-sm font-bold text-white tracking-tight uppercase">
                 Typst Studio
               </h1>
-              <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/25 px-2 py-0.5 rounded-full font-mono font-semibold">
-                Canva Edition
+              <span className="text-[10px] bg-zinc-900 text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded font-mono font-medium">
+                ATELIER
               </span>
             </div>
-            <p className="text-xs text-slate-400">
-              Drag-and-drop document design compiled with Typst
+            <p className="text-[11px] font-mono text-zinc-500">
+              Visual composition engine • Native Typst compiler
             </p>
           </div>
         </div>
 
+        {/* High-Contrast Inverted Action Button */}
         <button
           onClick={() => handleCreateFromPreset("a4_document", "Untitled Document")}
           disabled={isCreating}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg text-xs font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
         >
           {isCreating ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
           ) : (
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 text-zinc-950" />
           )}
-          <span>Create Blank Document</span>
+          <span>New Document</span>
         </button>
       </header>
 
-      {/* Main Studio Body */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-6 sm:px-10 py-8 space-y-10">
-        {/* Template Gallery Section */}
+      {/* Main Workbench Body */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-6 sm:px-12 py-10 space-y-12">
+        {/* Architectural Template Standards Section */}
         <TemplateGallery onSelectPreset={handleCreateFromPreset} />
 
-        {/* Existing Projects Library Section */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Saved Documents Ledger Section */}
+        <section className="space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-900 pb-3">
             <div className="flex items-center gap-2">
-              <Grid className="w-4 h-4 text-blue-400" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                Your Documents ({projects.length})
+              <LayoutGrid className="w-4 h-4 text-zinc-400" />
+              <h2 className="text-xs font-mono uppercase tracking-[0.15em] text-zinc-400 font-medium">
+                Document Ledger ({projects.length})
               </h2>
             </div>
 
-            {/* Search filter bar */}
+            {/* Precision Search Filter */}
             <div className="relative w-full sm:w-64">
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search documents..."
-                className="w-full bg-slate-900/80 border border-slate-800 focus:border-blue-500 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500 outline-none transition-colors"
+                placeholder="Search archive..."
+                className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-zinc-500 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-600 outline-none transition-colors font-mono"
               />
             </div>
           </div>
 
           {isLoading ? (
-            <div className="py-16 flex flex-col items-center justify-center text-slate-500 gap-2">
-              <Loader2 className="w-7 h-7 animate-spin text-blue-500" />
-              <span className="text-xs">Loading documents...</span>
+            <div className="py-20 flex flex-col items-center justify-center text-zinc-500 gap-2 font-mono">
+              <Loader2 className="w-6 h-6 animate-spin text-white" />
+              <span className="text-xs">Synchronizing ledger...</span>
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="text-center py-16 border-2 border-dashed border-slate-800 rounded-2xl bg-slate-900/20 p-8 space-y-3">
-              <FileText className="w-10 h-10 text-slate-600 mx-auto" />
-              <p className="text-sm font-semibold text-slate-300">
-                {searchQuery ? "No matching documents found" : "No saved documents yet"}
+            <div className="text-center py-20 border border-dashed border-zinc-800/80 rounded-xl bg-zinc-900/20 p-8 space-y-3">
+              <FileText className="w-8 h-8 text-zinc-600 mx-auto" />
+              <p className="text-sm font-semibold text-zinc-300">
+                {searchQuery ? "No matching records found" : "No documents in ledger"}
               </p>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto leading-relaxed">
                 {searchQuery
                   ? "Try searching for a different keyword or create a new document."
-                  : "Pick a starter template above or click New Blank Document to compose your first Typst document."}
+                  : "Select a standard template above or click New Document to begin typesetting."}
               </p>
             </div>
           ) : (
