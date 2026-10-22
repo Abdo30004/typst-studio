@@ -1,62 +1,35 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { ProjectService } from "@/server";
 
-export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export async function GET(req: Request, { params }: Props) {
   try {
     const { id } = await params;
-    const project = await prisma.project.findUnique({
-      where: { id },
-    });
+    const project = await ProjectService.getProjectById(id);
 
     if (!project) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    let parsedState = null;
-    try {
-      parsedState = JSON.parse(project.documentState);
-    } catch {
-      parsedState = null;
-    }
-
-    return NextResponse.json({
-      ...project,
-      documentState: parsedState,
-    });
+    return NextResponse.json(project);
   } catch (error) {
     console.error("Failed to get project:", error);
-    return NextResponse.json({ error: "Failed to get project" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch project" }, { status: 500 });
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: Request, { params }: Props) {
   try {
     const { id } = await params;
     const body = await req.json();
-    const updateData: {
-      title?: string;
-      description?: string;
-      documentState?: string;
-    } = {};
 
-    if (body.title) updateData.title = body.title;
-    if (body.description !== undefined) updateData.description = body.description;
-    if (body.documentState) {
-      updateData.documentState =
-        typeof body.documentState === "string"
-          ? body.documentState
-          : JSON.stringify(body.documentState);
-    }
-
-    const updated = await prisma.project.update({
-      where: { id },
-      data: updateData,
+    const updated = await ProjectService.updateProject(id, {
+      title: body.title,
+      description: body.description,
+      documentState: body.documentState,
     });
 
     return NextResponse.json(updated);
@@ -66,16 +39,10 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(req: Request, { params }: Props) {
   try {
     const { id } = await params;
-    await prisma.project.delete({
-      where: { id },
-    });
-
+    await ProjectService.deleteProject(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete project:", error);
