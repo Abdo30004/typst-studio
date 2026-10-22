@@ -75,6 +75,7 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
   switch (block.type) {
     case "heading": {
       const h = block as HeadingBlock;
+      const level = Math.max(1, Math.min(4, h.level || 1));
       const alignPrefix =
         h.align === "center"
           ? "#align(center)"
@@ -85,8 +86,8 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
         ? `\n#v(2pt)\n#text(size: 0.85em, fill: rgb("#64748b"))[${escapeTypst(h.subtitle)}]`
         : "";
 
-      const underline = h.level === 1 ? `\n#v(3pt)\n#line(length: 100%, stroke: 1.5pt + rgb("${docAccent}"))` : "";
-      const headingCode = `${"=".repeat(h.level)} ${escapeTypst(h.text)}${subtitleMarkup}${underline}`;
+      const underline = level === 1 ? `\n#v(3pt)\n#line(length: 100%, stroke: 1.5pt + rgb("${docAccent}"))` : "";
+      const headingCode = `${"=".repeat(level)} ${escapeTypst(h.text)}${subtitleMarkup}${underline}`;
       return alignPrefix ? `${alignPrefix}[\n${headingCode}\n]` : headingCode;
     }
 
@@ -230,16 +231,23 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
 
     case "image": {
       const img = block as ImageBlock;
-      if (!img.url) return "";
-
       const align = img.align || "center";
-      const width = img.width || "80%";
+      const cleanWidth = img.width ? (img.width.endsWith("%") || img.width.endsWith("pt") ? img.width : `${img.width}%`) : "80%";
+
+      if (!img.url || img.url.startsWith("blob:")) {
+        return `#align(${align})[
+  #rect(fill: rgb("#f8fafc"), stroke: 1pt + rgb("#cbd5e1"), radius: 4pt, width: ${cleanWidth}, height: 60pt)[
+    #align(center + horizon)[#text(size: 8pt, fill: rgb("#94a3b8"))[Image Placeholder]]
+  ]
+]`;
+      }
+
       const captionMarkup = img.caption
         ? `\n#v(4pt)\n#text(size: 0.85em, style: "italic", fill: rgb("#64748b"))[${escapeTypst(img.caption)}]`
         : "";
 
       return `#align(${align})[
-  #image("${img.url}", width: ${width})${captionMarkup}
+  #image("${img.url}", width: ${cleanWidth})${captionMarkup}
 ]`;
     }
 
@@ -279,12 +287,14 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
 
     case "code": {
       const codeBlock = block as CodeBlock;
-      const cleanCode = codeBlock.code.replace(/```/g, "\\`\\`\\`");
+      const lang = codeBlock.language || "text";
+      const codeContent = codeBlock.code || "";
+      const fence = codeContent.includes("```") ? "````" : "```";
       const titleMarkup = codeBlock.filename
         ? `#block(fill: rgb("#1e293b"), radius: (top: 4pt), inset: (x: 10pt, y: 6pt), width: 100%)[#text(size: 0.8em, fill: rgb("#94a3b8"), font: "Liberation Mono")[${escapeTypst(codeBlock.filename)}]]\n`
         : "";
 
-      return `${titleMarkup}#raw("${cleanCode}", lang: "${codeBlock.language || "text"}", block: true)`;
+      return `${titleMarkup}${fence}${lang}\n${codeContent}\n${fence}`;
     }
 
     case "divider": {
@@ -420,7 +430,8 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
 
       return `${titleMarkup}#grid(
   columns: (26pt, 1fr),
-  gutter: (x: 10pt, y: 6pt),
+  column-gutter: 10pt,
+  row-gutter: 6pt,
   ${gridItems.join(",\n  ")}
 )`;
     }
