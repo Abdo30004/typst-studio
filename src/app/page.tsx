@@ -129,11 +129,24 @@ export default function DashboardPage() {
   }, [projects, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none">
+    <div
+      className="min-h-screen flex flex-col font-sans select-none transition-colors duration-150"
+      style={{
+        backgroundColor: "var(--theme-bg)",
+        color: "var(--theme-text-primary)",
+      }}
+    >
       <ToastContainer />
 
       {/* Monochromatic Atelier Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/90 backdrop-blur sticky top-0 z-20 px-6 sm:px-12 py-4 flex items-center justify-between">
+      <header
+        className="border-b sticky top-0 z-20 px-6 sm:px-12 py-4 flex items-center justify-between backdrop-blur transition-colors duration-150"
+        style={{
+          backgroundColor: "var(--theme-panel)",
+          borderColor: "var(--theme-border)",
+          color: "var(--theme-text-primary)",
+        }}
+      >
         <div className="flex items-center gap-4">
           <div className="w-9 h-9 rounded bg-white text-black font-mono font-black text-sm flex items-center justify-center tracking-tighter shadow-sm">
             TY

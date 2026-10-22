@@ -230,9 +230,15 @@ test.describe("Typst Visual Studio - Comprehensive Interactivity Suite", () => {
     await expect(page.locator("text=Tokyo Midnight")).toBeVisible();
     await expect(page.locator("text=Editorial Paper")).toBeVisible();
 
+    // Switch to Editorial Paper (Light Theme)
+    await page.locator("button:has-text('Editorial Paper')").click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "editorial-light");
+    await expect(page.locator("html")).toHaveClass(/light/);
+
     // Switch to Tokyo Midnight
     await page.locator("button:has-text('Tokyo Midnight')").click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "tokyo-midnight");
+    await expect(page.locator("html")).toHaveClass(/dark/);
 
     // Switch to Document Palettes tab in the open popover
     await page.locator("button:has-text('Document Palettes')").click();
@@ -255,8 +261,45 @@ test.describe("Typst Visual Studio - Comprehensive Interactivity Suite", () => {
     await page.locator("button:has-text('UI Theme')").click();
     await page.locator("button:has-text('Atelier Dark')").click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "atelier-dark");
+    await expect(page.locator("html")).toHaveClass(/dark/);
 
     // Close dropdown
     await page.locator("button:has(svg.lucide-x)").first().click();
+  });
+
+  test("9. Image Upload and Live Interactive Preview Verification", async ({ page }) => {
+    await page.goto(`/editor/${projectId}`);
+    await expect(page.locator("text=Interactive Sheet Canvas")).toBeVisible();
+
+    // Upload an image via API or file input
+    const pngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+    const buffer = Buffer.from(pngBase64, "base64");
+
+    // Open Uploads tab in Canva sidebar
+    const uploadsTab = page.locator("button[title*='Uploads']").first();
+    await uploadsTab.click();
+
+    // Trigger file upload via the hidden input
+    const fileChooserPromise = page.waitForEvent("filechooser");
+    await page.locator("text=Click or drop files here").click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles({
+      name: "e2e-test-diagram.png",
+      mimeType: "image/png",
+      buffer,
+    });
+
+    // Wait for the image block to appear on canvas
+    const imgElement = page.locator("img[alt*='preview'], img[alt*='e2e-test-diagram']").first();
+    await expect(imgElement).toBeVisible({ timeout: 10000 });
+
+    // Verify image src starts with /uploads/
+    const src = await imgElement.getAttribute("src");
+    expect(src).toMatch(/^\/uploads\/\d+-[a-z0-9]+\.png$/);
+
+    // Verify fetching image URL returns 200 OK (not 404!)
+    const response = await page.request.get(src!);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("image/png");
   });
 });

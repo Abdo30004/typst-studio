@@ -47,9 +47,103 @@
   }
 }
 
+/* =========================================================================
+   Universal Studio Theme Definitions
+   ========================================================================= */
+
+:root, [data-theme="atelier-dark"] {
+  --theme-bg: #09090b;
+  --theme-panel: #09090b;
+  --theme-surface: #18181b;
+  --theme-surface-hover: #27272a;
+  --theme-border: #27272a;
+  --theme-border-subtle: #1f1f23;
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #d4d4d8;
+  --theme-text-muted: #71717a;
+  --theme-accent: #ffffff;
+  --theme-accent-text: #09090b;
+  --theme-desk: #09090b;
+  --theme-input: #121215;
+  --theme-input-border: #27272a;
+  --theme-scrollbar-thumb: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="editorial-light"] {
+  --theme-bg: #f4f4f5;
+  --theme-panel: #ffffff;
+  --theme-surface: #f9f9fb;
+  --theme-surface-hover: #f0f0f3;
+  --theme-border: #e4e4e7;
+  --theme-border-subtle: #ebebee;
+  --theme-text-primary: #09090b;
+  --theme-text-secondary: #3f3f46;
+  --theme-text-muted: #71717a;
+  --theme-accent: #09090b;
+  --theme-accent-text: #ffffff;
+  --theme-desk: #e4e4e7;
+  --theme-input: #ffffff;
+  --theme-input-border: #d4d4d8;
+  --theme-scrollbar-thumb: rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="tokyo-midnight"] {
+  --theme-bg: #0a0e17;
+  --theme-panel: #0d121f;
+  --theme-surface: #111827;
+  --theme-surface-hover: #1f2937;
+  --theme-border: #1e293b;
+  --theme-border-subtle: #162032;
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #64748b;
+  --theme-accent: #38bdf8;
+  --theme-accent-text: #082f49;
+  --theme-desk: #060911;
+  --theme-input: #0e1524;
+  --theme-input-border: #1e293b;
+  --theme-scrollbar-thumb: rgba(56, 189, 248, 0.2);
+}
+
+[data-theme="nordic-steel"] {
+  --theme-bg: #121316;
+  --theme-panel: #16181c;
+  --theme-surface: #1a1c22;
+  --theme-surface-hover: #242730;
+  --theme-border: #2e323b;
+  --theme-border-subtle: #21242c;
+  --theme-text-primary: #f1f5f9;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #94a3b8;
+  --theme-accent: #cbd5e1;
+  --theme-accent-text: #0f172a;
+  --theme-desk: #0d0e10;
+  --theme-input: #15171c;
+  --theme-input-border: #2e323b;
+  --theme-scrollbar-thumb: rgba(203, 213, 225, 0.15);
+}
+
+[data-theme="solarized-sepia"] {
+  --theme-bg: #110f0d;
+  --theme-panel: #161310;
+  --theme-surface: #1b1814;
+  --theme-surface-hover: #28231d;
+  --theme-border: #332c25;
+  --theme-border-subtle: #241f1a;
+  --theme-text-primary: #fef3c7;
+  --theme-text-secondary: #fde68a;
+  --theme-text-muted: #b45309;
+  --theme-accent: #f59e0b;
+  --theme-accent-text: #451a03;
+  --theme-desk: #0a0807;
+  --theme-input: #181512;
+  --theme-input-border: #332c25;
+  --theme-scrollbar-thumb: rgba(245, 158, 11, 0.2);
+}
+
 body {
-  background-color: #09090b;
-  color: #fafafa;
+  background-color: var(--theme-bg, #09090b);
+  color: var(--theme-text-primary, #fafafa);
   font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -57,8 +151,8 @@ body {
 }
 
 ::selection {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--theme-accent, #ffffff);
+  color: var(--theme-accent-text, #000000);
 }
 
 /* Precision Hairline Scrollbars */
@@ -70,9 +164,128 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--theme-scrollbar-thumb, rgba(255, 255, 255, 0.12));
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* =========================================================================
+   Theme Cascading Overrides for Studio Elements
+   ========================================================================= */
+
+/* Editorial Light Overrides */
+[data-theme="editorial-light"] .bg-zinc-950,
+[data-theme="editorial-light"] .bg-zinc-950\/95,
+[data-theme="editorial-light"] .bg-zinc-950\/98,
+[data-theme="editorial-light"] .bg-slate-950,
+[data-theme="editorial-light"] .bg-\[\#09090b\] {
+  background-color: var(--theme-panel) !important;
+}
+
+[data-theme="editorial-light"] .bg-zinc-900,
+[data-theme="editorial-light"] .bg-zinc-900\/40,
+[data-theme="editorial-light"] .bg-zinc-900\/50,
+[data-theme="editorial-light"] .bg-zinc-900\/80,
+[data-theme="editorial-light"] .bg-slate-900,
+[data-theme="editorial-light"] .bg-slate-950\/40,
+[data-theme="editorial-light"] .bg-slate-950\/60 {
+  background-color: var(--theme-surface) !important;
+}
+
+[data-theme="editorial-light"] .text-zinc-100,
+[data-theme="editorial-light"] .text-zinc-200,
+[data-theme="editorial-light"] .text-zinc-300,
+[data-theme="editorial-light"] .text-slate-100,
+[data-theme="editorial-light"] .text-slate-200 {
+  color: var(--theme-text-primary) !important;
+}
+
+[data-theme="editorial-light"] .text-zinc-400,
+[data-theme="editorial-light"] .text-zinc-500,
+[data-theme="editorial-light"] .text-slate-400,
+[data-theme="editorial-light"] .text-slate-500 {
+  color: var(--theme-text-secondary) !important;
+}
+
+[data-theme="editorial-light"] .border-zinc-900,
+[data-theme="editorial-light"] .border-zinc-850,
+[data-theme="editorial-light"] .border-zinc-800,
+[data-theme="editorial-light"] .border-slate-800,
+[data-theme="editorial-light"] .border-slate-700 {
+  border-color: var(--theme-border) !important;
+}
+
+/* Tokyo Midnight Overrides */
+[data-theme="tokyo-midnight"] .bg-zinc-950,
+[data-theme="tokyo-midnight"] .bg-zinc-950\/95,
+[data-theme="tokyo-midnight"] .bg-zinc-950\/98,
+[data-theme="tokyo-midnight"] .bg-slate-950,
+[data-theme="tokyo-midnight"] .bg-\[\#09090b\] {
+  background-color: var(--theme-bg) !important;
+}
+
+[data-theme="tokyo-midnight"] .bg-zinc-900,
+[data-theme="tokyo-midnight"] .bg-zinc-900\/40,
+[data-theme="tokyo-midnight"] .bg-zinc-900\/80 {
+  background-color: var(--theme-surface) !important;
+}
+
+[data-theme="tokyo-midnight"] .border-zinc-900,
+[data-theme="tokyo-midnight"] .border-zinc-850,
+[data-theme="tokyo-midnight"] .border-zinc-800 {
+  border-color: var(--theme-border) !important;
+}
+
+/* Nordic Steel Overrides */
+[data-theme="nordic-steel"] .bg-zinc-950,
+[data-theme="nordic-steel"] .bg-zinc-950\/95,
+[data-theme="nordic-steel"] .bg-zinc-950\/98,
+[data-theme="nordic-steel"] .bg-slate-950,
+[data-theme="nordic-steel"] .bg-\[\#09090b\] {
+  background-color: var(--theme-bg) !important;
+}
+
+[data-theme="nordic-steel"] .bg-zinc-900,
+[data-theme="nordic-steel"] .bg-zinc-900\/40,
+[data-theme="nordic-steel"] .bg-zinc-900\/80 {
+  background-color: var(--theme-surface) !important;
+}
+
+[data-theme="nordic-steel"] .border-zinc-900,
+[data-theme="nordic-steel"] .border-zinc-850,
+[data-theme="nordic-steel"] .border-zinc-800 {
+  border-color: var(--theme-border) !important;
+}
+
+/* Solarized Sepia Overrides */
+[data-theme="solarized-sepia"] .bg-zinc-950,
+[data-theme="solarized-sepia"] .bg-zinc-950\/95,
+[data-theme="solarized-sepia"] .bg-zinc-950\/98,
+[data-theme="solarized-sepia"] .bg-slate-950,
+[data-theme="solarized-sepia"] .bg-\[\#09090b\] {
+  background-color: var(--theme-bg) !important;
+}
+
+[data-theme="solarized-sepia"] .bg-zinc-900,
+[data-theme="solarized-sepia"] .bg-zinc-900\/40,
+[data-theme="solarized-sepia"] .bg-zinc-900\/80 {
+  background-color: var(--theme-surface) !important;
+}
+
+[data-theme="solarized-sepia"] .text-zinc-100,
+[data-theme="solarized-sepia"] .text-zinc-200 {
+  color: var(--theme-text-primary) !important;
+}
+
+[data-theme="solarized-sepia"] .text-zinc-400,
+[data-theme="solarized-sepia"] .text-zinc-500 {
+  color: var(--theme-text-secondary) !important;
+}
+
+[data-theme="solarized-sepia"] .border-zinc-900,
+[data-theme="solarized-sepia"] .border-zinc-850,
+[data-theme="solarized-sepia"] .border-zinc-800 {
+  border-color: var(--theme-border) !important;
 }

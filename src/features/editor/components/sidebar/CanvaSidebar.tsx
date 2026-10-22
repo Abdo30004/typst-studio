@@ -135,7 +135,13 @@ export function CanvaSidebar({
   return (
     <div className="flex h-full select-none z-20 shrink-0">
       {/* 1. Left Vertical Icon Rail (Monochromatic Precision) */}
-      <nav className="w-16 bg-zinc-950 border-r border-zinc-900 flex flex-col items-center py-3 gap-2 shrink-0">
+      <nav
+        className="w-16 border-r flex flex-col items-center py-3 gap-2 shrink-0 transition-colors duration-150"
+        style={{
+          backgroundColor: "var(--theme-panel)",
+          borderColor: "var(--theme-border)",
+        }}
+      >
         <button
           onClick={() => toggleTab("elements")}
           className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
@@ -232,9 +238,19 @@ export function CanvaSidebar({
 
       {/* 2. Expandable Canva Tool Panel */}
       {activeTab && (
-        <aside className="w-72 bg-zinc-950/98 backdrop-blur border-r border-zinc-900 flex flex-col h-full animate-in slide-in-from-left duration-200">
+        <aside
+          className="w-72 border-r flex flex-col h-full animate-in slide-in-from-left duration-200 transition-colors duration-150"
+          style={{
+            backgroundColor: "var(--theme-panel)",
+            borderColor: "var(--theme-border)",
+            color: "var(--theme-text-primary)",
+          }}
+        >
           {/* Header */}
-          <div className="p-3.5 border-b border-zinc-900 flex items-center justify-between">
+          <div
+            className="p-3.5 border-b flex items-center justify-between"
+            style={{ borderColor: "var(--theme-border)" }}
+          >
             <h3 className="text-xs font-mono font-bold uppercase tracking-[0.12em] text-zinc-300 capitalize">
               {activeTab}
             </h3>

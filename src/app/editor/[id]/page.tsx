@@ -409,11 +409,24 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-zinc-950 text-zinc-100 overflow-hidden font-sans select-none">
+    <div
+      className="h-screen w-screen flex flex-col overflow-hidden font-sans select-none transition-colors duration-150"
+      style={{
+        backgroundColor: "var(--theme-bg)",
+        color: "var(--theme-text-primary)",
+      }}
+    >
       <ToastContainer />
 
       {/* Top Precision Atelier Bar */}
-      <header className="h-14 border-b border-zinc-900 bg-zinc-950/95 px-4 flex items-center justify-between shrink-0 z-30">
+      <header
+        className="h-14 border-b px-4 flex items-center justify-between shrink-0 z-30 transition-colors duration-150"
+        style={{
+          backgroundColor: "var(--theme-panel)",
+          borderColor: "var(--theme-border)",
+          color: "var(--theme-text-primary)",
+        }}
+      >
         {/* Left: Branding, Document title, Auto-save & History */}
         <div className="flex items-center gap-3">
           <button
@@ -583,7 +596,10 @@ export default function EditorPage() {
         />
 
         {/* Central Work Area */}
-        <div className="flex-1 flex overflow-hidden bg-[#09090b]">
+        <div
+          className="flex-1 flex overflow-hidden transition-colors duration-150"
+          style={{ backgroundColor: "var(--theme-desk)" }}
+        >
           {viewMode === "split" ? (
             <ResizableSplitView
               leftTitle="Flow Builder"

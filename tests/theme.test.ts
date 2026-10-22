@@ -26,6 +26,22 @@ describe("UI Themes Specification", () => {
     const fallback = getUITheme("non-existent-theme");
     expect(fallback.id).toBe("atelier-dark");
   });
+
+  it("should correctly configure light vs dark theme properties", () => {
+    const lightTheme = getUITheme("editorial-light");
+    expect(lightTheme.isDark).toBe(false);
+    expect(lightTheme.colors.bg).toBe("#f4f4f5");
+    expect(lightTheme.colors.textPrimary).toBe("#09090b");
+
+    const tokyo = getUITheme("tokyo-midnight");
+    expect(tokyo.isDark).toBe(true);
+    expect(tokyo.colors.bg).toBe("#0a0e17");
+    expect(tokyo.colors.accent).toBe("#38bdf8");
+
+    const sepia = getUITheme("solarized-sepia");
+    expect(sepia.isDark).toBe(true);
+    expect(sepia.colors.accent).toBe("#f59e0b");
+  });
 });
 
 describe("Document Design Palettes", () => {

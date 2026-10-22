@@ -42,17 +42,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Synchronize UI Theme with DOM attributes
+  // Synchronize UI Theme with DOM attributes and CSS Custom Properties
   useEffect(() => {
     if (typeof window === "undefined") return;
     const themeConfig = getUITheme(uiTheme);
 
-    document.documentElement.setAttribute("data-theme", uiTheme);
+    const root = document.documentElement;
+    root.setAttribute("data-theme", uiTheme);
     if (themeConfig.isDark) {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
+      root.classList.remove("light");
     } else {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
+      root.classList.add("light");
     }
+
+    // Set core CSS variables for universal cascading
+    root.style.setProperty("--theme-bg", themeConfig.colors.bg);
+    root.style.setProperty("--theme-panel", themeConfig.colors.surface || themeConfig.colors.bg);
+    root.style.setProperty("--theme-surface", themeConfig.colors.surface);
+    root.style.setProperty("--theme-surface-hover", themeConfig.colors.surfaceHover);
+    root.style.setProperty("--theme-border", themeConfig.colors.border);
+    root.style.setProperty("--theme-border-subtle", themeConfig.colors.borderSubtle);
+    root.style.setProperty("--theme-text-primary", themeConfig.colors.textPrimary);
+    root.style.setProperty("--theme-text-secondary", themeConfig.colors.textSecondary);
+    root.style.setProperty("--theme-text-muted", themeConfig.colors.textMuted);
+    root.style.setProperty("--theme-accent", themeConfig.colors.accent);
+    root.style.setProperty("--theme-accent-text", themeConfig.colors.accentText);
+    root.style.setProperty("--theme-desk", themeConfig.colors.deskBg);
 
     document.body.style.backgroundColor = themeConfig.colors.bg;
     document.body.style.color = themeConfig.colors.textPrimary;
