@@ -23,6 +23,7 @@
 *.sqlite
 *.sqlite-journal
 /data
+/uploads/
 /public/uploads/*
 !/public/uploads/.gitkeep
 /.tmp-exports
