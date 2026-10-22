@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/lib/theme";
 import { UIThemeId, PaletteId } from "@/lib/theme/types";
-import { applyPaletteToDocument } from "@/lib/theme/palettes";
+import { applyPaletteToDocument, getPalette } from "@/lib/theme/palettes";
 import { DocumentState } from "@/types/document";
 import { Palette, Check, Sparkles, Moon, Sun, Monitor, Wand2, X } from "lucide-react";
 
@@ -54,7 +54,8 @@ export function ThemeQuickSwitcher({
 
   const handleApplyPaletteToCurrentDocument = () => {
     if (!documentState || !onApplyPaletteToDoc) return;
-    const updated = applyPalette(documentState);
+    const currentPal = getPalette(activePaletteId);
+    const updated = applyPaletteToDocument(currentPal, documentState);
     onApplyPaletteToDoc(updated);
     setAppliedNotification(true);
     setTimeout(() => setAppliedNotification(false), 2200);

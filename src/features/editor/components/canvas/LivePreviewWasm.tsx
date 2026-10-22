@@ -243,6 +243,10 @@ export function LivePreviewWasm({ documentState }: Props) {
 
       case "table": {
         const tbl = b as TableBlock;
+        const tableBorder = tbl.borderColor || "#cbd5e1";
+        const headerBg = tbl.headerBg || "#f1f5f9";
+        const headerColor = tbl.headerColor || "#0f172a";
+
         return (
           <div key={b.id} className="space-y-1 my-2">
             {tbl.caption && (
@@ -250,11 +254,27 @@ export function LivePreviewWasm({ documentState }: Props) {
                 Table: {tbl.caption}
               </div>
             )}
-            <table className="w-full text-left text-xs border border-[#cbd5e1] border-collapse">
+            <table
+              className="w-full text-left text-xs border border-collapse"
+              style={{ borderColor: tableBorder }}
+            >
               <thead>
-                <tr className="bg-[#f1f5f9] border-b border-[#cbd5e1]">
+                <tr
+                  className="border-b"
+                  style={{
+                    backgroundColor: headerBg,
+                    borderColor: tableBorder,
+                  }}
+                >
                   {tbl.headers.map((h, i) => (
-                    <th key={i} className="p-2 font-mono font-semibold text-[#0f172a] border-r border-[#cbd5e1]">
+                    <th
+                      key={i}
+                      className="p-2 font-mono font-semibold border-r"
+                      style={{
+                        borderColor: tableBorder,
+                        color: headerColor,
+                      }}
+                    >
                       {h}
                     </th>
                   ))}
@@ -264,12 +284,18 @@ export function LivePreviewWasm({ documentState }: Props) {
                 {tbl.rows.map((row, rIdx) => (
                   <tr
                     key={rIdx}
-                    className={`border-b border-[#cbd5e1] ${
-                      tbl.isZebra && rIdx % 2 === 1 ? "bg-[#f8fafc]" : "bg-white"
-                    }`}
+                    className="border-b"
+                    style={{
+                      backgroundColor: tbl.isZebra && rIdx % 2 === 1 ? (tbl.headerBg ? tbl.headerBg + "40" : "#f8fafc") : "#ffffff",
+                      borderColor: tableBorder,
+                    }}
                   >
                     {row.map((cell, cIdx) => (
-                      <td key={cIdx} className="p-2 text-[#334155] border-r border-[#cbd5e1]">
+                      <td
+                        key={cIdx}
+                        className="p-2 text-[#334155] border-r"
+                        style={{ borderColor: tableBorder }}
+                      >
                         {cell}
                       </td>
                     ))}

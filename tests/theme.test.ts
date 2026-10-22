@@ -164,7 +164,7 @@ describe("Document Design Palettes", () => {
 
     // Verify callout card updated
     const callout = updatedDoc.blocks[3] as CalloutCardBlock;
-    expect(callout.borderColor).toBe(bauhausPal.defaults.accent);
+    expect(callout.borderColor).toBe(bauhausPal.defaults.calloutBorder || bauhausPal.defaults.accent);
 
     // Verify divider updated
     const divider = updatedDoc.blocks[4] as DividerBlock;

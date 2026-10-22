@@ -1,4 +1,5 @@
 import { DocumentPreset, DocumentSettings, DocumentState } from "@/types/document";
+import { getPalette, applyPaletteToDocument } from "@/lib/theme/palettes";
 
 export const PRESET_CONFIGS: Record<
   DocumentPreset,
@@ -12,7 +13,8 @@ export const PRESET_CONFIGS: Record<
       orientation: "portrait",
       margins: { top: "2.5cm", bottom: "2.5cm", left: "2.5cm", right: "2.5cm" },
       font: "Liberation Sans",
-      accentColor: "#2563eb",
+      accentColor: "#0284c7",
+      paletteId: "glacier",
       showPageNumbers: true,
     },
   },
@@ -24,7 +26,8 @@ export const PRESET_CONFIGS: Record<
       orientation: "portrait",
       margins: { top: "1in", bottom: "1in", left: "1in", right: "1in" },
       font: "Liberation Sans",
-      accentColor: "#0f766e",
+      accentColor: "#047857",
+      paletteId: "botanical",
       showPageNumbers: true,
     },
   },
@@ -36,7 +39,8 @@ export const PRESET_CONFIGS: Record<
       orientation: "landscape",
       margins: { top: "1.5cm", bottom: "1.5cm", left: "2cm", right: "2cm" },
       font: "Liberation Sans",
-      accentColor: "#7c3aed",
+      accentColor: "#e11d48",
+      paletteId: "bauhaus",
       showPageNumbers: false,
     },
   },
@@ -48,7 +52,8 @@ export const PRESET_CONFIGS: Record<
       orientation: "portrait",
       margins: { top: "1.5cm", bottom: "1.5cm", left: "1.5cm", right: "1.5cm" },
       font: "Liberation Sans",
-      accentColor: "#1e293b",
+      accentColor: "#1e3a8a",
+      paletteId: "corporate",
       showPageNumbers: false,
     },
   },
@@ -60,7 +65,8 @@ export const PRESET_CONFIGS: Record<
       orientation: "landscape",
       margins: { top: "1cm", bottom: "1cm", left: "1cm", right: "1cm" },
       font: "Liberation Mono",
-      accentColor: "#d97706",
+      accentColor: "#c2410c",
+      paletteId: "editorial",
       showPageNumbers: false,
     },
   },
@@ -72,7 +78,7 @@ export function createInitialDocument(preset: DocumentPreset, title?: string): D
 
   if (preset === "resume") {
     const candidateName = title || "Alex Morgan";
-    return {
+    const resumeDoc: DocumentState = {
       id: "doc-" + Math.random().toString(36).substring(2, 9),
       title: candidateName,
       preset,
@@ -156,10 +162,11 @@ export function createInitialDocument(preset: DocumentPreset, title?: string): D
         },
       ],
     };
+    return applyPaletteToDocument(getPalette(config.settings.paletteId || "corporate"), resumeDoc);
   }
 
   // Default A4 / Report starter template
-  return {
+  const defaultDoc: DocumentState = {
     id: "doc-" + Math.random().toString(36).substring(2, 9),
     title: title || "Project Architecture & Design Document",
     preset,
@@ -240,4 +247,6 @@ export function createInitialDocument(preset: DocumentPreset, title?: string): D
       },
     ],
   };
+
+  return applyPaletteToDocument(getPalette(config.settings.paletteId || "glacier"), defaultDoc);
 }

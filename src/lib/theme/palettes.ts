@@ -25,12 +25,18 @@ export const THEME_PALETTES: ThemePalette[] = [
     ],
     defaults: {
       cardFill: "#ffffff",
-      cardStroke: "#e4e4e7",
+      cardStroke: "#09090b",
       accent: "#09090b",
       badgeBg: "#09090b",
       badgeText: "#ffffff",
-      dividerColor: "#e4e4e7",
+      dividerColor: "#09090b",
       codeBg: "#09090b",
+      calloutBg: "#f4f4f5",
+      calloutBorder: "#09090b",
+      calloutText: "#09090b",
+      tableHeaderBg: "#f4f4f5",
+      tableBorder: "#09090b",
+      tableHeaderColor: "#09090b",
     },
   },
   {
@@ -47,13 +53,19 @@ export const THEME_PALETTES: ThemePalette[] = [
       { label: "Alabaster Light", fill: "#f8fafc", stroke: "#cbd5e1", text: "#0f172a" },
     ],
     defaults: {
-      cardFill: "#f8fafc",
-      cardStroke: "#cbd5e1",
+      cardFill: "#fff1f2",
+      cardStroke: "#e11d48",
       accent: "#e11d48",
       badgeBg: "#2563eb",
       badgeText: "#ffffff",
-      dividerColor: "#cbd5e1",
+      dividerColor: "#e11d48",
       codeBg: "#0f172a",
+      calloutBg: "#eff6ff",
+      calloutBorder: "#2563eb",
+      calloutText: "#1d4ed8",
+      tableHeaderBg: "#fee2e2",
+      tableBorder: "#e11d48",
+      tableHeaderColor: "#9f1239",
     },
   },
   {
@@ -71,12 +83,18 @@ export const THEME_PALETTES: ThemePalette[] = [
     ],
     defaults: {
       cardFill: "#fafaf9",
-      cardStroke: "#e7e5e4",
+      cardStroke: "#c2410c",
       accent: "#c2410c",
-      badgeBg: "#1c1917",
+      badgeBg: "#78350f",
       badgeText: "#fafaf9",
-      dividerColor: "#e7e5e4",
+      dividerColor: "#c2410c",
       codeBg: "#1c1917",
+      calloutBg: "#fff7ed",
+      calloutBorder: "#c2410c",
+      calloutText: "#9a3412",
+      tableHeaderBg: "#ffedd5",
+      tableBorder: "#c2410c",
+      tableHeaderColor: "#7c2d12",
     },
   },
   {
@@ -93,13 +111,19 @@ export const THEME_PALETTES: ThemePalette[] = [
       { label: "Dark Cyan", fill: "#0e7490", stroke: "#155e75", text: "#ffffff" },
     ],
     defaults: {
-      cardFill: "#ffffff",
-      cardStroke: "#e2e8f0",
+      cardFill: "#09090b",
+      cardStroke: "#10b981",
       accent: "#10b981",
-      badgeBg: "#000000",
-      badgeText: "#10b981",
-      dividerColor: "#e2e8f0",
+      badgeBg: "#10b981",
+      badgeText: "#000000",
+      dividerColor: "#10b981",
       codeBg: "#000000",
+      calloutBg: "#ecfdf5",
+      calloutBorder: "#10b981",
+      calloutText: "#065f46",
+      tableHeaderBg: "#d1fae5",
+      tableBorder: "#10b981",
+      tableHeaderColor: "#065f46",
     },
   },
   {
@@ -117,12 +141,18 @@ export const THEME_PALETTES: ThemePalette[] = [
     ],
     defaults: {
       cardFill: "#f0f9ff",
-      cardStroke: "#bae6fd",
+      cardStroke: "#0284c7",
       accent: "#0284c7",
       badgeBg: "#0f172a",
       badgeText: "#38bdf8",
-      dividerColor: "#bae6fd",
+      dividerColor: "#0284c7",
       codeBg: "#0f172a",
+      calloutBg: "#e0f2fe",
+      calloutBorder: "#0284c7",
+      calloutText: "#0369a1",
+      tableHeaderBg: "#bae6fd",
+      tableBorder: "#0284c7",
+      tableHeaderColor: "#0c4a6e",
     },
   },
   {
@@ -139,13 +169,19 @@ export const THEME_PALETTES: ThemePalette[] = [
       { label: "Silver Mist", fill: "#e2e8f0", stroke: "#94a3b8", text: "#1e293b" },
     ],
     defaults: {
-      cardFill: "#ffffff",
-      cardStroke: "#cbd5e1",
+      cardFill: "#f8fafc",
+      cardStroke: "#1e3a8a",
       accent: "#1e3a8a",
-      badgeBg: "#0a192f",
+      badgeBg: "#1e3a8a",
       badgeText: "#ffffff",
-      dividerColor: "#cbd5e1",
+      dividerColor: "#1e3a8a",
       codeBg: "#0a192f",
+      calloutBg: "#eff6ff",
+      calloutBorder: "#1e3a8a",
+      calloutText: "#172554",
+      tableHeaderBg: "#dbeafe",
+      tableBorder: "#1e3a8a",
+      tableHeaderColor: "#1e3a8a",
     },
   },
   {
@@ -163,12 +199,18 @@ export const THEME_PALETTES: ThemePalette[] = [
     ],
     defaults: {
       cardFill: "#f7fee7",
-      cardStroke: "#d9f99d",
+      cardStroke: "#047857",
       accent: "#047857",
       badgeBg: "#064e3b",
       badgeText: "#ecfdf5",
-      dividerColor: "#d9f99d",
+      dividerColor: "#047857",
       codeBg: "#064e3b",
+      calloutBg: "#ecfdf5",
+      calloutBorder: "#047857",
+      calloutText: "#064e3b",
+      tableHeaderBg: "#d1fae5",
+      tableBorder: "#047857",
+      tableHeaderColor: "#064e3b",
     },
   },
 ];
@@ -190,25 +232,23 @@ function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBl
         strokeColor: palette.defaults.cardStroke,
         badgeBg: palette.defaults.badgeBg,
         badgeText: palette.defaults.badgeText,
+        badge: c.badge || (palette.id !== "monochrome" ? palette.name.split(" ")[0].toUpperCase() : undefined),
       };
     }
     case "card_callout": {
       const callout = block as CalloutCardBlock;
-      if (callout.variant === "note") {
-        return {
-          ...callout,
-          borderColor: palette.defaults.accent,
-          textColor: palette.defaults.accent,
-          bgColor: palette.defaults.cardFill === "#ffffff" ? "#eff6ff" : palette.defaults.cardFill,
-        };
-      }
-      return callout;
+      return {
+        ...callout,
+        borderColor: palette.defaults.calloutBorder || palette.defaults.accent,
+        textColor: palette.defaults.calloutText || palette.defaults.accent,
+        bgColor: palette.defaults.calloutBg || (palette.defaults.cardFill === "#09090b" ? "#18181b" : palette.defaults.cardFill),
+      };
     }
     case "card_metric": {
       const m = block as MetricCardBlock;
       return {
         ...m,
-        fillColor: palette.defaults.cardFill === "#ffffff" ? "#f8fafc" : palette.defaults.cardFill,
+        fillColor: palette.defaults.cardFill === "#09090b" ? "#18181b" : (palette.defaults.cardFill === "#ffffff" ? "#f8fafc" : palette.defaults.cardFill),
         strokeColor: palette.defaults.cardStroke,
       };
     }
@@ -216,9 +256,18 @@ function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBl
       const p = block as ProfileCardBlock;
       return {
         ...p,
-        fillColor: palette.defaults.cardFill,
+        fillColor: palette.defaults.cardFill === "#09090b" ? "#18181b" : (palette.defaults.cardFill === "#ffffff" ? "#ffffff" : palette.defaults.cardFill),
         strokeColor: palette.defaults.cardStroke,
         roleColor: palette.defaults.accent,
+      };
+    }
+    case "table": {
+      const tbl = block as any;
+      return {
+        ...tbl,
+        headerBg: palette.defaults.tableHeaderBg || (palette.defaults.cardFill === "#09090b" ? "#18181b" : palette.defaults.cardFill),
+        borderColor: palette.defaults.tableBorder || palette.defaults.cardStroke,
+        headerColor: palette.defaults.tableHeaderColor || palette.defaults.accent,
       };
     }
     case "divider": {

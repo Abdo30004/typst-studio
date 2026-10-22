@@ -90,7 +90,8 @@ describe("Typst Generator Tests", () => {
     const result = renderBlockToTypst(table);
     expect(result).toContain('#table(');
     expect(result).toContain('columns: 2');
-    expect(result).toContain('[*Service*], [*Status*]');
+    expect(result).toContain('Service');
+    expect(result).toContain('Status');
     expect(result).toContain('[API], [Healthy]');
   });
 

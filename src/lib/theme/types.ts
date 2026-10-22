@@ -55,5 +55,11 @@ export interface ThemePalette {
     badgeText: string;
     dividerColor: string;
     codeBg: string;
+    calloutBg?: string;
+    calloutBorder?: string;
+    calloutText?: string;
+    tableHeaderBg?: string;
+    tableBorder?: string;
+    tableHeaderColor?: string;
   };
 }

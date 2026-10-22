@@ -31,7 +31,7 @@ import {
   Sun,
 } from "lucide-react";
 import { useTheme } from "@/lib/theme";
-import { applyPaletteToDocument } from "@/lib/theme/palettes";
+import { applyPaletteToDocument, getPalette } from "@/lib/theme/palettes";
 
 interface Props {
   documentState: DocumentState;
@@ -682,7 +682,8 @@ export function CanvaSidebar({
                     <div className="pt-3 mt-3 border-t border-zinc-850">
                       <button
                         onClick={() => {
-                          const updated = applyPalette(documentState);
+                          const currentPal = getPalette(activePaletteId);
+                          const updated = applyPaletteToDocument(currentPal, documentState);
                           onApplyPaletteToDoc(updated);
                           setPaletteAppliedToast(true);
                           setTimeout(() => setPaletteAppliedToast(false), 2200);

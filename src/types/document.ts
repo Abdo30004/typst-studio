@@ -126,6 +126,9 @@ export interface TableBlock extends BaseBlock {
   rows: string[][];
   caption?: string;
   isZebra?: boolean;
+  headerBg?: string;
+  borderColor?: string;
+  headerColor?: string;
 }
 
 export interface CodeBlock extends BaseBlock {

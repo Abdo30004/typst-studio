@@ -18,6 +18,7 @@ import {
 } from "@/types/document";
 import { findBlockById } from "@/lib/typst/block-utils";
 import { useTheme } from "@/lib/theme";
+import { getPalette, applyPaletteToDocument } from "@/lib/theme/palettes";
 import {
   Sliders,
   FileText,
@@ -35,6 +36,7 @@ interface Props {
   onUpdateDocumentSettings: (settings: Partial<DocumentState["settings"]>) => void;
   onUpdateBlock: (blockId: string, updated: Partial<DocumentBlock>) => void;
   onDeselect: () => void;
+  onApplyPaletteToDoc?: (updatedDoc: DocumentState) => void;
 }
 
 export function PropertyInspector({
@@ -43,6 +45,7 @@ export function PropertyInspector({
   onUpdateDocumentSettings,
   onUpdateBlock,
   onDeselect,
+  onApplyPaletteToDoc,
 }: Props) {
   const { activePalette, activePaletteId, setActivePaletteId, allPalettes } = useTheme();
   const inspectorImageFileRef = React.useRef<HTMLInputElement>(null);
@@ -954,6 +957,34 @@ export function PropertyInspector({
                 <option value="Liberation Serif">Liberation Serif (Editorial Classic)</option>
                 <option value="Liberation Mono">Liberation Mono (Technical Code)</option>
               </select>
+            </div>
+
+            {/* Document Design Palette */}
+            <div>
+              <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">
+                Document Design Palette
+              </label>
+              <select
+                value={documentState.settings.paletteId || activePaletteId}
+                onChange={(e) => {
+                  const pal = getPalette(e.target.value);
+                  setActivePaletteId(pal.id);
+                  if (onApplyPaletteToDoc) {
+                    const updated = applyPaletteToDocument(pal, documentState);
+                    onApplyPaletteToDoc(updated);
+                  }
+                }}
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 outline-none font-mono"
+              >
+                {allPalettes.map((pal) => (
+                  <option key={pal.id} value={pal.id}>
+                    {pal.name}
+                  </option>
+                ))}
+              </select>
+              <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
+                Harmonizes cards, callouts, metrics, tables & accents
+              </span>
             </div>
 
             {/* Document Accent Color */}

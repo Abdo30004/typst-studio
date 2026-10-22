@@ -701,6 +701,7 @@ export default function EditorPage() {
           onUpdateDocumentSettings={handleUpdateDocumentSettings}
           onUpdateBlock={handleUpdateBlock}
           onDeselect={() => setSelectedBlockId(null)}
+          onApplyPaletteToDoc={(updated) => setDocumentState(updated)}
         />
       </div>
 

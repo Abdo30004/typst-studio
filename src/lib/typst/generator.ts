@@ -238,8 +238,12 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
     case "table": {
       const tbl = block as TableBlock;
       const colsCount = Math.max(tbl.headers.length, tbl.rows[0]?.length || 1);
+      const tableBorder = tbl.borderColor || "#cbd5e1";
+      const headerBg = tbl.headerBg || "#f1f5f9";
+      const headerColor = tbl.headerColor || "#0f172a";
+
       const headersMarkup = tbl.headers.length > 0
-        ? tbl.headers.map((h) => `[*${escapeTypst(h)}*]`).join(", ") + ",\n  "
+        ? tbl.headers.map((h) => `[#text(weight: "bold", fill: rgb("${headerColor}"))[${escapeTypst(h)}]]`).join(", ") + ",\n  "
         : "";
 
       const rowsMarkup = tbl.rows
@@ -251,13 +255,13 @@ export function renderBlockToTypst(block: DocumentBlock, settings?: DocumentSett
         : "";
 
       const zebraFill = tbl.isZebra
-        ? `fill: (col, row) => if row == 0 { rgb("#f1f5f9") } else if calc.even(row) { rgb("#f8fafc") } else { none },`
-        : `fill: (col, row) => if row == 0 { rgb("#f1f5f9") } else { none },`;
+        ? `fill: (col, row) => if row == 0 { rgb("${headerBg}") } else if calc.even(row) { rgb("#f8fafc") } else { none },`
+        : `fill: (col, row) => if row == 0 { rgb("${headerBg}") } else { none },`;
 
       return `${captionMarkup}#align(center)[
 #table(
   columns: ${colsCount},
-  stroke: 0.5pt + rgb("#cbd5e1"),
+  stroke: 0.5pt + rgb("${tableBorder}"),
   ${zebraFill}
   align: (col, row) => if row == 0 { center + horizon } else { left + horizon },
   ${headersMarkup}${rowsMarkup}

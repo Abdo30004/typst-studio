@@ -870,17 +870,31 @@ export function InteractivePreviewCanvas({
             )}
 
             {/* Editable Spreadsheet View */}
-            <div className="overflow-x-auto border border-[#cbd5e1] rounded-sm">
+            <div
+              className="overflow-x-auto rounded-sm border"
+              style={{ borderColor: tbl.borderColor || "#cbd5e1" }}
+            >
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-[#f1f5f9] border-b border-[#cbd5e1]">
+                  <tr
+                    className="border-b"
+                    style={{
+                      backgroundColor: tbl.headerBg || "#f1f5f9",
+                      borderColor: tbl.borderColor || "#cbd5e1",
+                    }}
+                  >
                     {tbl.headers.map((h, i) => (
-                      <th key={i} className="p-1 border-r border-[#cbd5e1] font-mono text-[11px] font-semibold text-[#0f172a]">
+                      <th
+                        key={i}
+                        className="p-1 border-r font-mono text-[11px] font-semibold"
+                        style={{ borderColor: tbl.borderColor || "#cbd5e1" }}
+                      >
                         <input
                           type="text"
                           value={h}
                           onChange={(e) => updateHeader(i, e.target.value)}
-                          className="w-full bg-transparent font-mono font-semibold text-[#0f172a] px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
+                          style={{ color: tbl.headerColor || "#0f172a" }}
+                          className="w-full bg-transparent font-mono font-semibold px-1 py-0.5 outline-none focus:bg-white focus:ring-1 focus:ring-zinc-950 rounded"
                         />
                       </th>
                     ))}
@@ -890,12 +904,18 @@ export function InteractivePreviewCanvas({
                   {tbl.rows.map((row, rIdx) => (
                     <tr
                       key={rIdx}
-                      className={`border-b border-[#cbd5e1] ${
-                        tbl.isZebra && rIdx % 2 === 1 ? "bg-[#f8fafc]" : "bg-white"
-                      }`}
+                      className="border-b"
+                      style={{
+                        backgroundColor: tbl.isZebra && rIdx % 2 === 1 ? (tbl.headerBg ? tbl.headerBg + "40" : "#f8fafc") : "#ffffff",
+                        borderColor: tbl.borderColor || "#cbd5e1",
+                      }}
                     >
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-1 border-r border-[#cbd5e1]">
+                        <td
+                          key={cIdx}
+                          className="p-1 border-r"
+                          style={{ borderColor: tbl.borderColor || "#cbd5e1" }}
+                        >
                           <input
                             type="text"
                             value={cell}
