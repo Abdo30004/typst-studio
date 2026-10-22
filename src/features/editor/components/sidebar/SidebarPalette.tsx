@@ -261,12 +261,12 @@ export function SidebarPalette({ onAddBlock, onImportDocument }: Props) {
   };
 
   return (
-    <div className="w-64 border-r border-slate-800 bg-slate-950 p-4 flex flex-col gap-4 overflow-y-auto shrink-0 select-none">
+    <div className="w-64 border-r border-zinc-850 bg-[#09090b] p-4 flex flex-col gap-4 overflow-y-auto shrink-0 select-none">
       <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <h3 className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
           Component Palette
         </h3>
-        <p className="text-[11px] text-slate-500 mt-0.5">
+        <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
           Click or drop to add to canvas
         </p>
       </div>
@@ -275,9 +275,9 @@ export function SidebarPalette({ onAddBlock, onImportDocument }: Props) {
       <div>
         <button
           onClick={() => uploadInputRef.current?.click()}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-400 text-xs font-medium transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-zinc-800 text-zinc-200 text-xs font-mono transition-colors"
         >
-          <Upload className="w-3.5 h-3.5" />
+          <Upload className="w-3.5 h-3.5 text-zinc-400" />
           <span>Upload Asset / CSV</span>
         </button>
         <input
@@ -296,17 +296,17 @@ export function SidebarPalette({ onAddBlock, onImportDocument }: Props) {
             <button
               key={item.label}
               onClick={() => onAddBlock(item.create())}
-              className="w-full text-left p-2.5 rounded-lg border border-slate-800/80 bg-slate-900/50 hover:bg-slate-900 hover:border-slate-700 transition-all flex items-center gap-3 group/item cursor-pointer"
+              className="w-full text-left p-2.5 rounded-lg border border-zinc-850 bg-zinc-950/60 hover:bg-zinc-900 hover:border-zinc-700 transition-all flex items-center gap-3 group/item cursor-pointer"
             >
-              <div className="p-2 rounded-md bg-slate-800 text-slate-300 group-hover/item:text-blue-400 group-hover/item:bg-blue-950/40 transition-colors">
+              <div className="p-2 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 group-hover/item:text-white group-hover/item:bg-zinc-800 transition-colors">
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-slate-200 group-hover/item:text-white flex items-center justify-between">
+                <div className="text-xs font-medium text-zinc-200 group-hover/item:text-white flex items-center justify-between">
                   <span>{item.label}</span>
-                  <Plus className="w-3 h-3 text-slate-500 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                  <Plus className="w-3 h-3 text-zinc-500 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 </div>
-                <div className="text-[10px] text-slate-500 truncate">
+                <div className="text-[10px] text-zinc-500 truncate font-mono">
                   {item.description}
                 </div>
               </div>

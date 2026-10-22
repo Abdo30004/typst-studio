@@ -115,100 +115,100 @@ export function CanvaSidebar({
 
   return (
     <div className="flex h-full select-none z-20 shrink-0">
-      {/* 1. Left Vertical Icon Rail (Canva Style) */}
-      <nav className="w-16 bg-slate-950 border-r border-slate-800/80 flex flex-col items-center py-3 gap-2 shrink-0">
+      {/* 1. Left Vertical Icon Rail (Monochromatic Precision) */}
+      <nav className="w-16 bg-zinc-950 border-r border-zinc-900 flex flex-col items-center py-3 gap-2 shrink-0">
         <button
           onClick={() => toggleTab("elements")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "elements"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Elements & Cards"
         >
           <Square className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Cards</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Cards</span>
         </button>
 
         <button
           onClick={() => toggleTab("text")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "text"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Typography & Text"
         >
           <Type className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Text</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Text</span>
         </button>
 
         <button
           onClick={() => toggleTab("uploads")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "uploads"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Uploads & Assets"
         >
           <Upload className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Uploads</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Uploads</span>
         </button>
 
         <button
           onClick={() => toggleTab("templates")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "templates"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Document Templates"
         >
           <LayoutTemplate className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Presets</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Presets</span>
         </button>
 
-        <div className="w-8 border-t border-slate-800 my-1" />
+        <div className="w-8 border-t border-zinc-800 my-1" />
 
         <button
           onClick={() => toggleTab("code")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "code"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Typst Code Inspector"
         >
           <FileCode className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Typst</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Typst</span>
         </button>
 
         <button
           onClick={() => toggleTab("design")}
-          className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
             activeTab === "design"
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
           }`}
           title="Document Setup"
         >
           <Sliders className="w-5 h-5" />
-          <span className="text-[9px] font-medium mt-1">Setup</span>
+          <span className="text-[9px] font-mono tracking-tight mt-1">Setup</span>
         </button>
       </nav>
 
       {/* 2. Expandable Canva Tool Panel */}
       {activeTab && (
-        <aside className="w-72 bg-slate-900/95 backdrop-blur-md border-r border-slate-800/90 flex flex-col h-full animate-in slide-in-from-left duration-200">
+        <aside className="w-72 bg-zinc-950/98 backdrop-blur border-r border-zinc-900 flex flex-col h-full animate-in slide-in-from-left duration-200">
           {/* Header */}
-          <div className="p-3.5 border-b border-slate-800/80 flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200 capitalize">
+          <div className="p-3.5 border-b border-zinc-900 flex items-center justify-between">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-[0.12em] text-zinc-300 capitalize">
               {activeTab}
             </h3>
             <button
               onClick={() => setActiveTab(null)}
-              className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+              className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
               title="Collapse Panel"
             >
               <ChevronLeft className="w-4 h-4" />

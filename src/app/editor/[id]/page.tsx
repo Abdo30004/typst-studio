@@ -408,17 +408,17 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans">
+    <div className="h-screen w-screen flex flex-col bg-zinc-950 text-zinc-100 overflow-hidden font-sans select-none">
       <ToastContainer />
 
-      {/* Top Canva-style Studio Bar */}
-      <header className="h-14 border-b border-slate-800/90 bg-slate-950/95 px-4 flex items-center justify-between shrink-0 z-30 shadow-md">
+      {/* Top Precision Atelier Bar */}
+      <header className="h-14 border-b border-zinc-900 bg-zinc-950/95 px-4 flex items-center justify-between shrink-0 z-30">
         {/* Left: Branding, Document title, Auto-save & History */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="p-2 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-white transition-colors"
-            title="Back to Dashboard"
+            className="p-1.5 rounded-md hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            title="Back to Document Ledger"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -432,128 +432,131 @@ export default function EditorPage() {
                   prev ? { ...prev, title: e.target.value } : null
                 )
               }
-              className="bg-transparent hover:bg-slate-900/80 focus:bg-slate-900 border border-transparent focus:border-slate-700 rounded-lg px-2.5 py-1 text-sm font-bold text-slate-100 outline-none w-56 sm:w-64 truncate transition-all"
+              className="bg-transparent hover:bg-zinc-900/80 focus:bg-zinc-900 border border-transparent focus:border-zinc-700 rounded-md px-2 py-1 text-sm font-semibold text-zinc-100 outline-none w-56 sm:w-64 truncate transition-all"
               placeholder="Untitled Document"
             />
-            <span className="text-[10px] bg-blue-950/80 text-blue-400 border border-blue-800/40 px-2 py-0.5 rounded-full uppercase font-mono hidden md:inline">
+            <span className="text-[10px] bg-zinc-900 text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded font-mono uppercase tracking-wider hidden md:inline">
               {documentState.preset.replace("_", " ")}
             </span>
           </div>
 
           {/* Save status badge */}
-          <div className="text-[11px] text-slate-500 flex items-center gap-1">
+          <div className="text-[11px] font-mono text-zinc-500 flex items-center gap-1.5">
             {isSaving ? (
               <>
-                <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                <Loader2 className="w-3 h-3 animate-spin text-white" />
                 <span>Saving...</span>
               </>
             ) : saveSuccess ? (
               <>
-                <Check className="w-3 h-3 text-emerald-400" />
-                <span className="text-emerald-400">Saved</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-zinc-300">Saved</span>
               </>
             ) : (
-              <span>All changes saved</span>
+              <>
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                <span>Synced</span>
+              </>
             )}
           </div>
 
           {/* Undo / Redo buttons */}
-          <div className="flex items-center gap-0.5 border-l border-slate-800 pl-2">
+          <div className="flex items-center gap-0.5 border-l border-zinc-800/80 pl-2">
             <button
               onClick={undo}
               disabled={!canUndo}
               title="Undo (Ctrl+Z)"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-900 disabled:opacity-30 disabled:pointer-events-none transition-colors"
             >
-              <Undo2 className="w-4 h-4" />
+              <Undo2 className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={redo}
               disabled={!canRedo}
               title="Redo (Ctrl+Y)"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-900 disabled:opacity-30 disabled:pointer-events-none transition-colors"
             >
-              <Redo2 className="w-4 h-4" />
+              <Redo2 className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Center: View Switcher */}
-        <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+        {/* Center: High-Contrast Monochromatic View Switcher */}
+        <div className="flex items-center bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 text-xs">
           <button
             onClick={() => setViewMode("interactive")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all font-mono text-[11px] ${
               viewMode === "interactive"
-                ? "bg-blue-600 text-white font-semibold shadow-md"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-zinc-950 font-bold shadow-xs"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
             title="Direct Click-to-Edit on Document Sheet"
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3 h-3" />
             <span>Interactive Sheet</span>
           </button>
 
           <button
             onClick={() => setViewMode("split")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all font-mono text-[11px] ${
               viewMode === "split"
-                ? "bg-blue-600 text-white font-semibold shadow-md"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-zinc-950 font-bold shadow-xs"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
             title="Split Side-by-Side: Blocks & Sheet"
           >
-            <Columns className="w-3.5 h-3.5" />
+            <Columns className="w-3 h-3" />
             <span>Split View</span>
           </button>
 
           <button
             onClick={() => setViewMode("builder")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all font-mono text-[11px] ${
               viewMode === "builder"
-                ? "bg-blue-600 text-white font-semibold shadow-md"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-zinc-950 font-bold shadow-xs"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
             title="Drag & Drop Block Sorter"
           >
-            <Edit3 className="w-3.5 h-3.5" />
+            <Edit3 className="w-3 h-3" />
             <span>Flow Builder</span>
           </button>
         </div>
 
-        {/* Right: Quick actions & Canva Export Button */}
+        {/* Right: Quick actions & High-Contrast White Export Button */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsCodeDrawerOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/80 bg-slate-900/80 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-mono font-medium transition-colors"
             title="Inspect Typst source code"
           >
-            <Code className="w-3.5 h-3.5 text-blue-400" />
+            <Code className="w-3.5 h-3.5 text-zinc-400" />
             <span>Typst Code</span>
           </button>
 
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/80 bg-slate-900/80 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-mono transition-colors"
           >
-            <Save className="w-3.5 h-3.5 text-slate-400" />
+            <Save className="w-3.5 h-3.5 text-zinc-400" />
             <span>Save</span>
           </button>
 
-          {/* Canva-style Gradient Export Button */}
+          {/* Stark Monochromatic Export Button */}
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-xs"
           >
             {isExporting ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
                 <span>Compiling...</span>
               </>
             ) : (
               <>
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-zinc-950" />
                 <span>Export PDF</span>
               </>
             )}
@@ -573,7 +576,7 @@ export default function EditorPage() {
         />
 
         {/* Central Work Area */}
-        <div className="flex-1 flex overflow-hidden bg-slate-950">
+        <div className="flex-1 flex overflow-hidden bg-[#09090b]">
           {viewMode === "split" ? (
             <ResizableSplitView
               leftTitle="Flow Builder"
