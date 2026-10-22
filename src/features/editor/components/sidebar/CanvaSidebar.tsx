@@ -29,6 +29,12 @@ import {
   Wand2,
   Moon,
   Sun,
+  LayoutGrid,
+  Quote,
+  Clock,
+  PenTool,
+  Tag,
+  Percent,
 } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { applyPaletteToDocument, getPalette } from "@/lib/theme/palettes";
@@ -42,7 +48,15 @@ interface Props {
   typstCode: string;
 }
 
-type TabType = "elements" | "text" | "uploads" | "templates" | "theme" | "code" | "design";
+type TabType =
+  | "elements"
+  | "layouts"
+  | "text"
+  | "uploads"
+  | "templates"
+  | "theme"
+  | "code"
+  | "design";
 
 export function CanvaSidebar({
   documentState,
@@ -154,6 +168,19 @@ export function CanvaSidebar({
         >
           <Square className="w-5 h-5" />
           <span className="text-[9px] font-mono tracking-tight mt-1">Cards</span>
+        </button>
+
+        <button
+          onClick={() => toggleTab("layouts")}
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
+            activeTab === "layouts"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
+          }`}
+          title="Grid Layouts & Splits"
+        >
+          <LayoutGrid className="w-5 h-5" />
+          <span className="text-[9px] font-mono tracking-tight mt-1">Layouts</span>
         </button>
 
         <button
@@ -435,6 +462,541 @@ export function CanvaSidebar({
                     </button>
                   </div>
                 </div>
+
+                <div>
+                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                    Publishing Elements
+                  </span>
+                  <div className="space-y-1.5">
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "quote",
+                          quote: "Simplicity is the prerequisite for reliability.",
+                          author: "Edsger W. Dijkstra",
+                          citation: "EWD 498",
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-amber-500 text-xs text-slate-200"
+                    >
+                      <Quote className="w-4 h-4 text-amber-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Pull Quote</span>
+                        <span className="text-[10px] text-slate-500">Editorial quote with citation</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "key_value",
+                          title: "Document Metadata",
+                          columnsCount: 2,
+                          items: [
+                            { id: "kv-1", key: "AUTHOR", value: "Architecture Team" },
+                            { id: "kv-2", key: "STATUS", value: "Approved" },
+                            { id: "kv-3", key: "VERSION", value: "v2.4.0" },
+                            { id: "kv-4", key: "SECURITY", value: "Confidential" },
+                          ],
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-cyan-500 text-xs text-slate-200"
+                    >
+                      <LayoutGrid className="w-4 h-4 text-cyan-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Property Grid</span>
+                        <span className="text-[10px] text-slate-500">Key-value metadata specs</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "timeline",
+                          title: "Delivery Milestones",
+                          orientation: "vertical",
+                          steps: [
+                            {
+                              id: "tl-1",
+                              stepNumber: "01",
+                              title: "Architecture Spec",
+                              date: "Phase 1",
+                              description: "Define schemas, contracts, and Typst boundaries.",
+                            },
+                            {
+                              id: "tl-2",
+                              stepNumber: "02",
+                              title: "Interactive Canvas",
+                              date: "Phase 2",
+                              description: "Real-time visual editor with zero regression tests.",
+                            },
+                            {
+                              id: "tl-3",
+                              stepNumber: "03",
+                              title: "Production Launch",
+                              date: "Phase 3",
+                              description: "Export high-resolution vector PDF documents.",
+                            },
+                          ],
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-emerald-500 text-xs text-slate-200"
+                    >
+                      <Clock className="w-4 h-4 text-emerald-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Process Timeline</span>
+                        <span className="text-[10px] text-slate-500">Milestones and stage progression</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "signature",
+                          hasSealBox: true,
+                          parties: [
+                            {
+                              id: "sig-1",
+                              name: "Marcus Vance",
+                              title: "Managing Director",
+                              role: "Client Principal",
+                              date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+                            },
+                            {
+                              id: "sig-2",
+                              name: "Elena Rostova",
+                              title: "Chief Architect",
+                              role: "Contractor Lead",
+                              date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+                            },
+                          ],
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-rose-500 text-xs text-slate-200"
+                    >
+                      <PenTool className="w-4 h-4 text-rose-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Signatures & Seal</span>
+                        <span className="text-[10px] text-slate-500">Legal contract sign-off block</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "tags",
+                          category: "Taxonomy",
+                          tags: [
+                            { id: "t-1", label: "Production" },
+                            { id: "t-2", label: "Typst Native" },
+                            { id: "t-3", label: "WASM" },
+                          ],
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-indigo-500 text-xs text-slate-200"
+                    >
+                      <Tag className="w-4 h-4 text-indigo-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Pill Tags</span>
+                        <span className="text-[10px] text-slate-500">Categories and skill badges</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "math",
+                          formula: "sum_(k=1)^n k^2 = (n(n+1)(2n+1)) / 6",
+                          equationNumber: "1",
+                          caption: "Sum of squares identity",
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-teal-500 text-xs text-slate-200"
+                    >
+                      <Code2 className="w-4 h-4 text-teal-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Math Equation</span>
+                        <span className="text-[10px] text-slate-500">Numbered LaTeX/Typst formula</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onAddBlock({
+                          id: "b-" + Math.random().toString(36).substring(2, 9),
+                          type: "progress",
+                          label: "Milestone Target",
+                          percentage: 82,
+                          target: "100%",
+                        })
+                      }
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-slate-800/80 bg-slate-950/50 hover:bg-slate-950 hover:border-sky-500 text-xs text-slate-200"
+                    >
+                      <Percent className="w-4 h-4 text-sky-400" />
+                      <div className="flex-1 text-left">
+                        <span className="font-semibold block">Progress Bar</span>
+                        <span className="text-[10px] text-slate-500">Completion metric bar</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Layouts Tab (Complex Layout Presets) */}
+            {activeTab === "layouts" && (
+              <div className="space-y-3">
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  Complex Grid Presets
+                </span>
+
+                {/* 1. Image - Title - Image */}
+                <button
+                  onClick={() =>
+                    onAddBlock({
+                      id: "b-" + Math.random().toString(36).substring(2, 9),
+                      type: "grid_layout",
+                      presetId: "image_title_image",
+                      tracks: ["1fr", "2fr", "1fr"],
+                      gutter: 14,
+                      verticalAlign: "center",
+                      slots: [
+                        {
+                          id: "slot-1",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "image",
+                              url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+                              width: "100%",
+                              align: "center",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-2",
+                          widthFraction: "2fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "heading",
+                              level: 1,
+                              align: "center",
+                              text: "EXECUTIVE REPORT",
+                              subtitle: "Strategic Review & Architecture Plan",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-3",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "image",
+                              url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+                              width: "100%",
+                              align: "center",
+                            },
+                          ],
+                        },
+                      ],
+                    })
+                  }
+                  className="w-full p-2.5 rounded-lg border border-slate-800 bg-slate-950/60 hover:bg-slate-950 hover:border-blue-500 text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-200">Image - Title - Image</span>
+                    <span className="text-[9px] font-mono bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">
+                      1 : 2 : 1
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1 p-1 bg-black/40 rounded border border-slate-800/80 mb-2">
+                    <div className="h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Img</div>
+                    <div className="col-span-2 h-6 bg-blue-600/30 rounded flex items-center justify-center text-[8px] font-mono text-blue-200 font-bold">TITLE</div>
+                    <div className="h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Img</div>
+                  </div>
+                  <div className="text-[10px] text-slate-500">Horizon-aligned header with brand logos and centered title</div>
+                </button>
+
+                {/* 2. Split 2:1 */}
+                <button
+                  onClick={() =>
+                    onAddBlock({
+                      id: "b-" + Math.random().toString(36).substring(2, 9),
+                      type: "grid_layout",
+                      presetId: "split_2_1",
+                      tracks: ["2fr", "1fr"],
+                      gutter: 14,
+                      verticalAlign: "top",
+                      slots: [
+                        {
+                          id: "slot-1",
+                          widthFraction: "2fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "heading",
+                              level: 2,
+                              align: "left",
+                              text: "Executive Summary",
+                            },
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "text",
+                              content: "Comprehensive overview of the platform architecture, deployment pipelines, and quantitative performance metrics across cloud regions.",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-2",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card_metric",
+                              label: "GLOBAL UPTIME",
+                              value: "99.98%",
+                              change: "+0.15% MoM",
+                              changeType: "positive",
+                            },
+                          ],
+                        },
+                      ],
+                    })
+                  }
+                  className="w-full p-2.5 rounded-lg border border-slate-800 bg-slate-950/60 hover:bg-slate-950 hover:border-purple-500 text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-200">Split 2:1 (Main + KPI)</span>
+                    <span className="text-[9px] font-mono bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded">
+                      2 : 1
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 p-1 bg-black/40 rounded border border-slate-800/80 mb-2">
+                    <div className="col-span-2 h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Feature Content</div>
+                    <div className="h-6 bg-purple-600/30 rounded flex items-center justify-center text-[8px] font-mono text-purple-200 font-bold">KPI</div>
+                  </div>
+                  <div className="text-[10px] text-slate-500">Asymmetric layout pairing primary copy with a high-impact metric</div>
+                </button>
+
+                {/* 3. Hero 1:2:1 */}
+                <button
+                  onClick={() =>
+                    onAddBlock({
+                      id: "b-" + Math.random().toString(36).substring(2, 9),
+                      type: "grid_layout",
+                      presetId: "hero_1_2_1",
+                      tracks: ["1fr", "2fr", "1fr"],
+                      gutter: 12,
+                      verticalAlign: "top",
+                      slots: [
+                        {
+                          id: "slot-1",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card_metric",
+                              label: "EFFICIENCY",
+                              value: "4.8x",
+                              change: "Typst Engine",
+                              changeType: "positive",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-2",
+                          widthFraction: "2fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "heading",
+                              level: 2,
+                              align: "center",
+                              text: "Core Innovation",
+                              subtitle: "Precision Document Engineering",
+                            },
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "text",
+                              content: "Built on high-performance vector rendering with full typographic hierarchy and zero runtime overhead.",
+                              align: "center",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-3",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card_metric",
+                              label: "LATENCY",
+                              value: "<12ms",
+                              change: "WASM Native",
+                              changeType: "positive",
+                            },
+                          ],
+                        },
+                      ],
+                    })
+                  }
+                  className="w-full p-2.5 rounded-lg border border-slate-800 bg-slate-950/60 hover:bg-slate-950 hover:border-emerald-500 text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-200">Hero 1:2:1 (Balanced Showcase)</span>
+                    <span className="text-[9px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">
+                      1 : 2 : 1
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1 p-1 bg-black/40 rounded border border-slate-800/80 mb-2">
+                    <div className="h-6 bg-emerald-600/30 rounded flex items-center justify-center text-[8px] font-mono text-emerald-200">Metric</div>
+                    <div className="col-span-2 h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Feature Text</div>
+                    <div className="h-6 bg-emerald-600/30 rounded flex items-center justify-center text-[8px] font-mono text-emerald-200">Metric</div>
+                  </div>
+                  <div className="text-[10px] text-slate-500">Symmetrical 3-column layout framing editorial content between KPIs</div>
+                </button>
+
+                {/* 4. 3-Deck Equal Columns */}
+                <button
+                  onClick={() =>
+                    onAddBlock({
+                      id: "b-" + Math.random().toString(36).substring(2, 9),
+                      type: "grid_layout",
+                      presetId: "deck_3",
+                      tracks: ["1fr", "1fr", "1fr"],
+                      gutter: 12,
+                      verticalAlign: "top",
+                      slots: [
+                        {
+                          id: "slot-1",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card",
+                              title: "Phase 1: Discovery",
+                              content: "Requirements gathering, user interviews, and constraint mapping.",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-2",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card",
+                              title: "Phase 2: Execution",
+                              content: "Iterative sprints, unit testing, and continuous deployment validation.",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-3",
+                          widthFraction: "1fr",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card",
+                              title: "Phase 3: Launch",
+                              content: "Staged canary rollouts, telemetry monitoring, and SLA verification.",
+                            },
+                          ],
+                        },
+                      ],
+                    })
+                  }
+                  className="w-full p-2.5 rounded-lg border border-slate-800 bg-slate-950/60 hover:bg-slate-950 hover:border-amber-500 text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-200">3-Deck Column Cards</span>
+                    <span className="text-[9px] font-mono bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">
+                      1 : 1 : 1
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 p-1 bg-black/40 rounded border border-slate-800/80 mb-2">
+                    <div className="h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Col 1</div>
+                    <div className="h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Col 2</div>
+                    <div className="h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Col 3</div>
+                  </div>
+                  <div className="text-[10px] text-slate-500">Three uniform columns ideal for stages, pricing tiers, or features</div>
+                </button>
+
+                {/* 5. Sidebar + Main (30% / 70%) */}
+                <button
+                  onClick={() =>
+                    onAddBlock({
+                      id: "b-" + Math.random().toString(36).substring(2, 9),
+                      type: "grid_layout",
+                      presetId: "sidebar_main",
+                      tracks: ["30%", "70%"],
+                      gutter: 14,
+                      verticalAlign: "top",
+                      slots: [
+                        {
+                          id: "slot-1",
+                          widthFraction: "30%",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "card_profile",
+                              name: "Marcus Aurelius",
+                              role: "Chief Architect",
+                              bio: "Specializing in deterministic systems and typographic rigor.",
+                              contact: "marcus@typst.io",
+                            },
+                          ],
+                        },
+                        {
+                          id: "slot-2",
+                          widthFraction: "70%",
+                          blocks: [
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "heading",
+                              level: 2,
+                              align: "left",
+                              text: "Architectural Philosophy",
+                            },
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "text",
+                              content: "Simplicity is the prerequisite for reliability. Every component follows strict data contracts and explicit typographic flow.",
+                            },
+                            {
+                              id: "b-" + Math.random().toString(36).substring(2, 9),
+                              type: "quote",
+                              quote: "Quality is not an act, it is a habit.",
+                              author: "Aristotle",
+                            },
+                          ],
+                        },
+                      ],
+                    })
+                  }
+                  className="w-full p-2.5 rounded-lg border border-slate-800 bg-slate-950/60 hover:bg-slate-950 hover:border-cyan-500 text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-200">Sidebar + Main</span>
+                    <span className="text-[9px] font-mono bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded">
+                      30% : 70%
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-10 gap-1 p-1 bg-black/40 rounded border border-slate-800/80 mb-2">
+                    <div className="col-span-3 h-6 bg-cyan-600/30 rounded flex items-center justify-center text-[8px] font-mono text-cyan-200">Bio</div>
+                    <div className="col-span-7 h-6 bg-slate-700/60 rounded flex items-center justify-center text-[8px] font-mono text-slate-300">Document Flow</div>
+                  </div>
+                  <div className="text-[10px] text-slate-500">Sidebar layout for resumes, technical manuals, and whitepapers</div>
+                </button>
               </div>
             )}
 

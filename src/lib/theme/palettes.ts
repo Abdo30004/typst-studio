@@ -222,7 +222,7 @@ export function getPalette(id: PaletteId | string): ThemePalette {
 /**
  * Harmonize a block's colors to a ThemePalette
  */
-function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBlock {
+export function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBlock {
   switch (block.type) {
     case "card": {
       const c = block as CardBlock;
@@ -284,6 +284,41 @@ function harmonizeBlock(block: DocumentBlock, palette: ThemePalette): DocumentBl
           ...col,
           blocks: col.blocks.map((innerB) => harmonizeBlock(innerB, palette)),
         })),
+      };
+    }
+    case "grid_layout": {
+      const grid = block as any;
+      return {
+        ...grid,
+        slots: grid.slots.map((s: any) => ({
+          ...s,
+          blocks: s.blocks.map((innerB: DocumentBlock) => harmonizeBlock(innerB, palette)),
+        })),
+      };
+    }
+    case "quote": {
+      const q = block as any;
+      return {
+        ...q,
+        borderColor: palette.defaults.accent,
+        bgColor: palette.defaults.calloutBg || (palette.defaults.cardFill === "#09090b" ? "#18181b" : "#fafafa"),
+      };
+    }
+    case "tags": {
+      const t = block as any;
+      return {
+        ...t,
+        tags: t.tags.map((tag: any) => ({
+          ...tag,
+          color: tag.color || palette.defaults.accent,
+        })),
+      };
+    }
+    case "progress": {
+      const pr = block as any;
+      return {
+        ...pr,
+        color: palette.defaults.accent,
       };
     }
     default:

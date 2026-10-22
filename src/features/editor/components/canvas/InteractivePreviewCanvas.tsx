@@ -15,6 +15,18 @@ import {
   ImageBlock,
   ColumnsBlock,
   DividerBlock,
+  GridLayoutBlock,
+  QuoteBlock,
+  KeyValueBlock,
+  TimelineBlock,
+  SignatureBlock,
+  TagsBlock,
+  MathBlock,
+  ProgressBlock,
+  KeyValueItem,
+  TimelineStep,
+  SignatureParty,
+  TagItem,
 } from "@/types/document";
 import { FloatingToolbar } from "../toolbar/FloatingToolbar";
 import { AutoResizeTextarea } from "@/components/ui/AutoResizeTextarea";
@@ -38,6 +50,9 @@ import {
   Upload,
   AlertCircle,
   Loader2,
+  LayoutGrid,
+  Quote as QuoteIcon,
+  X,
 } from "lucide-react";
 
 interface Props {
@@ -300,19 +315,28 @@ export function InteractivePreviewCanvas({
   const renderEditableBlock = (b: DocumentBlock) => {
     const isSelected = selectedBlockId === b.id;
 
-    const blockTypeLabel = {
-      heading: "Heading",
-      text: "Text Paragraph",
-      card: "Custom Card",
-      card_callout: "Callout Banner",
-      card_metric: "KPI Metric",
-      card_profile: "Author Profile",
-      columns: "Multi-Column",
-      image: "Media Image",
-      table: "Data Table",
-      code: "Code Snippet",
-      divider: "Divider",
-    }[b.type] || b.type;
+    const blockTypeLabel: string =
+      ({
+        heading: "Heading",
+        text: "Text Paragraph",
+        card: "Custom Card",
+        card_callout: "Callout Banner",
+        card_metric: "KPI Metric",
+        card_profile: "Author Profile",
+        columns: "Multi-Column",
+        image: "Media Image",
+        table: "Data Table",
+        code: "Code Snippet",
+        divider: "Divider",
+        grid_layout: "Grid Layout",
+        quote: "Pull Quote",
+        key_value: "Property Grid",
+        timeline: "Process Timeline",
+        signature: "Signatures",
+        tags: "Pill Tags",
+        math: "Math Equation",
+        progress: "Progress Bar",
+      } as Record<string, string>)[b.type] || b.type;
 
     let contentNode: React.ReactNode = null;
 
@@ -1000,6 +1024,843 @@ export function InteractivePreviewCanvas({
                     {s}
                   </button>
                 ))}
+              </div>
+            )}
+          </div>
+        );
+        break;
+      }
+
+      // 12. Universal Multi-Track Grid Layout
+      case "grid_layout": {
+        const grid = b as GridLayoutBlock;
+        const tracks = grid.tracks && grid.tracks.length > 0 ? grid.tracks : ["1fr", "1fr"];
+        const gridTemplateColumns = tracks.join(" ");
+        const alignItems =
+          grid.verticalAlign === "center"
+            ? "center"
+            : grid.verticalAlign === "bottom"
+            ? "end"
+            : "start";
+
+        const handleAddBlockToSlot = (
+          slotId: string,
+          type: "heading" | "text" | "image" | "card_metric" | "card" | "quote" | "tags"
+        ) => {
+          let newChild: DocumentBlock;
+          const id = "b-" + Math.random().toString(36).substring(2, 9);
+          if (type === "heading") {
+            newChild = { id, type: "heading", level: 2, text: "Grid Title", align: "left" };
+          } else if (type === "image") {
+            newChild = {
+              id,
+              type: "image",
+              url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+              width: "100%",
+              align: "center",
+              caption: "Figure",
+            };
+          } else if (type === "card_metric") {
+            newChild = {
+              id,
+              type: "card_metric",
+              label: "METRIC",
+              value: "99.9%",
+              change: "+3.2%",
+              changeType: "positive",
+            };
+          } else if (type === "card") {
+            newChild = { id, type: "card", title: "Highlight", content: "Details here..." };
+          } else if (type === "quote") {
+            newChild = {
+              id,
+              type: "quote",
+              quote: "Precision in layout builds trust.",
+              author: "Editorial Lead",
+            };
+          } else if (type === "tags") {
+            newChild = {
+              id,
+              type: "tags",
+              category: "Tags",
+              tags: [
+                { id: "t-1", label: "Active" },
+                { id: "t-2", label: "Verified" },
+              ],
+            };
+          } else {
+            newChild = { id, type: "text", content: "Column text content..." };
+          }
+
+          const updatedSlots = grid.slots.map((s) =>
+            s.id === slotId ? { ...s, blocks: [...s.blocks, newChild] } : s
+          );
+          onUpdateBlock(grid.id, { slots: updatedSlots });
+        };
+
+        contentNode = (
+          <div onClick={() => onSelectBlock(grid.id)} className="space-y-2">
+            {isSelected && (
+              <div className="flex items-center justify-between bg-zinc-100 border border-zinc-300 rounded px-2.5 py-1 text-[11px] font-mono text-zinc-700">
+                <span className="font-semibold flex items-center gap-1.5 text-zinc-900">
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  Grid Layout ({tracks.join(" : ")})
+                </span>
+                <div className="flex items-center gap-1.5 text-[10px]">
+                  <span>Align:</span>
+                  {(["top", "center", "bottom"] as const).map((va) => (
+                    <button
+                      key={va}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdateBlock(grid.id, { verticalAlign: va });
+                      }}
+                      className={`px-1.5 py-0.5 rounded capitalize ${
+                        grid.verticalAlign === va
+                          ? "bg-zinc-950 text-white font-bold"
+                          : "bg-white text-zinc-700 border border-zinc-300"
+                      }`}
+                    >
+                      {va}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns,
+                gap: `${grid.gutter || 12}pt`,
+                alignItems,
+              }}
+              className="w-full"
+            >
+              {(grid.slots || []).map((slot, sIdx) => (
+                <div
+                  key={slot.id || sIdx}
+                  className="space-y-2 min-h-[70px] p-2 rounded border border-dashed border-zinc-200/90 bg-zinc-50/40 relative group/slot transition-all"
+                >
+                  <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pb-1 border-b border-zinc-200/60">
+                    <span>
+                      Track {sIdx + 1} ({slot.widthFraction || tracks[sIdx] || "1fr"})
+                    </span>
+                  </div>
+
+                  {slot.blocks.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-4 text-center">
+                      <p className="text-[11px] text-zinc-400 font-mono mb-2">Empty column</p>
+                      <div className="flex flex-wrap items-center justify-center gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddBlockToSlot(slot.id, "heading");
+                          }}
+                          className="px-2 py-0.5 rounded bg-white hover:bg-zinc-100 border border-zinc-300 text-[10px] text-zinc-700 font-mono"
+                        >
+                          + Title
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddBlockToSlot(slot.id, "image");
+                          }}
+                          className="px-2 py-0.5 rounded bg-white hover:bg-zinc-100 border border-zinc-300 text-[10px] text-zinc-700 font-mono"
+                        >
+                          + Image
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddBlockToSlot(slot.id, "text");
+                          }}
+                          className="px-2 py-0.5 rounded bg-white hover:bg-zinc-100 border border-zinc-300 text-[10px] text-zinc-700 font-mono"
+                        >
+                          + Text
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {slot.blocks.map((childBlock) => renderEditableBlock(childBlock))}
+                      {isSelected && (
+                        <div className="pt-1 flex items-center justify-center gap-1 border-t border-dashed border-zinc-200">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddBlockToSlot(slot.id, "text");
+                            }}
+                            className="px-2 py-0.5 text-[9px] font-mono rounded bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-600"
+                          >
+                            + Text
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddBlockToSlot(slot.id, "image");
+                            }}
+                            className="px-2 py-0.5 text-[9px] font-mono rounded bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-600"
+                          >
+                            + Image
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+        break;
+      }
+
+      // 13. Pull Quote Block
+      case "quote": {
+        const q = b as QuoteBlock;
+        const border = q.borderColor || documentState.settings.accentColor || "#0f172a";
+        const bg = q.bgColor || "#f8fafc";
+        const text = q.textColor || "#334155";
+
+        contentNode = (
+          <div
+            onClick={() => onSelectBlock(q.id)}
+            style={{
+              backgroundColor: bg,
+              borderLeftColor: border,
+              borderLeftWidth: "4px",
+            }}
+            className="p-3.5 rounded-r-md shadow-xs space-y-2 transition-all"
+          >
+            <AutoResizeTextarea
+              value={q.quote}
+              onValueChange={(val) => onUpdateBlock(q.id, { quote: val })}
+              placeholder="Type quote or statement here..."
+              style={{ color: text }}
+              className={`italic font-serif text-xs sm:text-sm leading-relaxed ${
+                isSelected
+                  ? "bg-white/90 rounded p-1.5 ring-1 ring-zinc-400"
+                  : "hover:bg-white/50 rounded p-1.5"
+              }`}
+            />
+            <div className="flex items-center justify-end gap-2 text-right pt-1 border-t border-black/5">
+              <span className="text-zinc-400 text-xs">—</span>
+              <AutoResizeTextarea
+                value={q.author || ""}
+                onValueChange={(val) => onUpdateBlock(q.id, { author: val })}
+                placeholder="Author name..."
+                style={{ color: "#0f172a" }}
+                className={`text-xs font-bold ${
+                  isSelected
+                    ? "bg-white/90 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                    : "hover:bg-white/50 rounded px-1.5 py-0.5"
+                }`}
+              />
+              <AutoResizeTextarea
+                value={q.citation || ""}
+                onValueChange={(val) => onUpdateBlock(q.id, { citation: val })}
+                placeholder="Title / Source (optional)"
+                style={{ color: "#64748b" }}
+                className={`text-[11px] font-normal ${
+                  isSelected
+                    ? "bg-white/90 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                    : "hover:bg-white/50 rounded px-1.5 py-0.5"
+                }`}
+              />
+            </div>
+          </div>
+        );
+        break;
+      }
+
+      // 14. Key-Value Metadata Grid
+      case "key_value": {
+        const kv = b as KeyValueBlock;
+        const colsCount = kv.columnsCount || 2;
+        const gridColsClass =
+          colsCount === 3 ? "grid-cols-3" : colsCount === 4 ? "grid-cols-4" : "grid-cols-2";
+
+        const updateItem = (index: number, updatedItem: Partial<KeyValueItem>) => {
+          const newItems = [...kv.items];
+          newItems[index] = { ...newItems[index], ...updatedItem };
+          onUpdateBlock(kv.id, { items: newItems });
+        };
+
+        const addItem = () => {
+          const newItem: KeyValueItem = {
+            id: "kv-" + Math.random().toString(36).substring(2, 9),
+            key: "NEW LABEL",
+            value: "Value",
+          };
+          onUpdateBlock(kv.id, { items: [...kv.items, newItem] });
+        };
+
+        const removeItem = (index: number) => {
+          if (kv.items.length <= 1) return;
+          const newItems = kv.items.filter((_, i) => i !== index);
+          onUpdateBlock(kv.id, { items: newItems });
+        };
+
+        contentNode = (
+          <div onClick={() => onSelectBlock(kv.id)} className="space-y-2 my-1">
+            <AutoResizeTextarea
+              value={kv.title || ""}
+              onValueChange={(val) => onUpdateBlock(kv.id, { title: val })}
+              placeholder="Metadata Title (optional)..."
+              className={`text-xs font-bold text-zinc-900 ${
+                isSelected
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
+              }`}
+            />
+
+            <div className={`grid gap-2 ${gridColsClass}`}>
+              {kv.items.map((item, idx) => (
+                <div
+                  key={item.id || idx}
+                  className="bg-slate-50 border border-slate-200 rounded p-2 text-xs relative group/kv"
+                >
+                  <AutoResizeTextarea
+                    value={item.key}
+                    onValueChange={(val) => updateItem(idx, { key: val })}
+                    placeholder="KEY..."
+                    style={{ color: "#64748b" }}
+                    className="font-mono text-[10px] font-bold uppercase tracking-wider block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                  />
+                  <AutoResizeTextarea
+                    value={item.value}
+                    onValueChange={(val) => updateItem(idx, { value: val })}
+                    placeholder="Value..."
+                    style={{ color: "#0f172a" }}
+                    className="font-semibold text-xs mt-0.5 block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                  />
+                  {isSelected && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(idx);
+                      }}
+                      className="absolute top-1 right-1 opacity-0 group-hover/kv:opacity-100 p-0.5 text-zinc-400 hover:text-red-500 rounded bg-white shadow-xs"
+                      title="Remove item"
+                    >
+                      <Trash2 className="w-2.5 h-2.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {isSelected && (
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addItem();
+                  }}
+                  className="px-2 py-0.5 rounded bg-zinc-950 text-white hover:bg-zinc-800 text-[10px] font-mono font-medium flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add Property</span>
+                </button>
+                <div className="flex items-center gap-1 font-mono text-[10px]">
+                  <span className="text-zinc-500">Columns:</span>
+                  {([2, 3, 4] as const).map((c) => (
+                    <button
+                      key={c}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdateBlock(kv.id, { columnsCount: c });
+                      }}
+                      className={`px-1.5 py-0.5 rounded ${
+                        colsCount === c
+                          ? "bg-zinc-950 text-white font-bold"
+                          : "bg-zinc-100 text-zinc-700"
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+        break;
+      }
+
+      // 15. Process Timeline Block
+      case "timeline": {
+        const tl = b as TimelineBlock;
+        const isHorizontal = tl.orientation === "horizontal";
+        const accent = documentState.settings.accentColor || "#0f172a";
+
+        const updateStep = (index: number, updated: Partial<TimelineStep>) => {
+          const newSteps = [...tl.steps];
+          newSteps[index] = { ...newSteps[index], ...updated };
+          onUpdateBlock(tl.id, { steps: newSteps });
+        };
+
+        const addStep = () => {
+          const newStep: TimelineStep = {
+            id: "tl-" + Math.random().toString(36).substring(2, 9),
+            stepNumber: String(tl.steps.length + 1).padStart(2, "0"),
+            title: "New Milestone",
+            date: "Phase " + (tl.steps.length + 1),
+            description: "Description of the milestone or deliverables.",
+          };
+          onUpdateBlock(tl.id, { steps: [...tl.steps, newStep] });
+        };
+
+        const removeStep = (index: number) => {
+          if (tl.steps.length <= 1) return;
+          const newSteps = tl.steps.filter((_, i) => i !== index);
+          onUpdateBlock(tl.id, { steps: newSteps });
+        };
+
+        contentNode = (
+          <div onClick={() => onSelectBlock(tl.id)} className="space-y-3 my-1">
+            <AutoResizeTextarea
+              value={tl.title || ""}
+              onValueChange={(val) => onUpdateBlock(tl.id, { title: val })}
+              placeholder="Timeline Title (optional)..."
+              className={`text-xs font-bold text-zinc-900 ${
+                isSelected
+                  ? "bg-zinc-100/80 rounded px-1.5 py-0.5 ring-1 ring-zinc-300"
+                  : "hover:bg-zinc-100/50 rounded px-1.5 py-0.5"
+              }`}
+            />
+
+            {isHorizontal ? (
+              <div
+                className="grid gap-3"
+                style={{ gridTemplateColumns: `repeat(${Math.max(1, tl.steps.length)}, 1fr)` }}
+              >
+                {tl.steps.map((step, idx) => (
+                  <div key={step.id || idx} className="space-y-1 text-xs relative group/tl">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        style={{ backgroundColor: accent }}
+                        className="inline-block text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-full"
+                      >
+                        {step.stepNumber}
+                      </span>
+                      {isSelected && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeStep(idx);
+                          }}
+                          className="opacity-0 group-hover/tl:opacity-100 p-0.5 text-zinc-400 hover:text-red-500 rounded bg-white shadow-xs ml-auto"
+                          title="Remove step"
+                        >
+                          <Trash2 className="w-2.5 h-2.5" />
+                        </button>
+                      )}
+                    </div>
+                    <AutoResizeTextarea
+                      value={step.title}
+                      onValueChange={(val) => updateStep(idx, { title: val })}
+                      placeholder="Step Title..."
+                      style={{ color: "#0f172a" }}
+                      className="font-bold text-xs block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                    <AutoResizeTextarea
+                      value={step.date || ""}
+                      onValueChange={(val) => updateStep(idx, { date: val })}
+                      placeholder="Date / Stage..."
+                      style={{ color: "#64748b" }}
+                      className="text-[10px] block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                    <AutoResizeTextarea
+                      value={step.description}
+                      onValueChange={(val) => updateStep(idx, { description: val })}
+                      placeholder="Details..."
+                      style={{ color: "#475569" }}
+                      className="text-[11px] block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {tl.steps.map((step, idx) => (
+                  <div
+                    key={step.id || idx}
+                    className="flex items-start gap-2.5 text-xs relative group/tl"
+                  >
+                    <span
+                      style={{ backgroundColor: accent }}
+                      className="shrink-0 text-white text-[10px] font-mono font-bold w-6 h-6 flex items-center justify-center rounded-full mt-0.5"
+                    >
+                      {step.stepNumber}
+                    </span>
+                    <div className="flex-1 min-w-0 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <AutoResizeTextarea
+                          value={step.title}
+                          onValueChange={(val) => updateStep(idx, { title: val })}
+                          placeholder="Step title..."
+                          style={{ color: "#0f172a" }}
+                          className="font-bold text-xs flex-1 bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                        />
+                        <AutoResizeTextarea
+                          value={step.date || ""}
+                          onValueChange={(val) => updateStep(idx, { date: val })}
+                          placeholder="Date..."
+                          style={{ color: "#64748b" }}
+                          className="text-[10px] w-24 text-right bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                        />
+                        {isSelected && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeStep(idx);
+                            }}
+                            className="opacity-0 group-hover/tl:opacity-100 p-0.5 text-zinc-400 hover:text-red-500 rounded bg-white shadow-xs"
+                            title="Remove step"
+                          >
+                            <Trash2 className="w-2.5 h-2.5" />
+                          </button>
+                        )}
+                      </div>
+                      <AutoResizeTextarea
+                        value={step.description}
+                        onValueChange={(val) => updateStep(idx, { description: val })}
+                        placeholder="Description..."
+                        style={{ color: "#475569" }}
+                        className="text-[11px] block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {isSelected && (
+              <div className="flex items-center justify-between pt-1 border-t border-zinc-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addStep();
+                  }}
+                  className="px-2 py-0.5 rounded bg-zinc-950 text-white hover:bg-zinc-800 text-[10px] font-mono font-medium flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add Step</span>
+                </button>
+                <div className="flex items-center gap-1 font-mono text-[10px]">
+                  <span className="text-zinc-500">Layout:</span>
+                  {(["vertical", "horizontal"] as const).map((ori) => (
+                    <button
+                      key={ori}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdateBlock(tl.id, { orientation: ori });
+                      }}
+                      className={`px-1.5 py-0.5 rounded capitalize ${
+                        (tl.orientation || "vertical") === ori
+                          ? "bg-zinc-950 text-white font-bold"
+                          : "bg-zinc-100 text-zinc-700"
+                      }`}
+                    >
+                      {ori}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+        break;
+      }
+
+      // 16. Signature & Sign-off Block
+      case "signature": {
+        const sig = b as SignatureBlock;
+        const count = Math.max(1, sig.parties.length);
+
+        const updateParty = (index: number, updated: Partial<SignatureParty>) => {
+          const newParties = [...sig.parties];
+          newParties[index] = { ...newParties[index], ...updated };
+          onUpdateBlock(sig.id, { parties: newParties });
+        };
+
+        const addParty = () => {
+          const newP: SignatureParty = {
+            id: "sig-" + Math.random().toString(36).substring(2, 9),
+            name: "Full Name",
+            title: "Authorized Signatory",
+            role: "Partner",
+            date: new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }),
+          };
+          onUpdateBlock(sig.id, { parties: [...sig.parties, newP] });
+        };
+
+        const removeParty = (index: number) => {
+          if (sig.parties.length <= 1) return;
+          const newParties = sig.parties.filter((_, i) => i !== index);
+          onUpdateBlock(sig.id, { parties: newParties });
+        };
+
+        contentNode = (
+          <div onClick={() => onSelectBlock(sig.id)} className="space-y-3 pt-3">
+            <div className="flex items-center gap-6">
+              <div
+                className="flex-1 grid gap-6"
+                style={{ gridTemplateColumns: `repeat(${count}, 1fr)` }}
+              >
+                {sig.parties.map((p, idx) => (
+                  <div
+                    key={p.id || idx}
+                    className="text-xs space-y-1 pt-6 border-t border-slate-400 relative group/party"
+                  >
+                    {isSelected && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeParty(idx);
+                        }}
+                        className="absolute top-1 right-0 opacity-0 group-hover/party:opacity-100 p-0.5 text-zinc-400 hover:text-red-500 rounded bg-white shadow-xs"
+                        title="Remove signer"
+                      >
+                        <Trash2 className="w-2.5 h-2.5" />
+                      </button>
+                    )}
+                    <AutoResizeTextarea
+                      value={p.name}
+                      onValueChange={(val) => updateParty(idx, { name: val })}
+                      placeholder="Signer Name..."
+                      style={{ color: "#0f172a" }}
+                      className="font-bold text-xs block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                    <AutoResizeTextarea
+                      value={p.title}
+                      onValueChange={(val) => updateParty(idx, { title: val })}
+                      placeholder="Title..."
+                      style={{ color: "#475569" }}
+                      className="text-[11px] block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                    <AutoResizeTextarea
+                      value={p.role}
+                      onValueChange={(val) => updateParty(idx, { role: val })}
+                      placeholder="Role..."
+                      style={{ color: "#64748b" }}
+                      className="text-[10px] font-mono block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                    <AutoResizeTextarea
+                      value={p.date || ""}
+                      onValueChange={(val) => updateParty(idx, { date: val })}
+                      placeholder="Date..."
+                      style={{ color: "#64748b" }}
+                      className="text-[10px] font-mono block w-full bg-transparent outline-none focus:bg-white rounded px-1 py-0.5"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {sig.hasSealBox && (
+                <div className="w-20 h-20 border border-dashed border-slate-300 rounded flex flex-col items-center justify-center text-[10px] text-slate-400 font-mono text-center shrink-0">
+                  <span>OFFICIAL</span>
+                  <span>SEAL</span>
+                </div>
+              )}
+            </div>
+
+            {isSelected && (
+              <div className="flex items-center justify-between pt-1 border-t border-zinc-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addParty();
+                  }}
+                  className="px-2 py-0.5 rounded bg-zinc-950 text-white hover:bg-zinc-800 text-[10px] font-mono font-medium flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add Signer</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdateBlock(sig.id, { hasSealBox: !sig.hasSealBox });
+                  }}
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                    sig.hasSealBox
+                      ? "bg-zinc-950 text-white font-bold"
+                      : "bg-zinc-100 text-zinc-700"
+                  }`}
+                >
+                  {sig.hasSealBox ? "✓ Official Seal" : "+ Add Seal Box"}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+        break;
+      }
+
+      // 17. Pill Tags Block
+      case "tags": {
+        const tb = b as TagsBlock;
+
+        const updateTag = (index: number, label: string) => {
+          const newTags = [...tb.tags];
+          newTags[index] = { ...newTags[index], label };
+          onUpdateBlock(tb.id, { tags: newTags });
+        };
+
+        const addTag = () => {
+          const newT: TagItem = {
+            id: "t-" + Math.random().toString(36).substring(2, 9),
+            label: "Tag",
+          };
+          onUpdateBlock(tb.id, { tags: [...tb.tags, newT] });
+        };
+
+        const removeTag = (index: number) => {
+          if (tb.tags.length <= 1) return;
+          const newTags = tb.tags.filter((_, i) => i !== index);
+          onUpdateBlock(tb.id, { tags: newTags });
+        };
+
+        contentNode = (
+          <div
+            onClick={() => onSelectBlock(tb.id)}
+            className="flex flex-wrap items-center gap-1.5 text-xs py-1"
+          >
+            <AutoResizeTextarea
+              value={tb.category || ""}
+              onValueChange={(val) => onUpdateBlock(tb.id, { category: val })}
+              placeholder="Category..."
+              className="text-[11px] font-bold text-slate-500 font-mono w-20 bg-transparent outline-none focus:bg-white rounded px-1"
+            />
+            {tb.tags.map((tag, idx) => {
+              const bg = tag.color || "#e0f2fe";
+              const text = isColorDark(bg) ? "#ffffff" : "#0369a1";
+              return (
+                <div
+                  key={tag.id || idx}
+                  style={{ backgroundColor: bg }}
+                  className="flex items-center gap-1 px-2.5 py-0.5 rounded-full relative group/tag"
+                >
+                  <input
+                    type="text"
+                    value={tag.label}
+                    onChange={(e) => updateTag(idx, e.target.value)}
+                    style={{ color: text }}
+                    className="bg-transparent font-medium text-[11px] outline-none text-center w-16"
+                  />
+                  {isSelected && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeTag(idx);
+                      }}
+                      className="opacity-0 group-hover/tag:opacity-100 text-slate-400 hover:text-red-500"
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            {isSelected && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addTag();
+                }}
+                className="px-2 py-0.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-[10px] font-mono flex items-center gap-1"
+              >
+                <Plus className="w-2.5 h-2.5" />
+                <span>Tag</span>
+              </button>
+            )}
+          </div>
+        );
+        break;
+      }
+
+      // 18. Numbered Display Math Block
+      case "math": {
+        const m = b as MathBlock;
+        contentNode = (
+          <div onClick={() => onSelectBlock(m.id)} className="my-2 space-y-1.5">
+            <div className="flex items-center justify-between relative py-2 px-4 bg-slate-50 rounded border border-slate-200">
+              <AutoResizeTextarea
+                value={m.formula}
+                onValueChange={(val) => onUpdateBlock(m.id, { formula: val })}
+                placeholder="E = m c^2"
+                className="font-mono text-xs sm:text-sm text-slate-900 italic tracking-wider text-center flex-1 bg-transparent outline-none focus:bg-white rounded"
+              />
+              <input
+                type="text"
+                value={m.equationNumber || ""}
+                onChange={(e) => onUpdateBlock(m.id, { equationNumber: e.target.value })}
+                placeholder="(1)"
+                className="w-10 text-right text-xs font-mono text-slate-400 bg-transparent outline-none focus:bg-white rounded"
+              />
+            </div>
+            <AutoResizeTextarea
+              value={m.caption || ""}
+              onValueChange={(val) => onUpdateBlock(m.id, { caption: val })}
+              placeholder="+ Add equation caption (optional)..."
+              className="text-[10px] text-slate-500 italic text-center font-mono block w-full bg-transparent outline-none focus:bg-white rounded"
+            />
+          </div>
+        );
+        break;
+      }
+
+      // 19. Milestone Progress Block
+      case "progress": {
+        const p = b as ProgressBlock;
+        const color = p.color || documentState.settings.accentColor || "#0f172a";
+        const clamped = Math.max(0, Math.min(100, p.percentage));
+
+        contentNode = (
+          <div onClick={() => onSelectBlock(p.id)} className="space-y-1 text-xs py-1">
+            <div className="flex items-center justify-between font-mono">
+              <AutoResizeTextarea
+                value={p.label}
+                onValueChange={(val) => onUpdateBlock(p.id, { label: val })}
+                placeholder="Milestone / Target Label..."
+                className="font-semibold text-slate-800 bg-transparent outline-none focus:bg-white rounded px-1"
+              />
+              <div className="flex items-center gap-1 font-bold" style={{ color }}>
+                <span>{clamped}%</span>
+                <input
+                  type="text"
+                  value={p.target || ""}
+                  onChange={(e) => onUpdateBlock(p.id, { target: e.target.value })}
+                  placeholder="of $10,000"
+                  className="w-20 text-right bg-transparent text-[11px] outline-none focus:bg-white rounded px-1"
+                />
+              </div>
+            </div>
+            <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden relative">
+              <div
+                style={{ width: `${clamped}%`, backgroundColor: color }}
+                className="h-full rounded-full transition-all duration-300"
+              />
+            </div>
+            {isSelected && (
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={clamped}
+                  onChange={(e) => onUpdateBlock(p.id, { percentage: Number(e.target.value) })}
+                  className="flex-1 accent-zinc-950 cursor-pointer h-1.5"
+                />
+                <span className="font-mono text-[10px] text-zinc-500 w-8 text-right">
+                  {clamped}%
+                </span>
               </div>
             )}
           </div>

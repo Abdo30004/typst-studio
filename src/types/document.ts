@@ -31,7 +31,15 @@ export type BlockType =
   | "image"
   | "table"
   | "code"
-  | "divider";
+  | "divider"
+  | "grid_layout"
+  | "quote"
+  | "key_value"
+  | "timeline"
+  | "signature"
+  | "tags"
+  | "math"
+  | "progress";
 
 export interface BaseBlock {
   id: string;
@@ -146,6 +154,100 @@ export interface DividerBlock extends BaseBlock {
   thickness?: number;
 }
 
+export interface GridColumnSlot {
+  id: string;
+  widthFraction: string; // e.g. "1fr", "2fr", "30%", "auto"
+  blocks: DocumentBlock[]; // Supports nested child blocks
+}
+
+export interface GridLayoutBlock extends BaseBlock {
+  type: "grid_layout";
+  presetId?: "image_title_image" | "split_2_1" | "hero_1_2_1" | "deck_3" | "sidebar_main" | "custom";
+  tracks: string[];      // e.g. ["1fr", "2fr", "1fr"]
+  gutter: number;        // pt spacing
+  verticalAlign: "top" | "center" | "bottom";
+  slots: GridColumnSlot[];
+}
+
+export interface QuoteBlock extends BaseBlock {
+  type: "quote";
+  quote: string;
+  author?: string;
+  citation?: string;
+  borderColor?: string;
+  bgColor?: string;
+  textColor?: string;
+}
+
+export interface KeyValueItem {
+  id: string;
+  key: string;
+  value: string;
+}
+
+export interface KeyValueBlock extends BaseBlock {
+  type: "key_value";
+  title?: string;
+  items: KeyValueItem[];
+  columnsCount?: 2 | 3 | 4;
+}
+
+export interface TimelineStep {
+  id: string;
+  stepNumber: string;
+  title: string;
+  date?: string;
+  description: string;
+}
+
+export interface TimelineBlock extends BaseBlock {
+  type: "timeline";
+  title?: string;
+  steps: TimelineStep[];
+  orientation?: "vertical" | "horizontal";
+}
+
+export interface SignatureParty {
+  id: string;
+  role: string;
+  name: string;
+  title: string;
+  date?: string;
+}
+
+export interface SignatureBlock extends BaseBlock {
+  type: "signature";
+  parties: SignatureParty[];
+  hasSealBox?: boolean;
+}
+
+export interface TagItem {
+  id: string;
+  label: string;
+  color?: string;
+}
+
+export interface TagsBlock extends BaseBlock {
+  type: "tags";
+  category?: string;
+  tags: TagItem[];
+}
+
+export interface MathBlock extends BaseBlock {
+  type: "math";
+  formula: string;
+  equationNumber?: string;
+  caption?: string;
+}
+
+export interface ProgressBlock extends BaseBlock {
+  type: "progress";
+  label: string;
+  percentage: number; // 0 to 100
+  target?: string;
+  color?: string;
+}
+
 export type DocumentBlock =
   | HeadingBlock
   | TextBlock
@@ -157,7 +259,15 @@ export type DocumentBlock =
   | ImageBlock
   | TableBlock
   | CodeBlock
-  | DividerBlock;
+  | DividerBlock
+  | GridLayoutBlock
+  | QuoteBlock
+  | KeyValueBlock
+  | TimelineBlock
+  | SignatureBlock
+  | TagsBlock
+  | MathBlock
+  | ProgressBlock;
 
 export interface DocumentState {
   id: string;

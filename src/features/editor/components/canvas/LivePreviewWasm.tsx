@@ -15,6 +15,14 @@ import {
   TableBlock,
   CodeBlock,
   DividerBlock,
+  GridLayoutBlock,
+  QuoteBlock,
+  KeyValueBlock,
+  TimelineBlock,
+  SignatureBlock,
+  TagsBlock,
+  MathBlock,
+  ProgressBlock,
 } from "@/types/document";
 import { CALLOUT_THEMES, getContrastingText, isColorDark } from "@/lib/typst/document-theme";
 import { ZoomIn, ZoomOut, Maximize2, FileCheck } from "lucide-react";
@@ -334,6 +342,249 @@ export function LivePreviewWasm({ documentState }: Props) {
             }}
             className="my-3"
           />
+        );
+      }
+
+      case "grid_layout": {
+        const g = b as GridLayoutBlock;
+        const tracks = g.tracks && g.tracks.length > 0 ? g.tracks : ["1fr", "1fr"];
+        const gridTemplateColumns = tracks.join(" ");
+        const alignItems =
+          g.verticalAlign === "center"
+            ? "center"
+            : g.verticalAlign === "bottom"
+            ? "flex-end"
+            : "flex-start";
+
+        return (
+          <div
+            key={b.id}
+            style={{
+              display: "grid",
+              gridTemplateColumns,
+              gap: `${g.gutter ?? 12}pt`,
+              alignItems,
+            }}
+            className="w-full"
+          >
+            {(g.slots || []).map((slot, sIdx) => (
+              <div key={slot.id || sIdx} className="space-y-3 min-w-0">
+                {(slot.blocks || []).map((childBlock) => renderPreviewBlock(childBlock))}
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      case "quote": {
+        const q = b as QuoteBlock;
+        const border = q.borderColor || settings.accentColor || "#0f172a";
+        const bg = q.bgColor || "#f8fafc";
+        const text = q.textColor || "#334155";
+
+        return (
+          <blockquote
+            key={b.id}
+            style={{
+              backgroundColor: bg,
+              borderLeftColor: border,
+              borderLeftWidth: "4px",
+              color: text,
+            }}
+            className="p-3.5 rounded-r-md shadow-xs space-y-1.5"
+          >
+            <p className="italic text-xs sm:text-sm font-serif leading-relaxed">
+              &ldquo;{q.quote}&rdquo;
+            </p>
+            {q.author && (
+              <p className="text-[11px] text-right font-medium text-slate-900">
+                — {q.author}
+                {q.citation && <span className="text-slate-500 font-normal">, {q.citation}</span>}
+              </p>
+            )}
+          </blockquote>
+        );
+      }
+
+      case "key_value": {
+        const kv = b as KeyValueBlock;
+        const colsClass =
+          kv.columnsCount === 3
+            ? "grid-cols-3"
+            : kv.columnsCount === 4
+            ? "grid-cols-4"
+            : "grid-cols-2";
+
+        return (
+          <div key={b.id} className="space-y-1.5">
+            {kv.title && <div className="text-xs font-bold text-slate-900">{kv.title}</div>}
+            <div className={`grid gap-2 ${colsClass}`}>
+              {kv.items.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-slate-50 border border-slate-200 rounded p-2 text-xs"
+                >
+                  <div className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                    {item.key}
+                  </div>
+                  <div className="font-semibold text-slate-900 mt-0.5 truncate">{item.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      case "timeline": {
+        const tl = b as TimelineBlock;
+        const isHorizontal = tl.orientation === "horizontal";
+        const accent = settings.accentColor || "#0f172a";
+
+        return (
+          <div key={b.id} className="space-y-2">
+            {tl.title && <div className="text-xs font-bold text-slate-900">{tl.title}</div>}
+            {isHorizontal ? (
+              <div
+                className="grid gap-3"
+                style={{ gridTemplateColumns: `repeat(${Math.max(1, tl.steps.length)}, 1fr)` }}
+              >
+                {tl.steps.map((step) => (
+                  <div key={step.id} className="space-y-1 text-xs">
+                    <span
+                      style={{ backgroundColor: accent }}
+                      className="inline-block text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-full"
+                    >
+                      {step.stepNumber}
+                    </span>
+                    <div className="font-bold text-slate-900">{step.title}</div>
+                    {step.date && <div className="text-[10px] text-slate-500">{step.date}</div>}
+                    <div className="text-[11px] text-slate-600 leading-normal">
+                      {step.description}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {tl.steps.map((step) => (
+                  <div key={step.id} className="flex items-start gap-2.5 text-xs">
+                    <span
+                      style={{ backgroundColor: accent }}
+                      className="shrink-0 text-white text-[10px] font-mono font-bold w-6 h-6 flex items-center justify-center rounded-full mt-0.5"
+                    >
+                      {step.stepNumber}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-bold text-slate-900">{step.title}</span>
+                        {step.date && <span className="text-[10px] text-slate-500">({step.date})</span>}
+                      </div>
+                      <div className="text-[11px] text-slate-600 mt-0.5">{step.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      case "signature": {
+        const sig = b as SignatureBlock;
+        const cols = Math.max(1, sig.parties.length);
+
+        return (
+          <div key={b.id} className="flex items-center gap-6 pt-3">
+            <div
+              className="flex-1 grid gap-6"
+              style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+            >
+              {sig.parties.map((p) => (
+                <div key={p.id} className="text-xs space-y-1 pt-6 border-t border-slate-400">
+                  <div className="font-bold text-slate-900">{p.name}</div>
+                  <div className="text-slate-600 text-[11px]">{p.title}</div>
+                  <div className="text-slate-400 text-[10px] font-mono">Role: {p.role}</div>
+                  {p.date && <div className="text-slate-400 text-[10px] font-mono">Date: {p.date}</div>}
+                </div>
+              ))}
+            </div>
+            {sig.hasSealBox && (
+              <div className="w-20 h-20 border border-dashed border-slate-300 rounded flex flex-col items-center justify-center text-[10px] text-slate-400 font-mono text-center shrink-0">
+                <span>OFFICIAL</span>
+                <span>SEAL</span>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      case "tags": {
+        const tb = b as TagsBlock;
+        return (
+          <div key={b.id} className="flex flex-wrap items-center gap-1.5 text-xs">
+            {tb.category && (
+              <span className="text-[11px] font-bold text-slate-500 font-mono mr-1">
+                {tb.category}:
+              </span>
+            )}
+            {tb.tags.map((t) => {
+              const bg = t.color || "#e0f2fe";
+              const text = isColorDark(bg) ? "#ffffff" : "#0369a1";
+              return (
+                <span
+                  key={t.id}
+                  style={{ backgroundColor: bg, color: text }}
+                  className="px-2.5 py-0.5 rounded-full text-[11px] font-medium"
+                >
+                  {t.label}
+                </span>
+              );
+            })}
+          </div>
+        );
+      }
+
+      case "math": {
+        const m = b as MathBlock;
+        return (
+          <div key={b.id} className="my-2 text-center">
+            <div className="flex items-center justify-center relative py-1 px-4 bg-slate-50 rounded border border-slate-200">
+              <span className="font-mono text-xs sm:text-sm text-slate-900 italic tracking-wider">
+                {m.formula}
+              </span>
+              {m.equationNumber && (
+                <span className="absolute right-3 text-xs font-mono text-slate-400">
+                  ({m.equationNumber})
+                </span>
+              )}
+            </div>
+            {m.caption && (
+              <p className="text-[10px] text-slate-500 italic mt-1 font-mono">{m.caption}</p>
+            )}
+          </div>
+        );
+      }
+
+      case "progress": {
+        const p = b as ProgressBlock;
+        const color = p.color || settings.accentColor || "#0f172a";
+        const clamped = Math.max(0, Math.min(100, p.percentage));
+
+        return (
+          <div key={b.id} className="space-y-1 text-xs">
+            <div className="flex items-center justify-between font-mono">
+              <span className="font-semibold text-slate-800">{p.label}</span>
+              <span style={{ color }} className="font-bold">
+                {clamped}%{p.target ? ` of ${p.target}` : ""}
+              </span>
+            </div>
+            <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div
+                style={{ width: `${clamped}%`, backgroundColor: color }}
+                className="h-full rounded-full transition-all duration-300"
+              />
+            </div>
+          </div>
         );
       }
 

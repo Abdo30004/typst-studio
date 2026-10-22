@@ -1,4 +1,4 @@
-import { DocumentBlock, ColumnsBlock } from "@/types/document";
+import { DocumentBlock, ColumnsBlock, GridLayoutBlock } from "@/types/document";
 
 export function findBlockById(blocks: DocumentBlock[], id: string): DocumentBlock | null {
   for (const b of blocks) {
@@ -7,6 +7,13 @@ export function findBlockById(blocks: DocumentBlock[], id: string): DocumentBloc
       const cols = b as ColumnsBlock;
       for (const col of cols.columns) {
         const found = findBlockById(col.blocks, id);
+        if (found) return found;
+      }
+    }
+    if (b.type === "grid_layout") {
+      const grid = b as GridLayoutBlock;
+      for (const slot of grid.slots) {
+        const found = findBlockById(slot.blocks, id);
         if (found) return found;
       }
     }
@@ -33,6 +40,16 @@ export function updateBlockInList(
         })),
       };
     }
+    if (b.type === "grid_layout") {
+      const grid = b as GridLayoutBlock;
+      return {
+        ...grid,
+        slots: grid.slots.map((s) => ({
+          ...s,
+          blocks: updateBlockInList(s.blocks, blockId, updated),
+        })),
+      };
+    }
     return b;
   });
 }
@@ -51,6 +68,46 @@ export function deleteBlockInList(blocks: DocumentBlock[], blockId: string): Doc
           })),
         };
       }
+      if (b.type === "grid_layout") {
+        const grid = b as GridLayoutBlock;
+        return {
+          ...grid,
+          slots: grid.slots.map((s) => ({
+            ...s,
+            blocks: deleteBlockInList(s.blocks, blockId),
+          })),
+        };
+      }
       return b;
     });
+}
+
+export function insertBlockIntoSlot(
+  blocks: DocumentBlock[],
+  gridId: string,
+  slotId: string,
+  newBlock: DocumentBlock
+): DocumentBlock[] {
+  return blocks.map((b) => {
+    if (b.id === gridId && b.type === "grid_layout") {
+      const grid = b as GridLayoutBlock;
+      return {
+        ...grid,
+        slots: grid.slots.map((s) =>
+          s.id === slotId ? { ...s, blocks: [...s.blocks, newBlock] } : s
+        ),
+      };
+    }
+    if (b.type === "grid_layout") {
+      const grid = b as GridLayoutBlock;
+      return {
+        ...grid,
+        slots: grid.slots.map((s) => ({
+          ...s,
+          blocks: insertBlockIntoSlot(s.blocks, gridId, slotId, newBlock),
+        })),
+      };
+    }
+    return b;
+  });
 }
