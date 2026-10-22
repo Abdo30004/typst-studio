@@ -6,14 +6,17 @@ import { DocumentState, DocumentBlock, DocumentPreset } from "@/types/document";
 import { generateTypstDocument, renderBlockToTypst } from "@/lib/typst/generator";
 import { createInitialDocument } from "@/lib/typst/presets";
 import { updateBlockInList, deleteBlockInList } from "@/lib/typst/block-utils";
-import { useDocumentHistory } from "@/hooks/useDocumentHistory";
-import { Canvas } from "@/components/editor/Canvas";
-import { CanvaSidebar } from "@/components/editor/CanvaSidebar";
-import { PropertyInspector } from "@/components/editor/PropertyInspector";
-import { InteractivePreviewCanvas } from "@/components/editor/InteractivePreviewCanvas";
-import { ResizableSplitView } from "@/components/editor/ResizableSplitView";
-import { TypstCodeDrawer } from "@/components/editor/TypstCodeDrawer";
-import { ContextMenu, ContextMenuPosition } from "@/components/editor/ContextMenu";
+import {
+  Canvas,
+  CanvaSidebar,
+  PropertyInspector,
+  InteractivePreviewCanvas,
+  ResizableSplitView,
+  TypstCodeDrawer,
+  ContextMenu,
+  ContextMenuPosition,
+  useDocumentHistory,
+} from "@/features/editor";
 import { ToastContainer, showToast } from "@/components/ui/toast";
 import {
   ArrowLeft,

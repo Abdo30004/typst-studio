@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { DocumentBlock } from "@/types/document";
-import { SortableBlockItem } from "./SortableBlockItem";
+import { SortableBlockItem } from "../blocks/SortableBlockItem";
 import { Plus } from "lucide-react";
 
 interface Props {

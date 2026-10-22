@@ -2,17 +2,17 @@
 
 import React from "react";
 import { DocumentBlock } from "@/types/document";
-import { HeadingBlockView } from "../blocks/HeadingBlockView";
-import { TextBlockView } from "../blocks/TextBlockView";
-import { CardBlockView } from "../blocks/CardBlockView";
-import { CalloutBlockView } from "../blocks/CalloutBlockView";
-import { MetricBlockView } from "../blocks/MetricBlockView";
-import { ProfileBlockView } from "../blocks/ProfileBlockView";
-import { ColumnsBlockView } from "../blocks/ColumnsBlockView";
-import { ImageBlockView } from "../blocks/ImageBlockView";
-import { TableBlockView } from "../blocks/TableBlockView";
-import { CodeBlockView } from "../blocks/CodeBlockView";
-import { DividerBlockView } from "../blocks/DividerBlockView";
+import { HeadingBlockView } from "./HeadingBlockView";
+import { TextBlockView } from "./TextBlockView";
+import { CardBlockView } from "./CardBlockView";
+import { CalloutBlockView } from "./CalloutBlockView";
+import { MetricBlockView } from "./MetricBlockView";
+import { ProfileBlockView } from "./ProfileBlockView";
+import { ColumnsBlockView } from "./ColumnsBlockView";
+import { ImageBlockView } from "./ImageBlockView";
+import { TableBlockView } from "./TableBlockView";
+import { CodeBlockView } from "./CodeBlockView";
+import { DividerBlockView } from "./DividerBlockView";
 import { Trash2, GripVertical, Settings2 } from "lucide-react";
 
 interface Props {

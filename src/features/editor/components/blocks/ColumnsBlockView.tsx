@@ -3,7 +3,7 @@
 import React from "react";
 import { ColumnsBlock, DocumentBlock } from "@/types/document";
 import { Plus, Trash2 } from "lucide-react";
-import { BlockRenderer } from "../editor/BlockRenderer";
+import { BlockRenderer } from "./BlockRenderer";
 
 interface Props {
   block: ColumnsBlock;
@@ -130,7 +130,7 @@ export function ColumnsBlockView({
                   <div key={innerBlock.id} className="relative group/inner">
                     <BlockRenderer
                       block={innerBlock}
-                      onUpdate={(upd) => handleUpdateInnerBlock(colIdx, innerBlock.id, upd)}
+                      onUpdate={(upd: Partial<DocumentBlock>) => handleUpdateInnerBlock(colIdx, innerBlock.id, upd)}
                       onDelete={() => handleDeleteInnerBlock(colIdx, innerBlock.id)}
                       isSelected={selectedBlockId === innerBlock.id}
                       onSelect={() => onSelectBlock?.(innerBlock.id)}

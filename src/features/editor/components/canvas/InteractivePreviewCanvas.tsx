@@ -16,7 +16,7 @@ import {
   ColumnsBlock,
   DividerBlock,
 } from "@/types/document";
-import { FloatingToolbar } from "./FloatingToolbar";
+import { FloatingToolbar } from "../toolbar/FloatingToolbar";
 import { AutoResizeTextarea } from "@/components/ui/AutoResizeTextarea";
 import {
   ZoomIn,
