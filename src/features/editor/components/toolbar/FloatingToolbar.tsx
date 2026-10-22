@@ -2,6 +2,7 @@
 
 import React from "react";
 import { DocumentBlock, HeadingBlock, CardBlock, CalloutCardBlock } from "@/types/document";
+import { useTheme } from "@/lib/theme";
 import {
   Copy,
   Trash2,
@@ -32,6 +33,8 @@ export function FloatingToolbar({
   onMoveDown,
   onOpenInspector,
 }: Props) {
+  const { activePalette } = useTheme();
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -76,16 +79,17 @@ export function FloatingToolbar({
         </div>
       )}
 
-      {/* Card monochromatic swatches */}
+      {/* Card dynamic palette swatches */}
       {block.type === "card" && (
         <div className="flex items-center gap-1.5 pr-1.5 border-r border-zinc-800">
-          {["#ffffff", "#f4f4f5", "#a1a1aa", "#27272a", "#09090b"].map((col) => (
+          {activePalette.swatches.slice(0, 5).map((swatch) => (
             <button
-              key={col}
-              onClick={() => onUpdate({ fillColor: col })}
-              style={{ backgroundColor: col }}
+              key={swatch.fill}
+              onClick={() => onUpdate({ fillColor: swatch.fill, strokeColor: swatch.stroke })}
+              title={`${swatch.label} (${swatch.fill})`}
+              style={{ backgroundColor: swatch.fill }}
               className={`w-3.5 h-3.5 rounded-full border ${
-                (block as CardBlock).fillColor === col
+                (block as CardBlock).fillColor === swatch.fill
                   ? "ring-2 ring-white scale-110 border-black"
                   : "border-zinc-700 hover:scale-105"
               } transition-transform`}

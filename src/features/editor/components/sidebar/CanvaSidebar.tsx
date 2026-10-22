@@ -25,28 +25,47 @@ import {
   Check,
   Copy,
   Download,
+  Palette,
+  Wand2,
+  Moon,
+  Sun,
 } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 
 interface Props {
   documentState: DocumentState;
   onAddBlock: (block: DocumentBlock) => void;
   onApplyPreset: (preset: DocumentPreset) => void;
   onUpdateDocumentSettings: (settings: Partial<DocumentState["settings"]>) => void;
+  onApplyPaletteToDoc?: (updatedDoc: DocumentState) => void;
   typstCode: string;
 }
 
-type TabType = "elements" | "text" | "uploads" | "templates" | "code" | "design";
+type TabType = "elements" | "text" | "uploads" | "templates" | "theme" | "code" | "design";
 
 export function CanvaSidebar({
   documentState,
   onAddBlock,
   onApplyPreset,
   onUpdateDocumentSettings,
+  onApplyPaletteToDoc,
   typstCode,
 }: Props) {
   const [activeTab, setActiveTab] = useState<TabType | null>("elements");
   const [copiedCode, setCopiedCode] = useState(false);
+  const [paletteAppliedToast, setPaletteAppliedToast] = useState(false);
   const uploadInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    uiTheme,
+    setUITheme,
+    activePaletteId,
+    setActivePaletteId,
+    activePalette,
+    allPalettes,
+    allUIThemes,
+    applyPalette,
+  } = useTheme();
 
   const toggleTab = (tab: TabType) => {
     setActiveTab((curr) => (curr === tab ? null : tab));
@@ -167,6 +186,19 @@ export function CanvaSidebar({
         >
           <LayoutTemplate className="w-5 h-5" />
           <span className="text-[9px] font-mono tracking-tight mt-1">Presets</span>
+        </button>
+
+        <button
+          onClick={() => toggleTab("theme")}
+          className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-all ${
+            activeTab === "theme"
+              ? "bg-white text-zinc-950 font-bold shadow-xs"
+              : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900"
+          }`}
+          title="Themes & Palettes"
+        >
+          <Palette className="w-5 h-5" />
+          <span className="text-[9px] font-mono tracking-tight mt-1">Theme</span>
         </button>
 
         <div className="w-8 border-t border-zinc-800 my-1" />
@@ -513,6 +545,145 @@ export function CanvaSidebar({
                     </button>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Themes & Palettes Tab */}
+            {activeTab === "theme" && (
+              <div className="space-y-4 font-mono text-xs">
+                {/* 1. UI Themes */}
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">
+                    Studio Interface Theme
+                  </span>
+                  <div className="space-y-1.5">
+                    {allUIThemes.map((theme) => {
+                      const isSelected = uiTheme === theme.id;
+                      return (
+                        <button
+                          key={theme.id}
+                          onClick={() => setUITheme(theme.id)}
+                          className={`w-full text-left p-2 rounded-lg border transition-all flex items-center justify-between ${
+                            isSelected
+                              ? "bg-zinc-900 border-zinc-600 shadow-xs"
+                              : "bg-zinc-950/60 border-zinc-850 hover:bg-zinc-900/60 hover:border-zinc-750"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className="w-5 h-5 rounded border flex items-center justify-center shrink-0"
+                              style={{
+                                backgroundColor: theme.colors.bg,
+                                borderColor: theme.colors.border,
+                              }}
+                            >
+                              <div
+                                className="w-2 h-2 rounded-full"
+                                style={{ backgroundColor: theme.colors.accent }}
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-semibold text-zinc-100 flex items-center gap-1.5 text-xs">
+                                <span>{theme.name}</span>
+                                {theme.isDark ? (
+                                  <Moon className="w-3 h-3 text-zinc-500" />
+                                ) : (
+                                  <Sun className="w-3 h-3 text-amber-500" />
+                                )}
+                              </div>
+                              <div className="text-[10px] text-zinc-400 truncate">
+                                {theme.description}
+                              </div>
+                            </div>
+                          </div>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0 ml-1.5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Document Palettes */}
+                <div className="pt-2 border-t border-zinc-850">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Document Design Palettes
+                    </span>
+                    <span className="text-[10px] text-zinc-500">{allPalettes.length} Palettes</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {allPalettes.map((pal) => {
+                      const isSelected = activePaletteId === pal.id;
+                      return (
+                        <div
+                          key={pal.id}
+                          onClick={() => setActivePaletteId(pal.id)}
+                          className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-zinc-900 border-zinc-600 shadow-xs"
+                              : "bg-zinc-950/60 border-zinc-850 hover:bg-zinc-900/60 hover:border-zinc-750"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-semibold text-zinc-100 text-xs">
+                              {pal.name}
+                            </span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                          </div>
+
+                          <div className="flex items-center gap-1.5 my-1.5">
+                            {pal.swatches.map((swatch, idx) => (
+                              <div
+                                key={idx}
+                                title={`${swatch.label}: ${swatch.fill}`}
+                                style={{
+                                  backgroundColor: swatch.fill,
+                                  borderColor: swatch.stroke,
+                                }}
+                                className="w-4 h-4 rounded border shadow-xs hover:scale-110 transition-transform"
+                              />
+                            ))}
+                          </div>
+
+                          <p className="text-[10px] text-zinc-400 leading-snug">
+                            {pal.description}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Apply Palette to Document */}
+                  {onApplyPaletteToDoc && (
+                    <div className="pt-3 mt-3 border-t border-zinc-850">
+                      <button
+                        onClick={() => {
+                          const updated = applyPalette(documentState);
+                          onApplyPaletteToDoc(updated);
+                          setPaletteAppliedToast(true);
+                          setTimeout(() => setPaletteAppliedToast(false), 2200);
+                        }}
+                        className="w-full py-2 px-3 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-bold transition-all flex items-center justify-center gap-2 shadow-xs active:scale-[0.98]"
+                      >
+                        {paletteAppliedToast ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Palette Applied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="w-3.5 h-3.5" />
+                            <span>Apply &quot;{activePalette.name}&quot; to Blocks</span>
+                          </>
+                        )}
+                      </button>
+                      <span className="text-[10px] text-zinc-500 block text-center mt-1">
+                        Instantly harmonizes all cards, borders & accents
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

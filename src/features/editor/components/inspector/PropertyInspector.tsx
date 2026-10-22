@@ -17,6 +17,7 @@ import {
   DividerBlock,
 } from "@/types/document";
 import { findBlockById } from "@/lib/typst/block-utils";
+import { useTheme } from "@/lib/theme";
 import {
   Sliders,
   FileText,
@@ -41,18 +42,11 @@ export function PropertyInspector({
   onUpdateBlock,
   onDeselect,
 }: Props) {
+  const { activePalette, activePaletteId, setActivePaletteId, allPalettes } = useTheme();
+
   const selectedBlock = selectedBlockId
     ? findBlockById(documentState.blocks, selectedBlockId)
     : null;
-
-  const quickColorSwatches = [
-    { label: "Obsidian", fill: "#09090b", stroke: "#27272a" },
-    { label: "Zinc Dark", fill: "#18181b", stroke: "#3f3f46" },
-    { label: "Steel", fill: "#27272a", stroke: "#52525b" },
-    { label: "Muted Plate", fill: "#f4f4f5", stroke: "#e4e4e7" },
-    { label: "Paper Pure", fill: "#ffffff", stroke: "#d4d4d8" },
-    { label: "Warm Editorial", fill: "#fafafa", stroke: "#e5e5e5" },
-  ];
 
   return (
     <aside className="w-80 border-l border-zinc-850 bg-zinc-950/95 backdrop-blur flex flex-col h-full overflow-hidden select-none text-xs z-20 shrink-0">
@@ -247,13 +241,26 @@ export function PropertyInspector({
                   />
                 </div>
 
-                {/* Quick Swatches */}
+                {/* Quick Swatches & Palette Selector */}
                 <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block mb-1.5">
-                    Color Presets
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+                      Palette Swatches
+                    </label>
+                    <select
+                      value={activePaletteId}
+                      onChange={(e) => setActivePaletteId(e.target.value as any)}
+                      className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-[10px] rounded px-1.5 py-0.5 outline-none max-w-[130px] truncate"
+                    >
+                      {allPalettes.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    {quickColorSwatches.map((swatch) => (
+                    {activePalette.swatches.map((swatch) => (
                       <button
                         key={swatch.label}
                         onClick={() =>
@@ -262,7 +269,7 @@ export function PropertyInspector({
                             strokeColor: swatch.stroke,
                           })
                         }
-                        title={swatch.label}
+                        title={`${swatch.label} (${swatch.fill})`}
                         style={{ backgroundColor: swatch.fill, borderColor: swatch.stroke }}
                         className="w-6 h-6 rounded-md border hover:scale-110 transition-transform shadow-xs"
                       />

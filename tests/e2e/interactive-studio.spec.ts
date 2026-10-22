@@ -216,4 +216,47 @@ test.describe("Typst Visual Studio - Comprehensive Interactivity Suite", () => {
     const contentType = downloadOrResponse.headers()["content-type"];
     expect(contentType).toContain("application/pdf");
   });
+
+  test("8. Multi-Theme Switching and Document Palette Selection", async ({ page }) => {
+    await page.goto(`/editor/${projectId}`);
+    await expect(page.locator("text=Interactive Sheet Canvas")).toBeVisible();
+
+    // Open Theme Quick Switcher in header
+    const themeSwitcherTrigger = page.locator("button[title*='Switch UI Theme']").first();
+    await expect(themeSwitcherTrigger).toBeVisible();
+    await themeSwitcherTrigger.click();
+
+    // Verify UI Themes list appears
+    await expect(page.locator("text=Tokyo Midnight")).toBeVisible();
+    await expect(page.locator("text=Editorial Paper")).toBeVisible();
+
+    // Switch to Tokyo Midnight
+    await page.locator("button:has-text('Tokyo Midnight')").click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "tokyo-midnight");
+
+    // Switch to Document Palettes tab in the open popover
+    await page.locator("button:has-text('Document Palettes')").click();
+
+    // Verify palettes are listed
+    await expect(page.locator("text=Swiss Bauhaus")).toBeVisible();
+    await expect(page.locator("text=Kinfolk Editorial")).toBeVisible();
+    await expect(page.locator("text=Cyber OLED Minimal")).toBeVisible();
+
+    // Select Swiss Bauhaus and apply to document
+    await page.locator("div:has-text('Swiss Bauhaus')").last().click();
+    const applyBtn = page.locator("button:has-text('Apply')").first();
+    await expect(applyBtn).toBeVisible();
+    await applyBtn.click();
+
+    // Verify confirmation text appears
+    await expect(page.locator("text=Palette Applied")).toBeVisible();
+
+    // Switch UI Theme back to Atelier Dark
+    await page.locator("button:has-text('UI Theme')").click();
+    await page.locator("button:has-text('Atelier Dark')").click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "atelier-dark");
+
+    // Close dropdown
+    await page.locator("button:has(svg.lucide-x)").first().click();
+  });
 });

@@ -17,6 +17,7 @@ import {
   ContextMenuPosition,
   useDocumentHistory,
 } from "@/features/editor";
+import { ThemeQuickSwitcher } from "@/components/theme/ThemeQuickSwitcher";
 import { ToastContainer, showToast } from "@/components/ui/toast";
 import {
   ArrowLeft,
@@ -523,8 +524,13 @@ export default function EditorPage() {
           </button>
         </div>
 
-        {/* Right: Quick actions & High-Contrast White Export Button */}
+        {/* Right: Quick actions, Theme Switcher & High-Contrast White Export Button */}
         <div className="flex items-center gap-2">
+          <ThemeQuickSwitcher
+            documentState={documentState}
+            onApplyPaletteToDoc={(updated) => setDocumentState(updated)}
+          />
+
           <button
             onClick={() => setIsCodeDrawerOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-mono font-medium transition-colors"
@@ -572,6 +578,7 @@ export default function EditorPage() {
           onAddBlock={handleAddBlock}
           onApplyPreset={handleApplyPreset}
           onUpdateDocumentSettings={handleUpdateDocumentSettings}
+          onApplyPaletteToDoc={(updated) => setDocumentState(updated)}
           typstCode={typstSourceCode}
         />
 

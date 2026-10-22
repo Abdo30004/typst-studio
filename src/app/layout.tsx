@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/lib/theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,8 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} antialiased bg-slate-950 text-slate-100 min-h-screen`}>
-        {children}
+      <body className={`${inter.className} antialiased bg-[#09090b] text-zinc-100 min-h-screen transition-colors duration-200`}>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

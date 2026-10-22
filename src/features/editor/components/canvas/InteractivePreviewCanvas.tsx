@@ -18,6 +18,7 @@ import {
 } from "@/types/document";
 import { FloatingToolbar } from "../toolbar/FloatingToolbar";
 import { AutoResizeTextarea } from "@/components/ui/AutoResizeTextarea";
+import { useTheme } from "@/lib/theme";
 import {
   ZoomIn,
   ZoomOut,
@@ -63,6 +64,7 @@ export function InteractivePreviewCanvas({
   onOpenInspector,
 }: Props) {
   const [zoom, setZoom] = useState<number>(100);
+  const { currentUITheme } = useTheme();
 
   const { settings, blocks } = documentState;
   const isLandscape = settings.orientation === "landscape";
@@ -844,7 +846,8 @@ export function InteractivePreviewCanvas({
   return (
     <div
       onClick={() => onSelectBlock(null)}
-      className="flex-1 bg-[#09090b] flex flex-col h-full overflow-hidden select-none"
+      style={{ backgroundColor: currentUITheme.colors.deskBg }}
+      className="flex-1 flex flex-col h-full overflow-hidden select-none transition-colors duration-200"
     >
       {/* Top Controls Bar */}
       <div className="h-11 border-b border-zinc-850 px-4 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/80 backdrop-blur shrink-0">
@@ -889,7 +892,10 @@ export function InteractivePreviewCanvas({
       </div>
 
       {/* Canva Workspace Scroll Area */}
-      <div className="flex-1 overflow-auto p-6 sm:p-10 flex justify-center items-start bg-[#09090b] relative">
+      <div
+        style={{ backgroundColor: currentUITheme.colors.deskBg }}
+        className="flex-1 overflow-auto p-6 sm:p-10 flex justify-center items-start relative transition-colors duration-200"
+      >
         <div
           style={{
             transform: `scale(${zoom / 100})`,

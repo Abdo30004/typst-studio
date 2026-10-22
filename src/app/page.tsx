@@ -6,6 +6,7 @@ import { PRESET_CONFIGS } from "@/lib/typst/presets";
 import { DocumentPreset, ProjectSummary } from "@/types";
 import { ToastContainer, showToast } from "@/components/ui/toast";
 import { TemplateGallery, ProjectCard } from "@/features/dashboard";
+import { ThemeQuickSwitcher } from "@/components/theme/ThemeQuickSwitcher";
 import {
   FileText,
   Plus,
@@ -152,19 +153,22 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* High-Contrast Inverted Action Button */}
-        <button
-          onClick={() => handleCreateFromPreset("a4_document", "Untitled Document")}
-          disabled={isCreating}
-          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg text-xs font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
-        >
-          {isCreating ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
-          ) : (
-            <Plus className="w-3.5 h-3.5 text-zinc-950" />
-          )}
-          <span>New Document</span>
-        </button>
+        {/* High-Contrast Inverted Action Button & Theme Switcher */}
+        <div className="flex items-center gap-3">
+          <ThemeQuickSwitcher />
+          <button
+            onClick={() => handleCreateFromPreset("a4_document", "Untitled Document")}
+            disabled={isCreating}
+            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg text-xs font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 font-mono"
+          >
+            {isCreating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
+            ) : (
+              <Plus className="w-3.5 h-3.5 text-zinc-950" />
+            )}
+            <span>New Document</span>
+          </button>
+        </div>
       </header>
 
       {/* Main Workbench Body */}
