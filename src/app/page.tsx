@@ -3,32 +3,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PRESET_CONFIGS } from "@/lib/typst/presets";
-import { DocumentPreset } from "@/types/document";
+import { DocumentPreset, ProjectSummary } from "@/types";
 import { ToastContainer, showToast } from "@/components/ui/toast";
+import { TemplateGallery, ProjectCard } from "@/features/dashboard";
 import {
   FileText,
   Plus,
-  Trash2,
-  ExternalLink,
-  Presentation,
-  BookOpen,
-  Briefcase,
   Layers,
-  Sparkles,
   Loader2,
   Search,
-  Copy,
-  Calendar,
   Grid,
 } from "lucide-react";
-
-interface ProjectSummary {
-  id: string;
-  title: string;
-  preset: string;
-  updatedAt: string;
-  createdAt: string;
-}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -96,9 +81,8 @@ export default function DashboardPage() {
     e.stopPropagation();
     showToast("Duplicating document...", "info");
     try {
-      // Fetch full project
       const res = await fetch(`/api/projects/${proj.id}`);
-      const full = await res.json();
+      const fullProj = await res.json();
 
       const createRes = await fetch("/api/projects", {
         method: "POST",
@@ -106,12 +90,28 @@ export default function DashboardPage() {
         body: JSON.stringify({
           title: `${proj.title} (Copy)`,
           preset: proj.preset,
-          documentState: full.documentState,
         }),
       });
-      const duplicated = await createRes.json();
-      setProjects((prev) => [duplicated, ...prev]);
-      showToast("Document duplicated!", "success");
+
+      const newProj = await createRes.json();
+
+      if (fullProj.documentState && newProj.id) {
+        await fetch(`/api/projects/${newProj.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `${proj.title} (Copy)`,
+            documentState: {
+              ...fullProj.documentState,
+              id: newProj.id,
+              title: `${proj.title} (Copy)`,
+            },
+          }),
+        });
+      }
+
+      await fetchProjects();
+      showToast("Document duplicated", "success");
     } catch (err) {
       console.error("Duplicate error:", err);
       showToast("Failed to duplicate document", "error");
@@ -120,57 +120,13 @@ export default function DashboardPage() {
 
   const filteredProjects = useMemo(() => {
     if (!searchQuery.trim()) return projects;
-    return projects.filter((p) =>
-      p.title.toLowerCase().includes(searchQuery.toLowerCase())
+    const q = searchQuery.toLowerCase();
+    return projects.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.preset.toLowerCase().includes(q)
     );
   }, [projects, searchQuery]);
-
-  const presetCards: {
-    preset: DocumentPreset;
-    title: string;
-    description: string;
-    badge: string;
-    icon: any;
-    gradient: string;
-    shadow: string;
-  }[] = [
-    {
-      preset: "a4_document",
-      title: "Executive Report",
-      description: "A4 document with clean header metrics, tables & callout cards.",
-      badge: "Popular",
-      icon: FileText,
-      gradient: "from-blue-600 via-indigo-600 to-violet-600",
-      shadow: "shadow-blue-500/20",
-    },
-    {
-      preset: "resume",
-      title: "Modern Resume / CV",
-      description: "High-density two-column layout with skills, experience, and KPI badges.",
-      badge: "Career",
-      icon: Briefcase,
-      gradient: "from-emerald-600 via-teal-600 to-cyan-600",
-      shadow: "shadow-emerald-500/20",
-    },
-    {
-      preset: "presentation_16_9",
-      title: "Slide Deck (16:9)",
-      description: "Landscape card-based slide layout optimized for projection & PDFs.",
-      badge: "Deck",
-      icon: Presentation,
-      gradient: "from-purple-600 via-pink-600 to-rose-600",
-      shadow: "shadow-purple-500/20",
-    },
-    {
-      preset: "cheatsheet",
-      title: "Reference Cheatsheet",
-      description: "Multi-column landscape quick reference packed with code and tables.",
-      badge: "Technical",
-      icon: BookOpen,
-      gradient: "from-amber-600 via-orange-600 to-red-600",
-      shadow: "shadow-amber-500/20",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans select-none">
@@ -214,56 +170,7 @@ export default function DashboardPage() {
       {/* Main Studio Body */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 sm:px-10 py-8 space-y-10">
         {/* Template Gallery Section */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                Start from a Canva-Grade Template
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {presetCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={card.preset}
-                  onClick={() => handleCreateFromPreset(card.preset)}
-                  className={`group relative rounded-2xl border border-slate-800/90 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700/80 p-5 cursor-pointer transition-all hover:shadow-2xl ${card.shadow} hover:-translate-y-1 flex flex-col justify-between`}
-                >
-                  <div className="space-y-3.5">
-                    <div className="flex items-center justify-between">
-                      <div
-                        className={`w-11 h-11 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center text-white shadow-md`}
-                      >
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                        {card.badge}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors">
-                        {card.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
-                        {card.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 flex items-center justify-between text-xs font-semibold text-blue-400 group-hover:text-blue-300">
-                    <span>Use Template</span>
-                    <Plus className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <TemplateGallery onSelectPreset={handleCreateFromPreset} />
 
         {/* Existing Projects Library Section */}
         <section className="space-y-4">
@@ -308,56 +215,13 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProjects.map((proj) => (
-                <div
+                <ProjectCard
                   key={proj.id}
-                  onClick={() => router.push(`/editor/${proj.id}`)}
-                  className="group rounded-2xl border border-slate-800/90 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700/80 p-5 cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5 flex flex-col justify-between space-y-4"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-mono px-2.5 py-0.5 rounded-full bg-blue-950/60 text-blue-400 border border-blue-800/40 font-semibold">
-                        {proj.preset.replace("_", " ")}
-                      </span>
-
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={(e) => handleDuplicateProject(proj, e)}
-                          className="text-slate-400 hover:text-blue-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-                          title="Duplicate document"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={(e) => handleDeleteProject(proj.id, e)}
-                          className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-                          title="Delete document"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors truncate">
-                      {proj.title}
-                    </h3>
-
-                    <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                      <Calendar className="w-3 h-3" />
-                      <span>
-                        Updated {new Date(proj.updatedAt).toLocaleDateString()} at{" "}
-                        {new Date(proj.updatedAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 group-hover:text-slate-200">
-                    <span className="text-xs font-semibold">Open in Studio</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-blue-400 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </div>
+                  project={proj}
+                  onOpen={(id) => router.push(`/editor/${id}`)}
+                  onDuplicate={handleDuplicateProject}
+                  onDelete={handleDeleteProject}
+                />
               ))}
             </div>
           )}
