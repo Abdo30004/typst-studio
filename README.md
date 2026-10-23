@@ -1,91 +1,166 @@
-# Typst Drag & Drop Builder
+<div align="center">
 
-A visual document composition platform built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **@dnd-kit**, backed by a containerized native **Typst CLI** and **SQLite (Prisma)**.
+# 📑 Typst Studio
 
----
+**A visual document engineering studio powered by the [Typst](https://typst.app) typesetting engine.**
 
-## Features
+[![CI/CD Pipeline](https://github.com/Abdo30004/typst-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/Abdo30004/typst-studio/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Typst Version](https://img.shields.io/badge/Typst-v0.12.0-239dad.svg)](https://typst.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16_App_Router-black.svg)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8.svg)](https://tailwindcss.com)
+[![Vitest](https://img.shields.io/badge/Tested_with-Vitest-729b1b.svg)](https://vitest.dev)
 
-- **Drag-and-Drop Block Canvas**: Reorder cards, headings, text, media, callouts, and columns using `@dnd-kit`.
-- **Component Palette**:
-  - **Cards**: Customizable fill, stroke, radius, and padding.
-  - **Semantic Callouts**: Note, Tip, Warning, and Caution cards.
-  - **KPI Metric Cards**: Key value indicators with positive/negative trend badges.
-  - **Profile Cards**: Author bio, avatar, and contact links.
-  - **Headings & Text**: H1–H4 with inline markdown, bullet lists, and math equations ($x^2$).
-  - **Multi-Column Containers**: 2-column and 3-column split layouts with nested blocks.
-  - **Data Tables**: Visual editor or upload CSV to auto-generate tables.
-  - **Code Blocks**: Syntax-highlighted code snippets with language selector.
-- **Interactive Canva-Grade Sheet**: Direct click-to-edit inline preview for titles, subtitles, card descriptions, KPI metrics, author profiles, and tables without dialogs.
-- **Resizable Split View**: Draggable splitter bar with real-time mouse tracking, quick ratio presets (`40:60`, `50:50`, `60:40`), and pane swapping (`↔ Swap Panels`).
-- **Context Menu & History**: Right-click block duplication, deletion, moving, and snippet export, with keyboard undo/redo (`Ctrl+Z` / `Ctrl+Y`).
-- **Hybrid Compilation Engine**:
-  - Instant live vector document preview (<50ms).
-  - High-fidelity PDF export via native Typst CLI running inside Docker.
-- **Typst Code Inspector Drawer**: Slide-over drawer to inspect, copy, or download the generated `.typ` source code.
-- **Template Gallery**: Pre-built presets for A4 Executive Briefs, Resumes, Cheatsheets, and Presentation Slides (16:9).
-- **Automated Testing Suite**: Vitest unit/integration tests and Playwright E2E studio interaction tests.
-- **Persistent Storage**: SQLite with Prisma mounted on a persistent Docker volume (`./data:/data`).
-- **Zero Vulnerabilities**: Verified with `npm audit` (0 vulnerabilities).
+<p align="center">
+  Combine the intuitive visual layout editing of Notion and Canva with the mathematical precision, sub-second compilation, and typographical elegance of Typst.
+</p>
+
+</div>
 
 ---
 
-## Testing
+## 🌟 Key Highlights
 
-### Unit & Integration Tests (Vitest)
-```bash
-npm test
+- **Dual-Engine Synchronization**: Edit with an instant live DOM/CSS interactive sheet canvas (<16ms) that compiles cleanly into pixel-perfect, native vector PDFs via the native containerized Typst CLI.
+- **Complex Multi-Slot Grid Layouts**: Generic N-column & N-row grid engine with fractional track sizing (`1fr 2fr 1fr`), custom row/column gutters, and pre-engineered presets (`image_title_image`, `split_2_1`, `hero_1_2_1`, `deck_3`, `sidebar_main`).
+- **8 Specialized Publishing Blocks**: First-class support for Pull Quotes, Key-Value Specs, Milestone Timelines, Formal Signature Sign-Offs, Categorical Tags, Mathematical Equations, and Metric Progress Bars.
+- **Decoupled Theming Architecture**: Complete separation of **Studio Workspace UI Themes** (Modern Dark, Cyberpunk Neon, Nord Frost, Solarized Warm, Editorial Paper, Monokai Pro) from **Document Color Palettes** (Classic Blue, Editorial Emerald, Warm Amber, Nordic Indigo, Crimson Velvet, Monochrome Slate, Sunset Coral, Deep Purple) with dynamic CSS custom property injection.
+- **Resilient Asset Pipeline**: Automatic local asset resolution, image caching, and graceful SVG vector fallbacks for broken external images so PDF compilation never fails.
+- **Undo / Redo History Stack**: Full keyboard shortcut navigation (`Ctrl+Z` / `Ctrl+Y`) with snapshot state management.
+- **Live Typst Code Drawer**: Slide-over drawer with instant syntax-highlighted `.typ` code inspection, one-click copy, and file download.
+
+---
+
+## 🏗️ Architecture Overview
+
+```mermaid
+flowchart TD
+    subgraph Browser ["Browser Workspace (Next.js 16 + React 19)"]
+        Canvas["Drag-and-Drop Canvas (@dnd-kit)"]
+        Inspector["Live Property Inspector"]
+        PaletteEngine["Document Palette Synchronizer"]
+        ASTState["Document State & Undo/Redo Engine"]
+    end
+
+    subgraph Backend ["Backend Runner (Node.js 20 Container)"]
+        API["POST /api/export"]
+        DSLGen["Typst DSL Code Generator"]
+        AssetResolver["Local Asset & Fallback Resolver"]
+        TypstEngine["Native Typst CLI v0.12.0"]
+        SQLite["SQLite / Prisma ORM Storage"]
+    end
+
+    Canvas -->|Mutates Blocks| ASTState
+    Inspector -->|Updates Attributes| ASTState
+    PaletteEngine -->|Injects --doc-* tokens| Canvas
+
+    ASTState -->|POST Document JSON| API
+    API -->|AST Tree| DSLGen
+    DSLGen -->|main.typ| TypstEngine
+    API -->|Resolves Uploads & Fallbacks| AssetResolver
+    AssetResolver -->|Writes Assets| TypstEngine
+    TypstEngine -->|Compiles document.pdf| API
+    API -->|Streams Binary PDF| Browser
+
+    ASTState -.->|Persists Projects| SQLite
 ```
 
-### End-to-End Tests (Playwright)
+---
+
+## 🧩 Publishing Components
+
+| Component | Description | Typst Compilation Equivalent |
+| :--- | :--- | :--- |
+| **Grid Layout** | N-track multi-slot container with presets | `#grid(columns: (...), column-gutter: 12pt, ...)` |
+| **Pull Quote** | Editorial quote block with author attribution | `#rect(stroke: (left: 3pt + rgb(...)))[ ... ]` |
+| **Key-Value Specs** | Clean 2-column parameter/spec table | `#grid(columns: (auto, 1fr), ...)` |
+| **Timeline** | Chronological event sequence with step badges | `#rect(stroke: (left: 2pt + rgb(...)))[ ... ]` |
+| **Signatures** | Dual-party sign-off block with titles and dates | `#grid(columns: (1fr, 1fr))[ #line() ... ]` |
+| **Tags** | Horizontal categorical badge cloud | `#box(radius: 99pt, fill: rgb(...))[ ... ]` |
+| **Math** | Display and inline mathematical formulas | `$ integral_0^infinity e^(-x^2) dif x $` |
+| **Progress Bar** | Percentage fill indicator with custom height | `#rect(fill: luma(230))[ #place(rect(...)) ]` |
+| **Cards & Callouts** | Semantic alert containers (Note, Tip, Warning) | `#rect(radius: 4pt, fill: ...)` |
+| **Data Tables** | Interactive tables with CSV upload support | `#table(columns: (...), ...)` |
+
+---
+
+## 🚀 Quickstart with Docker
+
+The fastest way to experience Typst Studio is with Docker Compose:
+
 ```bash
+# 1. Clone repository
+git clone https://github.com/Abdo30004/typst-studio.git
+cd typst-studio
+
+# 2. Build and launch services
+docker compose up --build -d
+```
+
+Open **http://localhost:3000** in your browser.
+
+- Project data is persisted automatically to `./data/typst-builder.db`.
+- Uploaded media is persisted to `./uploads/`.
+
+---
+
+## 💻 Local Development Setup
+
+### Prerequisites
+- Node.js 20 or higher
+- [Typst CLI v0.12.0](https://github.com/typst/typst/releases) installed in your PATH
+
+### Installation
+```bash
+# Install dependencies
+npm install
+
+# Initialize local SQLite database
+npx prisma generate
+npx prisma db push
+
+# Run unit and integration tests
+npm test
+
+# Start Next.js development server
+npm run dev
+```
+
+The dev server will be listening at **http://localhost:3000**.
+
+---
+
+## 🧪 Testing & Verification
+
+Typst Studio includes a comprehensive automated test suite:
+
+```bash
+# Run Vitest unit & integration tests (27 passing tests)
+npm test
+
+# Run TypeScript typechecker
+npx tsc --noEmit
+
+# Run Playwright End-to-End browser tests
 npm run test:e2e
 ```
 
 ---
 
-## Quickstart with Docker
+## 📚 Detailed Documentation
 
-### 1. Build and Run Container
-```bash
-docker compose up --build -d
-```
-The application will automatically run Prisma schema migrations and start at **http://localhost:3000**.
+Comprehensive technical guides are available in the [`./docs`](./docs) directory:
 
-### 2. View Container Logs
-```bash
-docker compose logs -f
-```
-
-### 3. Run Internal Tests Inside Docker
-The multi-stage `Dockerfile` automatically executes the Vitest test suite during build. To manually trigger tests inside Docker:
-```bash
-docker compose run --rm app npm test
-```
-
-### 4. Stop Container
-```bash
-docker compose down
-```
+- [**System Architecture**](./docs/ARCHITECTURE.md): Dual-engine mechanics, AST design, and PDF compilation lifecycle.
+- [**Layouts & Publishing Blocks**](./docs/LAYOUTS_AND_BLOCKS.md): Grid engine, presets, and element schema reference.
+- [**Themes & Color Palettes**](./docs/THEMES_AND_PALETTES.md): Workspace UI themes vs. document palettes and CSS synchronizer.
+- [**API Reference**](./docs/API_REFERENCE.md): REST endpoints for export, asset uploads, and project persistence.
+- [**Production Deployment**](./docs/DEPLOYMENT.md): Production container setup, Nginx reverse proxy, and environment variables.
 
 ---
 
-## Local Development (Without Docker)
+## 📄 License
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Push database schema:
-   ```bash
-   npx prisma db push
-   ```
-3. Run tests:
-   ```bash
-   npm test
-   ```
-4. Start dev server:
-   ```bash
-   npm run dev
-   ```
-Open **http://localhost:3000** in your browser.
+This project is licensed under the terms of the **MIT License**.  
+Copyright © 2026 **Yahiaoui Abderrahmane**. All rights reserved. See [LICENSE](LICENSE) for details.
